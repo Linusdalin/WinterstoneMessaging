@@ -22,11 +22,12 @@ public class User {
     public final Timestamp created;
     public final int payments;
     public final int amount;
+    public final int sessions;
     public final int totalWager;
     public final int balance;
     public final int nextNumberOfPicks;
 
-    public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed, Timestamp created, int payments, int amount, int totalWager, int balance, int nextNumberOfPicks){
+    public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed, Timestamp created, int payments, int amount, int sessions, int totalWager, int balance, int nextNumberOfPicks){
 
 
         this.facebookId = facebookId;
@@ -38,6 +39,7 @@ public class User {
         this.created = created;
         this.payments = payments;
         this.amount = amount;
+        this.sessions = sessions;
         this.totalWager = totalWager;
         this.balance = balance;
         this.nextNumberOfPicks = nextNumberOfPicks;

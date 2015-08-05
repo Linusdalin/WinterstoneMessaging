@@ -14,9 +14,9 @@ public class NotificationAction extends Action implements ActionInterface{
 
     private String url;
 
-    public NotificationAction(String message, User user, String url){
+    public NotificationAction(String message, User user, String url, int significance){
 
-        super(ActionType.NOTIFICATION, user, message);
+        super(ActionType.NOTIFICATION, user, message, significance );
         this.url = url;
     }
 

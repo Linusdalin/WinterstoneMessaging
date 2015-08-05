@@ -9,4 +9,5 @@ package action;
 public interface ActionInterface {
 
     ActionResponse execute();
+    int getSignificance();
 }
