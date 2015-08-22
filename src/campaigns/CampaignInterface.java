@@ -1,7 +1,10 @@
 package campaigns;
 
 import action.ActionInterface;
-import remoteData.dataObjects.User;
+import core.PlayerInfo;
+import localData.Exposure;
+
+import java.sql.Timestamp;
 
 /************************************************************
  *
@@ -10,6 +13,11 @@ import remoteData.dataObjects.User;
  */
 public interface CampaignInterface {
 
-    ActionInterface evaluate(User user);
+    ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime);
+    String getName();
 
+    String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime);
+    int getCoolDown();
+
+    boolean failCoolDown(Exposure lastExposure, Timestamp executionTime);
 }

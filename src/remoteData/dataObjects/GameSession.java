@@ -12,6 +12,21 @@ import java.sql.Timestamp;
  */
 public class GameSession {
 
+      /*
+                       timeStamp datetime
+                       sessionId varchar(45)
+                       game varchar(45)
+                       facebookId varchar(45)
+                       name varchar(45)
+                       promoCode varchar(80)
+                       fbSource varchar(45)
+                       actionTime datetime
+                       totalWager int(11)
+                       totalWin int(11)
+                       endBalance int(11)
+                       spins int(11)
+                       totalSpins int(11)
+                        */
 
     public final Timestamp timeStamp;
     public final String sessionId;
@@ -25,9 +40,8 @@ public class GameSession {
     public final int totalWin;
     public final int endBalance;
     public final int spins;
-    public final int totalSpins;
 
-    GameSession(Timestamp timeStamp, String sessionId, String game, String facebookId, String name, String promocode, String fbSource, Timestamp actionTime, int totalWager, int totalWin, int endBalance, int spins, int totalSpins){
+    GameSession(Timestamp timeStamp, String sessionId, String game, String facebookId, String name, String promocode, String fbSource, Timestamp actionTime, int totalWager, int totalWin, int endBalance, int spins){
         this.timeStamp = timeStamp;
         this.sessionId = sessionId;
         this.game = game;
@@ -40,20 +54,19 @@ public class GameSession {
         this.totalWin = totalWin;
         this.endBalance = endBalance;
         this.spins = spins;
-        this.totalSpins = totalSpins;
     }
 
     public String toString(){
 
         return "(" + timeStamp.toString() +", "+ sessionId + ", " +game + ", " +facebookId + ", " +name + ", " +promocode +", " +fbSource +", " +actionTime.toString() +", " +
-                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +totalSpins +")";
+                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +")";
 
     }
 
     public String toSQLValues() {
 
         return "'" + timeStamp.toString() +"', '"+ sessionId + "', '" +game + "', '" +facebookId + "', '" +name + "', '" +promocode +"', '" +fbSource +"', '" +actionTime.toString() +"', " +
-                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +totalSpins;
+                    totalWager +", " +totalWin +", " +endBalance +", " +spins;
 
     }
 }

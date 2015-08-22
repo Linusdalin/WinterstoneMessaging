@@ -1,6 +1,8 @@
 package remoteData.dataObjects;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -13,23 +15,30 @@ import java.sql.*;
 public class PaymentTable extends GenericTable {
 
     private static final String getRemote =
-            "select sessions.playerid, amount, game, timestamp, promocode, firstLogin " +
-            "     from payments, sessions " +
-            "     where sessions.sessionId = payments.sessionId " +
-            "      and timestamp > \"$(THRESHOLD)\" order by timestamp";
+            "select *" +
+            "     from payment where 1=1" +
+            "      $(RESTRICTION) order by timestamp $(LIMIT)";
 
 
-    public PaymentTable(String startTime, String  restriction, int limit){
+    public PaymentTable(String  restriction, int limit){
 
-        super(getRemote, startTime, restriction, limit);
+        super(getRemote, restriction, limit);
         maxLimit = limit;
     }
 
     public PaymentTable(){
 
-        this("2015-01-01", "", -1);
+        this( "", -1);
     }
 
+    /*
+    playerid varchar(20)
+    amount int(8)
+    game varchar(30)
+    timestamp timestamp
+    promocode varchar(80)
+    firstLogin timestamp
+     */
 
 
     public Payment getNext(){
@@ -47,50 +56,33 @@ public class PaymentTable extends GenericTable {
         return null;
     }
 
+    public List<Payment> getAll(){
 
-    public void storeLocally(Connection connection, Payment p){
+        List<Payment> sessions = new ArrayList<Payment>();
+        Payment session = getNext();
 
-        p.wash();
+        while(session != null){
 
-        String insert = "insert into Payment values (" + p.toSQLValues() + ")";
-
-        //System.out.println("Insert with: " + insert);
-
-        try{
-
-            Statement statement = connection.createStatement();
-            statement.execute(insert);
-
-        }catch(SQLException e){
-
-            System.out.println("Error accessing data in database");
-            e.printStackTrace();
+            sessions.add(session);
+            session = getNext();
         }
+
+        return sessions;
 
     }
 
 
-    public Timestamp getLast(Connection connection){
-
-        String sql = "select timeStamp from payment order by timestamp desc limit 1;";
-
-        try{
-
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(sql);
-
-            if(!rs.next())
-                return null;  // There are no entries in the database
-
-            return rs.getTimestamp(1);
-
-        }catch(SQLException e){
-
-            System.out.println("Error accessing data in database");
-            e.printStackTrace();
-        }
 
 
-        return null;
+    public List<Payment> getPaymentsForUser(User user, Connection connection) {
+
+        load(connection, "sessions.playerId= '"+ user.facebookId+"'");
+        List<Payment> paymentsForUser = getAll();
+        System.out.println("Found " + paymentsForUser.size() + " payments for user " + user.name);
+        return paymentsForUser;
+
     }
+
+
+
 }

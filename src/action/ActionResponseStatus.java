@@ -8,5 +8,5 @@ package action;
 
 public enum ActionResponseStatus {
 
-    OK, FAIL, ABORTED,
+    OK, FAILED, ABORTED, IGNORED
 }

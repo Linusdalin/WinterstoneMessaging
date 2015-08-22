@@ -1,6 +1,8 @@
 package remoteData.dataObjects;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /******
  * Created with IntelliJ IDEA.
@@ -12,31 +14,43 @@ import java.sql.*;
 public class GameSessionTable extends GenericTable{
 
     private static final String tableName = "game_session";
-    private static final String orderByRemote = "timestamp";
-    private static final String orderByLocally = "timeStamp";
+    private static final String orderBy = "timestamp";
 
     private static final String getRemote =
-                "select timestamp, sessions.sessionId, game_stats.game, facebookId, name, sessions.promoCode, fbSource, game_stats.firstActionTime as 'action time', game_stats.totalWager, game_stats.totalWin, game_stats.lastBalance as 'end balance', game_stats.actions as spins, session_stats.actions as 'total spins' \n"+
-                "        from sessions, users, session_stats, game_stats \n"+
-                "        where users.facebookId = sessions.playerId and sessions.sessionId = session_stats.sessionId and sessions.sessionId = game_stats.sessionId \n"+
-                "        and timestamp > \"$(THRESHOLD)\"  order by "+ orderByRemote+" limit $(LIMIT);";
-
-    private static final String getLocal = "select * from "+ tableName+" where timeStamp > '$(START)' $(RESTRICTION) order by " + orderByLocally;
+                "select * " +
+                "        from game_session \n"+
+                "        where 1 = 1\n"+
+                "        $(RESTRICTION)  order by "+ orderBy+" $(LIMIT);";
 
 
-    public GameSessionTable(String startTime, String restriction, int limit){
 
-        super(getRemote, startTime, restriction, limit);
+    public GameSessionTable(String restriction, int limit){
+
+        super(getRemote, restriction, limit);
         maxLimit = limit;
     }
 
     public GameSessionTable(){
 
-        this("", "", -1);
+        this("", -1);
     }
 
 
-
+                       /*
+                       timeStamp datetime
+                       sessionId varchar(45)
+                       game varchar(45)
+                       facebookId varchar(45)
+                       name varchar(45)
+                       promoCode varchar(80)
+                       fbSource varchar(45)
+                       actionTime datetime
+                       totalWager int(11)
+                       totalWin int(11)
+                       endBalance int(11)
+                       spins int(11)
+                       totalSpins int(11)
+                        */
 
     public GameSession getNext(){
 
@@ -44,9 +58,9 @@ public class GameSessionTable extends GenericTable{
             if(!resultSet.next())
                 return null;
 
-            return new GameSession(resultSet.getTimestamp(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5),resultSet.getString(6),resultSet.getString(7),
+            return new GameSession(resultSet.getTimestamp(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5),resultSet.getString(6), resultSet.getString(7),
                     resultSet.getTimestamp(8),
-                    resultSet.getInt(9),resultSet.getInt(10),resultSet.getInt(11),resultSet.getInt(12),resultSet.getInt(13));
+                    resultSet.getInt(9),resultSet.getInt(10),resultSet.getInt(11),resultSet.getInt(12));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -55,48 +69,31 @@ public class GameSessionTable extends GenericTable{
         return null;
     }
 
+    public List<GameSession> getAll(){
 
-    public void storeLocally(Connection connection, GameSession gameSession){
+        List<GameSession> sessions = new ArrayList<GameSession>();
+        GameSession session = getNext();
 
-        String insert = "insert into "+ tableName+" values (" + gameSession.toSQLValues() + ")";
+        while(session != null){
 
-        //System.out.println("Insert locally with: " + insert);
-
-        try{
-
-            Statement statement = connection.createStatement();
-            statement.execute(insert);
-
-        }catch(SQLException e){
-
-            System.out.println("Error accessing data in database");
-            e.printStackTrace();
+            sessions.add(session);
+            session = getNext();
         }
+
+        return sessions;
 
     }
 
-    public Timestamp getLast(Connection connection){
-
-        String sql = "select timeStamp from game_session order by timeStamp desc limit 1;";
-
-        try{
-
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(sql);
-
-            if(!rs.next())
-                return null;  // There are no entries in the database
-
-            return rs.getTimestamp(1);
-
-        }catch(SQLException e){
-
-            System.out.println("Error accessing data in database");
-            e.printStackTrace();
-        }
 
 
-        return null;
+
+    public List<GameSession> getSessionsForUser(User user, Connection connection) {
+
+        load(connection, "users.facebookId = '"+ user.facebookId+"'");
+        List<GameSession> sessionsForUser = getAll();
+        System.out.println("Found " + sessionsForUser.size() + " sessions for user " + user.name);
+        return sessionsForUser;
+
     }
 
 

@@ -1,5 +1,11 @@
 package action;
 
+import campaigns.CampaignInterface;
+import remoteData.dataObjects.User;
+
+import java.sql.Connection;
+import java.sql.Timestamp;
+
 /***********************************************************************
  *
  *              Common interfaces for actions
@@ -8,6 +14,14 @@ package action;
 
 public interface ActionInterface {
 
-    ActionResponse execute();
+    ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection);
+
+    int getSignificance(int eligibility);
     int getSignificance();
+
+    User getUser();
+    public String getCampaign();
+
+    boolean isFiredBy(CampaignInterface campaign);
+
 }

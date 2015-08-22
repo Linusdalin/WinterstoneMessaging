@@ -26,8 +26,11 @@ public class User {
     public final int totalWager;
     public final int balance;
     public final int nextNumberOfPicks;
+    public final int userCategory;
+    public int level;
+    public String group;
 
-    public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed, Timestamp created, int payments, int amount, int sessions, int totalWager, int balance, int nextNumberOfPicks){
+    public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed, Timestamp created, int payments, int amount, int sessions, int totalWager, int balance, int nextNumberOfPicks, int userCategory, int level, String group){
 
 
         this.facebookId = facebookId;
@@ -36,7 +39,15 @@ public class User {
         this.email = email;
         this.promoCode = promoCode;
         this.lastgamePlayed = lastgamePlayed;
-        this.created = created;
+        this.userCategory = userCategory;
+        this.level = level;
+        this.group = group;
+
+        if(created != null)
+            this.created = created;
+        else
+            this.created = new Timestamp(2015,1,1,0,0,0,0);
+
         this.payments = payments;
         this.amount = amount;
         this.sessions = sessions;
@@ -45,9 +56,10 @@ public class User {
         this.nextNumberOfPicks = nextNumberOfPicks;
     }
 
+
     public String toString(){
 
-        return "(" + facebookId + ", " +name + ", " +promoCode + ", " +created.toString() +  ")";
+        return "(" + facebookId + ", " +name + ", " +promoCode + ", "+level + ", " +created.toString() +  ")";
 
     }
 
