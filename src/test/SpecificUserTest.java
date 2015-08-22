@@ -14,6 +14,8 @@ import java.sql.Connection;
 /*****************************************************************************''
  *
  *                  Code to look at a specific user in the database
+ *
+ *
  */
 
 public class SpecificUserTest {
