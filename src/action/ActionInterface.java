@@ -23,5 +23,6 @@ public interface ActionInterface {
     public String getCampaign();
 
     boolean isFiredBy(CampaignInterface campaign);
+    ActionInterface attach(ActionInterface action);
 
 }

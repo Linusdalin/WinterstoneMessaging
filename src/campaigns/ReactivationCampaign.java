@@ -78,20 +78,20 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
             if(isHighSpender(user)){
 
                 System.out.println("    -- Campaign " + Name + " firing message1. Creating bonus for player" );
-                return new NotificationAction("You have 20,000 free coins to play for! We haven't seen you in a while. There are some fabulous new games to try out. ", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name)
+                return new NotificationAction("You have 20,000 free coins to play for! We haven't seen you in a while. There are some fabulous new games to try out. ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name)
                         .withReward("cac6b086-189f-4ee6-bb30-7bcfb2a0ecfa");
 
 
             }else if(user.payments > 0){
 
                 System.out.println("    -- Campaign " + Name + " firing message2. Creating bonus for player" );
-                return new NotificationAction("You have 10,000 free coins to play for. We haven't seen you in a while. There are some fabulous new games to try out. ", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name)
+                return new NotificationAction("You have 10,000 free coins to play for. We haven't seen you in a while. There are some fabulous new games to try out. ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name)
                     .withReward("93f00dac-26cf-46e4-8bde-1eb59dd13032");
 
             }else if(user.sessions > 40){
 
                     System.out.println("    -- Campaign " + Name + " firing message3. Creating bonus for player" );
-                    return new NotificationAction("You have got 20,000 free coins! We haven't seen you in a while and there are some fabulous new games to try out. Click here to claim ", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name)
+                    return new NotificationAction("You have got 20,000 free coins! We haven't seen you in a while and there are some fabulous new games to try out. Click here to claim ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name)
                             .withReward("363526a3-1fb1-499d-bb33-66dd9dcb9259");
 
             }

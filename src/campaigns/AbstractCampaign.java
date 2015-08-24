@@ -191,6 +191,11 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return user.payments > 0 && user.amount / user.payments < HIGH_SPENDER;
     }
 
+    protected boolean isFrequent(User user) {
+
+        return user.sessions > 40;
+    }
+
 
     protected int getPriority() {
         return priority;

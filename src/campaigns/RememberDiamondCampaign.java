@@ -90,7 +90,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
         // Last session was Between 24 and 42 hours ago and diamond pick is correct. Send the message
 
         System.out.println("    -- Campaign " + Name + " fire notification" );
-        return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name);
+        return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name);
 
 
     }

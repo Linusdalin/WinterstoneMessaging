@@ -1,5 +1,7 @@
 package core;
 
+import localData.Exposure;
+import localData.ExposureTable;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
@@ -22,22 +24,13 @@ public class PlayerInfo {
     private List<GameSession> userSessions = null;
     private GameSession lastSession = null;
 
-
     public PlayerInfo(User user, DataCache dbCache){
 
         this.user = user;
         this.dbCache = dbCache;
         userPayments = dbCache.getPaymentsForUser(user);
 
-        /*
-        userSessions = dbCache.getSessionsForUser(user);
 
-        if(userSessions.size() > 0)
-            lastSession = userSessions.get(userSessions.size()-1);
-        else
-            lastSession = null;
-
-        */
     }
 
 

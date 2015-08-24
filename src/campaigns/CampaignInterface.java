@@ -5,6 +5,7 @@ import core.PlayerInfo;
 import localData.Exposure;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /************************************************************
  *

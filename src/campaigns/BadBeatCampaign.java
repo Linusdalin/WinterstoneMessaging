@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.ManualAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import core.Yesterday;
@@ -97,7 +98,9 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
                         }
 
                         System.out.println("    -- Campaign " + Name + " Firing. payout = " + yesterdayStats.toString());
-                        return new NotificationAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name);
+                        return new NotificationAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!",
+                                user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name)
+                                .attach(new ManualAction("Credit user with " + compensation + " coins.", user, getPriority(), Name));
 
                     }
                     else

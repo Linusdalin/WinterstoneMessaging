@@ -58,6 +58,13 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
+        if(!isFrequent(user) && user.payments == 0){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Not active" );
+            return null;
+        }
+
+
         GameSession lastSession = playerInfo.getLastSession();
         if(lastSession == null){
 
@@ -76,7 +83,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                 if(user.balance > COINS_FOR_HIGH_SPENDER){
 
                     System.out.println("    -- Campaign " + Name + " firing for high spender with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, 70, createTag(Name), createPromoCode(Name, user, inactivity), Name);
+                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name);
 
                 }
                 else
@@ -89,18 +96,18 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                 if(user.balance > COINS_FOR_LOW_SPENDER){
 
                     System.out.println("    -- Campaign " + Name + " firing for low spender with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, 70, createTag(Name), createPromoCode(Name, user, inactivity), Name);
+                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name);
 
                 }
                 else
                     System.out.println("    -- Campaign " + Name + " not firing for low spender with balance " + user.balance );
 
-            }else if(user.sessions > 40){
+            }else if(isFrequent(user)){
 
                 if(user.balance > COINS_FOR_FREE_PLAYER){
 
                     System.out.println("    -- Campaign " + Name + " firing for free player with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, 70, createTag(Name), createPromoCode(Name, user, inactivity), Name);
+                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name);
 
                 }
                 else

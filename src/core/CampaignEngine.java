@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 
 /***************************************************************************'
  *
@@ -33,7 +34,8 @@ public class CampaignEngine {
     private boolean dryRun;
     private boolean overrideTime;
     private int analysis_cap;
-    private Outbox outbox;
+    private Outbox notificationOutbox;
+    private Outbox manualActionOutbox;
 
 
     /******************************************************''
@@ -67,7 +69,8 @@ public class CampaignEngine {
 
             // Create an outbox for all messages
 
-            outbox = new Outbox(send_cap, dryRun, testUser, localConnection);
+            notificationOutbox = new Outbox(send_cap, dryRun, testUser, localConnection);
+            manualActionOutbox = new Outbox(send_cap, dryRun, testUser, localConnection);
 
         }catch(Exception e){
 
@@ -140,10 +143,14 @@ public class CampaignEngine {
             return;
         }
 
-        System.out.println(" ******************************************\n * Purging outbox ");
+        System.out.println(" ******************************************\n * Purging Notifications ");
 
-        outbox.listRecepients();
-        outbox.purge(executionTime);
+        notificationOutbox.listRecepients();
+        notificationOutbox.purge(executionTime);
+
+        System.out.println(" ******************************************\n * Manual Actions ");
+
+        notificationOutbox.purge(executionTime);
     }
 
 
@@ -156,7 +163,7 @@ public class CampaignEngine {
      * @param user                  - the user in question
      * @param executionTime         - time of execution (for time dependent rules
      * @param dbCache               - cached information from the database
-     * @param campaignExposures
+     * @param campaignExposures     - Exposure for campaigns
      * @return                      - The action (for compilation of campaign execution
      */
 
@@ -173,7 +180,7 @@ public class CampaignEngine {
         int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures);
 
         ActionInterface selectedAction = null;
-        System.out.println("    (found " + playerInfo.getSessionsForUser().size() + " sessions and "+ playerInfo.getPaymentsForUser().size()+" payments for the user)");
+        System.out.println("    (found " + playerInfo.getUser().sessions + " sessions and "+ playerInfo.getPaymentsForUser().size()+" payments for the user)");
 
         // Go through all campaigns and see if any of them fire.
         // We store the most significant for this user this time
@@ -220,7 +227,9 @@ public class CampaignEngine {
             return null;
         }
 
-        outbox.queue(selectedAction);
+        // TODO: Loop over all linked actions and put them in the correct queue
+
+        notificationOutbox.queue(selectedAction);
 
         return selectedAction;
     }
