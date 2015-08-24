@@ -12,6 +12,9 @@ import java.sql.Timestamp;
 /************************************************************************'
  *
  *                  Old players
+ *
+ *                  This is a one shot campaign addressing all our old
+ *                  paying and active players with appropriate bonuses
  */
 
 public class ReactivationCampaign extends AbstractCampaign implements CampaignInterface {
@@ -24,9 +27,9 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
     private static final int INACTIVITY_LIMIT   = 22;   // 22 days inactivity before kicking in this offer
     private static final int HIGH_SPENDER       = 10;   // Average spend of $15
 
-    ReactivationCampaign(){
+    ReactivationCampaign(int priority){
 
-        super(Name);
+        super(Name, priority);
         setCoolDown(CoolDown_Days);
     }
 
@@ -59,26 +62,37 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
         }
         int inactivity = getDaysBetween(lastSession.timeStamp, executionDay);
 
+
+        /**
+         3000 'Come Back bonus boost!' https://apps.facebook.com/slotamerica?reward=363526a3-1fb1-499d-bb33-66dd9dcb9259
+         10000 'Come Back bonus boost!' https://apps.facebook.com/slotamerica?reward=93f00dac-26cf-46e4-8bde-1eb59dd13032
+         20000 'Come Back bonus boost!' https://apps.facebook.com/slotamerica?reward=cac6b086-189f-4ee6-bb30-7bcfb2a0ecfa
+
+         */
+
+
+
+
         if(inactivity > INACTIVITY_LIMIT){
 
-            if(user.payments > 4 && user.amount / user.payments > HIGH_SPENDER ){
+            if(isHighSpender(user)){
 
                 System.out.println("    -- Campaign " + Name + " firing message1. Creating bonus for player" );
-                return new NotificationAction("We haven't seen you in a while. There are some fabulous new games to try out. ", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name)
+                return new NotificationAction("You have 20,000 free coins to play for! We haven't seen you in a while. There are some fabulous new games to try out. ", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name)
                         .withReward("cac6b086-189f-4ee6-bb30-7bcfb2a0ecfa");
 
 
             }else if(user.payments > 0){
 
                 System.out.println("    -- Campaign " + Name + " firing message2. Creating bonus for player" );
-                return new NotificationAction("We haven't seen you in a while. There are some fabulous new games to try out. ", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name)
-                    .withReward("93f00dac-26cf-46e4-8bde-1eb59dd13032");       //TODO: Change to correct
+                return new NotificationAction("You have 10,000 free coins to play for. We haven't seen you in a while. There are some fabulous new games to try out. ", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name)
+                    .withReward("93f00dac-26cf-46e4-8bde-1eb59dd13032");
 
             }else if(user.sessions > 40){
 
                     System.out.println("    -- Campaign " + Name + " firing message3. Creating bonus for player" );
                     return new NotificationAction("You have got 20,000 free coins! We haven't seen you in a while and there are some fabulous new games to try out. Click here to claim ", user, 90, createTag(Name), createPromoCode(Name, user, inactivity), Name)
-                            .withReward("363526a3-1fb1-499d-bb33-66dd9dcb9259");      //TODO: Change to correct
+                            .withReward("363526a3-1fb1-499d-bb33-66dd9dcb9259");
 
             }
 

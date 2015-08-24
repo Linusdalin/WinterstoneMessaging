@@ -19,11 +19,13 @@ public abstract class AbstractCampaign implements CampaignInterface{
     private static final int HIGH_SPENDER       = 10;   // Average spend of $15
 
     private String name;
+    private int priority;         // Campaign base priority before persoal or situational adjustments
     private int coolDown;
 
-    AbstractCampaign(String name){
+    AbstractCampaign(String name, int priority){
 
         this.name = name;
+        this.priority = priority;
     }
 
 
@@ -190,4 +192,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
     }
 
 
+    protected int getPriority() {
+        return priority;
+    }
 }

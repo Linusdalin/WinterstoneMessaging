@@ -8,7 +8,6 @@ import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 
 /************************************************************************'
@@ -28,17 +27,17 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
 
     // Trigger specific config data
     private static final int MIN_AVERAGE_BET = 490;
-    private static final int MIN_ACTIONS = 140;
-    private static final int LONG_SESSION = 400;
+    private static final int MIN_ACTIONS = 130;
+    private static final int LONG_SESSION = 350;
 
     private static final int VERY_UNLUCKY_PAYOUT = 60;
     private static final int UNLUCKY_PAYOUT = 70;
 
     private static final int MAX_REMAINING_BALANCE = 2000 ;
 
-    BadBeatCampaign(){
+    BadBeatCampaign(int priority){
 
-        super(Name);
+        super(Name, priority);
         setCoolDown(CoolDown_Days);
 
     }

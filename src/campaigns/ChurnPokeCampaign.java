@@ -26,9 +26,9 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
     // Trigger specific config data
     private static final int Min_Sessions = 10;
 
-    ChurnPokeCampaign(){
+    ChurnPokeCampaign(int priority){
 
-        super(Name);
+        super(Name, priority);
         setCoolDown(CoolDown_Days);
     }
 

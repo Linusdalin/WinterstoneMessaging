@@ -32,9 +32,9 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
     private static final int COINS_FOR_HIGH_SPENDER          = 20000;
 
 
-    CoinsLeftCampaign(){
+    CoinsLeftCampaign(int priority){
 
-        super(Name);
+        super(Name, priority);
         setCoolDown(CoolDown_Days);
     }
 

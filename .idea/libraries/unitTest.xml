@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="unitTest">
     <CLASSES>
-      <root url="file://$USER_HOME$/IdeaProjects/Artifacts/Libs/unitTest" />
+      <root url="jar://$PROJECT_DIR$/../../JavaLibs/junit-4.10.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
