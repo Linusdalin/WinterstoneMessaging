@@ -35,7 +35,7 @@ public class CampaignEngine {
     private boolean overrideTime;
     private int analysis_cap;
     private Outbox notificationOutbox;
-    private Outbox manualActionOutbox;
+    private Outbox manualActionOutbox;          // Manual messages
 
 
     /******************************************************''
