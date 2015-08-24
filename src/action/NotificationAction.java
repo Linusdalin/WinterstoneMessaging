@@ -22,7 +22,7 @@ public class NotificationAction extends Action implements ActionInterface{
 
     public NotificationAction(String message, User user, int significance, String ref, String promoCode, String campaignName){
 
-        super(ActionType.NOTIFICATION, user, message, significance, campaignName );
+        super(ActionType.NOTIFICATION, user.facebookId, message, significance, campaignName );
         this.ref = ref;
         setPromoCode(promoCode);
 
@@ -45,11 +45,11 @@ public class NotificationAction extends Action implements ActionInterface{
     public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection) {
 
         System.out.println("--------------------------------------------------------");
-        System.out.println("! Executing " + type.name() + " for player " + user.name);
+        System.out.println("! Executing " + type.name() + " for player " + userId);
 
         NotificationHandler handler = new NotificationHandler(testUser)
                     .withCap(1)
-                    .withRecipient(user.facebookId)
+                    .withRecipient(userId)
                     .withMessage(message)
                     .withRef(ref)
                     .withPromoCode(promoCode)
@@ -64,7 +64,7 @@ public class NotificationAction extends Action implements ActionInterface{
         if(!dryRun){
             successCount =  handler.send();
             if(successCount > 0){
-                noteSuccessFulExposure( (testUser == null ? user.facebookId: testUser ) , executionTime, localConnection );
+                noteSuccessFulExposure( (testUser == null ? userId: testUser ) , executionTime, localConnection );
                 return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
             }
             else
@@ -72,7 +72,7 @@ public class NotificationAction extends Action implements ActionInterface{
 
         }
         else{
-            System.out.println("  %%%Dryrun: Ignoring sending message to user " + user.name + "("+ user.facebookId+") " + "-\""+ message+"\" Promocode:" + promoCode);
+            System.out.println("  %%%Dryrun: Ignoring sending message to user "+ userId+" " + "-\""+ message+"\" Promocode:" + promoCode);
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - dry run");
         }
 

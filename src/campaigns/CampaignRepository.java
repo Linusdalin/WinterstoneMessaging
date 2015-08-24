@@ -25,7 +25,8 @@ public class CampaignRepository {
         add(new ChurnPokeCampaign());
         add(new BadBeatCampaign());
         add(new CoinsLeftCampaign());
-        add(new GameNotification("sweet_money", "Play SlotAmerica’s brand new Sweet Money, a delightful digital dessert guaranteed to not hurt your teeth! Click now"));
+
+        //add(new GameNotification("sweet_money", "Play SlotAmerica’s brand new Sweet Money, a delightful digital dessert guaranteed to not hurt your teeth! Click now"));
 
         //add(new ReactivationCampaign());
 

@@ -12,17 +12,17 @@ public abstract class Action implements ActionInterface{
 
 
     protected final ActionType type;
-    protected User user;
+    protected String userId;
     protected final String message;
 
     private int significance;
     private String campaignName;
     protected String promoCode;
 
-    public Action(ActionType type, User user, String message, int significance, String campaignName){
+    public Action(ActionType type, String userId, String message, int significance, String campaignName){
 
         this.type = type;
-        this.user = user;
+        this.userId = userId;
         this.message = message;
         this.significance = significance;
         this.campaignName = campaignName;
@@ -37,9 +37,9 @@ public abstract class Action implements ActionInterface{
     }
 
 
-    public User getUser(){
+    public String getUserId(){
 
-        return user;
+        return userId;
     }
 
 
