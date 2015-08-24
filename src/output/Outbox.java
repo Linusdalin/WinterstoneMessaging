@@ -58,7 +58,7 @@ public class Outbox {
                 success++;
             }
             else
-                noteFailedMessageDelivery(action.getUser());
+                noteFailedMessageDelivery(action.getUserId());
 
             count++;
 
@@ -79,7 +79,7 @@ public class Outbox {
      * @param user
      */
 
-    private void noteFailedMessageDelivery(User user) {
+    private void noteFailedMessageDelivery(String user) {
 
         //TODO: Not implemented - remember that a message delivery did not work
 
@@ -93,7 +93,7 @@ public class Outbox {
 
             for (ActionInterface action : queue) {
 
-                System.out.println("\"" + action.getUser().facebookId + "\", ");
+                System.out.println("\"" + action.getUserId() + "\", ");
 
 
             }

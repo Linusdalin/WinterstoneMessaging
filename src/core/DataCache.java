@@ -15,7 +15,7 @@ import java.util.List;
 public class DataCache {
 
     private List<GameSession> allSessions = new ArrayList<GameSession>();
-    private List<Payment> allPayments;
+    private static List<Payment> allPayments;
     private Connection connection;
 
     /********************************************************************************
@@ -32,15 +32,22 @@ public class DataCache {
         System.out.println(" **********************************************************\n*  Loading cached data...");
 
         this.connection = connection;
+
         //GameSessionTable sessionTable = new GameSessionTable();
         //sessionTable.load(connection,"timestamp > '"+ startDate+"'", limit );
         //allSessions = sessionTable.getAll();
 
         //System.out.println(" -- Got " + allSessions.size() + " sessions after " + startDate);
 
-        PaymentTable paymentTable = new PaymentTable();
-        paymentTable.load(connection,"timestamp > '"+ startDate+"'", "ASC", limit );
-        allPayments = paymentTable.getAll();
+        if(allPayments == null){
+
+
+            PaymentTable paymentTable = new PaymentTable();
+            paymentTable.load(this.connection,"timestamp > '"+ startDate+"'", "ASC", limit );
+            allPayments = paymentTable.getAll();
+
+        }
+
 
         //System.out.println(" -- Got " + allPayments.size() + " payments after " + startDate);
 
@@ -59,7 +66,9 @@ public class DataCache {
 
     }
 
-    public List<Payment> getPaymentsForUser(User user) {
+    // TODO: This takes too much CPU. Look in local db directly
+
+    public List<Payment> getPaymentsForUserCache(User user) {
 
         List<Payment> paymentsForUser = new ArrayList<Payment>();
 
@@ -72,4 +81,19 @@ public class DataCache {
 
 
     }
+
+
+    public List<Payment> getPaymentsForUser(User user) {
+
+        PaymentTable paymentTable = new PaymentTable();
+        paymentTable.load(connection,"playerId='" + user.facebookId + "'","ASC", -1 );
+
+        List<Payment> paymentsForUser = paymentTable.getAll();
+
+        System.out.println(" -- Got " + paymentsForUser.size() + " payments for user " + user.name);
+
+        return paymentsForUser;
+
+    }
+
 }
