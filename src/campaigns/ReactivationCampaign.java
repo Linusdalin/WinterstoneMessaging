@@ -27,9 +27,9 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
     private static final int INACTIVITY_LIMIT   = 22;   // 22 days inactivity before kicking in this offer
     private static final int HIGH_SPENDER       = 10;   // Average spend of $15
 
-    ReactivationCampaign(){
+    ReactivationCampaign(int priority){
 
-        super(Name);
+        super(Name, priority);
         setCoolDown(CoolDown_Days);
     }
 

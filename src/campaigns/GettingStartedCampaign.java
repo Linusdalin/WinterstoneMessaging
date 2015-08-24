@@ -21,9 +21,9 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
     private static final String Name = "Getting Started";
     private static final int CoolDown_Days = 0;   // No cooldown. This will anyway only trigger once per message
 
-    GettingStartedCampaign(){
+    GettingStartedCampaign(int priority){
 
-        super(Name);
+        super(Name, priority);
         setCoolDown(CoolDown_Days);
     }
 

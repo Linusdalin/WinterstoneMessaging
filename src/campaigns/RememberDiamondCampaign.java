@@ -26,9 +26,9 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
     private static final int MIN_DIAMONDS = 5;
     private static final int MAX_DIAMONDS = 11;
 
-    RememberDiamondCampaign(){
+    RememberDiamondCampaign(int priority){
 
-        super(Name);
+        super(Name, priority);
         setCoolDown(CoolDown_Days);
 
     }

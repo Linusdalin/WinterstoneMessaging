@@ -8,7 +8,6 @@ import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 
 /************************************************************************'
@@ -36,9 +35,9 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
 
     private static final int MAX_REMAINING_BALANCE = 2000 ;
 
-    BadBeatCampaign(){
+    BadBeatCampaign(int priority){
 
-        super(Name);
+        super(Name, priority);
         setCoolDown(CoolDown_Days);
 
     }

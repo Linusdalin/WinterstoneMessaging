@@ -20,12 +20,14 @@ public class CampaignRepository {
 
     public static final List<CampaignInterface> activeCampaigns = new ArrayList<CampaignInterface>(){{
 
-        add(new GettingStartedCampaign());
-        add(new RememberDiamondCampaign());
-        add(new ChurnPokeCampaign());
-        add(new BadBeatCampaign());
-        add(new CoinsLeftCampaign());
-        add(new GameNotification("sweet_money", "Play SlotAmerica’s brand new Sweet Money, a delightful digital dessert guaranteed to not hurt your teeth! Click now"));
+        add(new GettingStartedCampaign( 80 ));
+        add(new RememberDiamondCampaign( 80 ));
+        add(new ChurnPokeCampaign(70));
+        add(new BadBeatCampaign(95));
+        add(new CoinsLeftCampaign(70));
+        add(new LevelUpCampaign( 60 ));
+
+        add(new GameNotification(90, "sweet_money", "Play SlotAmerica’s brand new Sweet Money, a delightful digital dessert guaranteed to not hurt your teeth! Click now"));
 
         //add(new ReactivationCampaign());
 

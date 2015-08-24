@@ -170,7 +170,7 @@ public class CampaignEngine {
         PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
 
         TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo);
-        int eligibility = timeAnalyser.eligibilityForCommunication();
+        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures);
 
         ActionInterface selectedAction = null;
         System.out.println("    (found " + playerInfo.getSessionsForUser().size() + " sessions and "+ playerInfo.getPaymentsForUser().size()+" payments for the user)");

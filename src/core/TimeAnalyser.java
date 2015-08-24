@@ -1,5 +1,7 @@
 package core;
 
+import localData.ExposureTable;
+
 /**************************************************************************
  *
  *
@@ -16,7 +18,21 @@ public class TimeAnalyser {
         this.playerInfo = playerInfo;
     }
 
-    public int eligibilityForCommunication(){
+    public int eligibilityForCommunication(ExposureTable campaignExposures){
+
+        int exposures = campaignExposures.getUserExposure(playerInfo.getUser());
+
+        if(exposures > 1 ){
+
+            System.out.println("Already tvo messages this week. Not sending any more");
+            return 0;
+        }
+
+        if(exposures == 1 ){
+
+            System.out.println("Already one messages this week. Only high priority messages");
+            return 65;
+        }
 
         System.out.println(" -- Not implemented evaluating eligibility for communication. Sending to all");
         return 100;

@@ -29,9 +29,9 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
     private final String message;
     private String gameCode;
 
-    GameNotification(String gameCode, String message){
+    GameNotification(int priority, String gameCode, String message){
 
-        super(Name);
+        super(Name, priority);
         this.gameCode = gameCode;
         setCoolDown(CoolDown_Days);
         this.message = message;
