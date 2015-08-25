@@ -21,9 +21,9 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
     private static final int CoolDown_Days = 5;     // Avoid duplicate runs
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 14;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 22;   // Max days inactivity to get message
-    private static final int ACTIVITY_MIN   = 11;   // Min sessions to be active
+    private static final int INACTIVITY_LIMIT_FREE      = 16;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = 24;   // Max days inactivity to get message
+    private static final int ACTIVITY_MIN   = 10;   // Min sessions to be active
 
 
     private final String message;
@@ -57,6 +57,13 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
+        if(user.sessions < ACTIVITY_MIN){
+
+            System.out.println("    -- Campaign " + Name + " not active. Player has not been active enough ("+ user.sessions +" sessions <  " + ACTIVITY_MIN);
+            return null;
+
+        }
+
         GameSession lastSession = playerInfo.getLastSession();
         if(lastSession == null){
 
@@ -80,12 +87,6 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
         }
 
-        if(user.sessions < ACTIVITY_MIN){
-
-            System.out.println("    -- Campaign " + Name + " not active. Player has not been active enough ("+ user.sessions +" sessions <  " + ACTIVITY_MIN);
-            return null;
-
-        }
 
         System.out.println("    -- Campaign " + Name + " firing. ");
 
