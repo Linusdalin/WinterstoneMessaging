@@ -90,7 +90,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
         System.out.println("    -- Campaign " + Name + " firing. ");
 
-        return new NotificationAction(message, user, getPriority(), "game_notification", "game_notification", Name)
+        return new NotificationAction(message, user, getPriority(), "release_notification", "release_notification", Name)
                 .withGame(gameCode);
 
 
