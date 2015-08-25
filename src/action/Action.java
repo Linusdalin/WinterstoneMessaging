@@ -45,6 +45,14 @@ public abstract class Action implements ActionInterface{
         return userId;
     }
 
+    public ActionType getType(){
+
+        return type;
+    }
+
+    public ActionInterface getAssociated() {
+        return next;
+    }
 
     public String getCampaign(){
 

@@ -30,7 +30,7 @@ public class TimeAnalyser {
 
         if(exposures == 1 ){
 
-            System.out.println("Already one messages this week. Only high priority messages");
+            System.out.println("Already one message this week. Only high priority messages");
             return 65;
         }
 

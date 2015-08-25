@@ -1,6 +1,7 @@
 package core;
 
 import action.ActionInterface;
+import action.ActionType;
 import campaigns.CampaignInterface;
 import campaigns.CampaignRepository;
 import dbManager.ConnectionHandler;
@@ -150,7 +151,7 @@ public class CampaignEngine {
 
         System.out.println(" ******************************************\n * Manual Actions ");
 
-        notificationOutbox.purge(executionTime);
+        manualActionOutbox.purge(executionTime);
     }
 
 
@@ -178,6 +179,7 @@ public class CampaignEngine {
 
         TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo);
         int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures);
+
 
         ActionInterface selectedAction = null;
         System.out.println("    (found " + playerInfo.getUser().sessions + " sessions and "+ playerInfo.getPaymentsForUser().size()+" payments for the user)");
@@ -227,11 +229,22 @@ public class CampaignEngine {
             return null;
         }
 
-        // TODO: Loop over all linked actions and put them in the correct queue
-
-        notificationOutbox.queue(selectedAction);
-
+        queueAction(selectedAction);
         return selectedAction;
+    }
+
+    private void queueAction(ActionInterface action) {
+
+        if(action.getType() == ActionType.NOTIFICATION )
+            notificationOutbox.queue(action);
+        if(action.getType() == ActionType.MANUAL_ACTION )
+            manualActionOutbox.queue(action);
+
+        ActionInterface next = action.getAssociated();
+
+        if(next != null)
+            queueAction( next );
+
     }
 
     private boolean isPrefered(ActionInterface action, ActionInterface selectedAction) {

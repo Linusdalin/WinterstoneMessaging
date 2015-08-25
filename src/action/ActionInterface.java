@@ -25,4 +25,7 @@ public interface ActionInterface {
     boolean isFiredBy(CampaignInterface campaign);
     ActionInterface attach(ActionInterface action);
 
+    ActionType getType();
+
+    ActionInterface getAssociated();
 }

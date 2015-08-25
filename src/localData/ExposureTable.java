@@ -90,7 +90,7 @@ public class ExposureTable extends GenericTable {
 
     public int getUserExposure(User user) {
 
-        load(connection, "facebookId= '"+ user.facebookId+"' and exposureTime > date_sub(cur_date(), INTERVAL 7 days)");
+        load(connection, "user= '"+ user.facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL 7 day)");
         List<Exposure> exposuresForUser = getAll();
         System.out.println("Found " + exposuresForUser.size() + " exposures for user " + user.name);
         return exposuresForUser.size();

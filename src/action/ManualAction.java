@@ -17,7 +17,7 @@ public class ManualAction extends Action implements ActionInterface{
 
     public ManualAction(String message, User user, int significance, String campaignName){
 
-        super(ActionType.MANUAL_ACTION, user, message, significance, campaignName );
+        super(ActionType.MANUAL_ACTION, user.facebookId, message, significance, campaignName );
 
     }
 
@@ -38,17 +38,17 @@ public class ManualAction extends Action implements ActionInterface{
     public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection) {
 
         System.out.println("--------------------------------------------------------");
-        System.out.println("! Perform " + type.name() + " for player " + user.name);
+        System.out.println("! Perform " + type.name() + " for player " + userId);
 
-        if(dryRun){
+        if(!dryRun){
 
-            System.out.println("! PLEASE EXECUTE: " + message + " for user " + user.name );
+            System.out.println("! PLEASE EXECUTE: " + message + " for user " + userId );
             return new ActionResponse(ActionResponseStatus.MANUAL,   "Awaiting");
 
         }else{
 
 
-            System.out.println("  %%%Dryrun: Ignoring performing "+ message+" to user " + user.name + "("+ user.facebookId+") " );
+            System.out.println("  %%%Dryrun: Ignoring performing "+ message+" to user "+ userId );
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - dry run");
 
         }

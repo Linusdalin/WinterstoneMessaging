@@ -27,7 +27,7 @@ public class CampaignRepository {
         add(new CoinsLeftCampaign(70));
         add(new LevelUpCampaign( 60 ));
 
-        add(new GameNotification(90, "sweet_money", "Play SlotAmerica’s brand new Sweet Money, a delightful digital dessert guaranteed to not hurt your teeth! Click now"));
+        //add(new GameNotification(90, "sweet_money", "Play SlotAmerica’s brand new Sweet Money, a delightful digital dessert guaranteed to not hurt your teeth! Click now"));
 
         //add(new ReactivationCampaign());
 
