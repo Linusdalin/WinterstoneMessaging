@@ -25,7 +25,6 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 22;   // 22 days inactivity before kicking in this offer
-    private static final int HIGH_SPENDER       = 10;   // Average spend of $15
 
     ReactivationCampaign(int priority){
 
@@ -69,8 +68,6 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
          20000 'Come Back bonus boost!' https://apps.facebook.com/slotamerica?reward=cac6b086-189f-4ee6-bb30-7bcfb2a0ecfa
 
          */
-
-
 
 
         if(inactivity > INACTIVITY_LIMIT){

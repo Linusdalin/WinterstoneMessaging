@@ -66,6 +66,21 @@ public class DataCache {
 
     }
 
+    public GameSession getLastSessionForUser(User user) {
+
+        GameSessionTable sessionTable = new GameSessionTable();
+        sessionTable.load(connection,"facebookId='" + user.facebookId + "'","DESC", 1 );
+
+        GameSession last = sessionTable.getNext();
+
+        System.out.println(" -- Got last session @" + last.actionTime.toString() + " for user " + user.name);
+
+        return last;
+
+    }
+
+
+
     // TODO: This takes too much CPU. Look in local db directly
 
     public List<Payment> getPaymentsForUserCache(User user) {
@@ -84,6 +99,9 @@ public class DataCache {
 
 
     public List<Payment> getPaymentsForUser(User user) {
+
+        if(user.payments == 0)
+            return new ArrayList<Payment>();
 
         PaymentTable paymentTable = new PaymentTable();
         paymentTable.load(connection,"playerId='" + user.facebookId + "'","ASC", -1 );

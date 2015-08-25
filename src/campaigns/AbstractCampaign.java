@@ -1,6 +1,8 @@
 package campaigns;
 
+import core.PlayerInfo;
 import localData.Exposure;
+import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -78,6 +80,8 @@ public abstract class AbstractCampaign implements CampaignInterface{
      *
      *              Minimum n hours
      *
+     *              test is at least n hours before
+     *
      * @param test
      * @param reference
      * @param hours
@@ -86,9 +90,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     public static boolean hoursBefore(Timestamp test, Timestamp reference, int hours) {
 
-        reference = getDay(new Timestamp(reference.getTime() - hours * 3600*1000));
-        test = getDay(test);
-
+        reference = new Timestamp(reference.getTime() - hours * 3600*1000);
         return test.before(reference);
 
     }
@@ -196,8 +198,21 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return user.sessions > 40;
     }
 
+    protected boolean isPaying(User user) {
+
+        return user.payments > 0;
+    }
 
     protected int getPriority() {
         return priority;
     }
+
+    protected int getInactivity(PlayerInfo info, Timestamp executionTime) {
+
+        GameSession lastSession = info.getLastSession();
+        return getDaysBetween(lastSession.timeStamp, executionTime);
+
+    }
+
+
 }

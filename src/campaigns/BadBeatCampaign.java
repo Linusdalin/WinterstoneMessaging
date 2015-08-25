@@ -63,23 +63,17 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
             return null;
         }
 
-        GameSession lastSession = info.getLastSession();
+        if(user.sessions < MIN_ACTIONS){
 
-        if(lastSession == null){
-
-            // This should not really happen. The sessions is greater than 5 as of above
-            System.out.println("    -- Campaign " + Name + " not checking. The user has not played enough" );
+            System.out.println("    -- Campaign " + Name + " not applicable. Not enough actions");
             return null;
-
         }
 
-
-        int inactivity = getDaysBetween(lastSession.timeStamp, executionTime);
         Yesterday yesterdayStats = new Yesterday(info, executionTime);
 
         System.out.println("    -- Campaign " + Name + " payout = " + yesterdayStats.getPayout() );
 
-        if( yesterdayStats.getActions() > MIN_ACTIONS){
+        if( yesterdayStats.getActions() >= MIN_ACTIONS){
 
             // There are two different thresholds for shorter and longer sessions.
             if(yesterdayStats.getPayout() < VERY_UNLUCKY_PAYOUT || (yesterdayStats.getPayout() < UNLUCKY_PAYOUT && yesterdayStats.getActions() > LONG_SESSION)){
@@ -98,8 +92,10 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
                         }
 
                         System.out.println("    -- Campaign " + Name + " Firing. payout = " + yesterdayStats.toString());
+
+
                         return new NotificationAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!",
-                                user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name)
+                                user, getPriority(), createTag(Name), createPromoCode(Name, user, getInactivity(info, executionTime)), Name)
                                 .attach(new ManualAction("Credit user with " + compensation + " coins.", user, getPriority(), Name));
 
                     }

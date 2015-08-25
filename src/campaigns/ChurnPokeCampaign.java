@@ -47,8 +47,6 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
     public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
 
-
-        //System.out.println("Registration Date: " + getDay(user.created).toString());
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
@@ -67,12 +65,12 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
         }
 
-        int inactivation = getDaysBetween(lastSession.timeStamp, executionTime);
         if(isDaysBefore(playerInfo.getLastSession().timeStamp, executionDay, 3)){
 
 
             System.out.println("    -- Sending a three day churn warning poke" );
-            return new NotificationAction("Hello, you have new bonuses to collect at Slot America. Click here for more free slot FUN!", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivation), Name);
+            return new NotificationAction("Hello, you have new bonuses to collect at Slot America. Click here for more free slot FUN!",
+                    user, getPriority(), createTag(Name), createPromoCode(Name, user, getInactivity(playerInfo, executionTime)), Name);
 
 
         }

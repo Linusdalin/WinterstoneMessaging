@@ -5,6 +5,7 @@ import action.ActionType;
 import campaigns.CampaignInterface;
 import campaigns.CampaignRepository;
 import dbManager.ConnectionHandler;
+import executionStatistics.ExecutionStatistics;
 import localData.Exposure;
 import localData.ExposureTable;
 import output.Outbox;
@@ -14,7 +15,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.List;
 
 /***************************************************************************'
  *
@@ -102,7 +102,7 @@ public class CampaignEngine {
         ExposureTable campaignExposures = new ExposureTable(localConnection);
         User user = allPlayers.getNext();
         int count = 0;
-        int[] firedActions = new int[repository.getActiveCampaigns().size()];
+        ExecutionStatistics executionStatistics = new ExecutionStatistics(CampaignRepository.activeCampaigns);
 
         DataCache dbCache = new DataCache(cacheConnection, "2015-01-01", analysis_cap);
 
@@ -114,9 +114,7 @@ public class CampaignEngine {
 
             System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
 
-            ActionInterface action = evaluateUser(user, executionTime, dbCache, campaignExposures);
-            if(action!=null)
-                firedActions[repository.getCampaignIdByName(action)]++;
+            evaluateUser(user, executionTime, dbCache, campaignExposures, executionStatistics);
 
             user = allPlayers.getNext();
             count++;
@@ -125,10 +123,7 @@ public class CampaignEngine {
 
         System.out.println(" ******************************************\n * Evaluated " + count + " users resulting in the following actions:");
 
-        for (int campaign = 0; campaign < firedActions.length; campaign++) {
-
-            System.out.println(" -- Campaign: \"" + repository.getActiveCampaigns().get(campaign).getName() + "\" actions:" + firedActions[campaign]);
-        }
+        System.out.println(executionStatistics.toString());
 
         System.out.println("  NOTE! Dry run is " + (dryRun ? "ON" : "OFF"));
 
@@ -161,15 +156,16 @@ public class CampaignEngine {
      *
      *
      *
+     *
      * @param user                  - the user in question
      * @param executionTime         - time of execution (for time dependent rules
      * @param dbCache               - cached information from the database
      * @param campaignExposures     - Exposure for campaigns
-     * @return                      - The action (for compilation of campaign execution
+     * @param executionStatistics   - collection of all statistics
      */
 
 
-    private ActionInterface evaluateUser(User user, Timestamp executionTime, DataCache dbCache, ExposureTable campaignExposures) {
+    private void evaluateUser(User user, Timestamp executionTime, DataCache dbCache, ExposureTable campaignExposures, ExecutionStatistics executionStatistics) {
 
 
         // Package and pre calculate the playerInfo
@@ -220,17 +216,18 @@ public class CampaignEngine {
         if(selectedAction == null){
 
             System.out.println("    -- No action found for the user.");
-            return null;
+            return;
         }
 
         if(selectedAction.getSignificance( eligibility ) < threshold){
 
             System.out.println("    -- Selected action significance "+ selectedAction.getSignificance(eligibility) + "not above threshold " + threshold);
-            return null;
+            return;
         }
 
         queueAction(selectedAction);
-        return selectedAction;
+        executionStatistics.registerSelected(selectedAction);
+
     }
 
     private void queueAction(ActionInterface action) {

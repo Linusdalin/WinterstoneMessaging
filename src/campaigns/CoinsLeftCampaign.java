@@ -54,11 +54,10 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
     public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
 
 
-        //System.out.println("Registration Date: " + getDay(user.created).toString());
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
-        if(!isFrequent(user) && user.payments == 0){
+        if(!isFrequent(user) && !isPaying(user)){
 
             System.out.println("    -- Campaign " + Name + " not firing. Not active" );
             return null;

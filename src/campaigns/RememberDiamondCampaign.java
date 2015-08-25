@@ -20,7 +20,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
     // Campaign config data
     private static final String Name = "Remember Diamond";
-    private static final int CoolDown_Days = 10;
+    private static final int CoolDown_Days = 8;
 
     // Trigger specific config data
     private static final int MIN_DIAMONDS = 5;
@@ -76,8 +76,6 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
         }
 
-        int inactivity = getDaysBetween(lastSession.timeStamp, executionTime);
-
 
         if(!hoursBefore(lastSession.timeStamp, executionTime, 24) || hoursBefore(lastSession.timeStamp, executionTime, 42)) {
 
@@ -90,7 +88,8 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
         // Last session was Between 24 and 42 hours ago and diamond pick is correct. Send the message
 
         System.out.println("    -- Campaign " + Name + " fire notification" );
-        return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name);
+        return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
+                user, getPriority(), createTag(Name), createPromoCode(Name, user, getInactivity(info, executionTime)), Name);
 
 
     }
