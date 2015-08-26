@@ -64,14 +64,14 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
         }
 
-        GameSession lastSession = playerInfo.getLastSession();
+        Timestamp lastSession = playerInfo.getLastSession();
         if(lastSession == null){
 
             System.out.println("    -- Campaign " + Name + " not firing. No sessions for user" );
             return null;
 
         }
-        int inactivity = getDaysBetween(lastSession.timeStamp, executionDay);
+        int inactivity = getDaysBetween(lastSession, executionDay);
 
         if(user.payments == 0 && inactivity > INACTIVITY_LIMIT_FREE){
 

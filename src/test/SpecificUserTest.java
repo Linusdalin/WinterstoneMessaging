@@ -10,6 +10,7 @@ import remoteData.dataObjects.User;
 import remoteData.dataObjects.UserTable;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 
 /*****************************************************************************''
  *
@@ -36,7 +37,7 @@ public class SpecificUserTest {
         DataCache dbCache = new DataCache(cacheConnection, "2015-01-01", -1);
         PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
 
-        GameSession lastSession = playerInfo.getLastSession();
+        Timestamp lastSession = playerInfo.getLastSession();
 
         System.out.println("last: " + lastSession.toString());
 

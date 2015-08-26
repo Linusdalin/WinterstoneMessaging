@@ -34,7 +34,6 @@ public class TimeAnalyser {
             return 65;
         }
 
-        System.out.println(" -- Not implemented evaluating eligibility for communication. Sending to all");
         return 100;
     }
 

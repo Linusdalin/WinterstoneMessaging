@@ -23,7 +23,7 @@ public class CampaignRepository {
         add(new GettingStartedCampaign( 80 ));
         add(new RememberDiamondCampaign( 80 ));
         add(new ChurnPokeCampaign(70));
-        add(new BadBeatCampaign(95));
+        //add(new BadBeatCampaign(95));
         add(new CoinsLeftCampaign(70));
         add(new LevelUpCampaign( 60 ));
 

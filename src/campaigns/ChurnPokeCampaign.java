@@ -57,7 +57,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
         }
 
-        GameSession lastSession = playerInfo.getLastSession();
+        Timestamp lastSession = playerInfo.getLastSession();
         if(lastSession == null){
 
             System.out.println("    -- Campaign " + Name + " not firing. No sessions for user" );
@@ -65,7 +65,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
         }
 
-        if(isDaysBefore(playerInfo.getLastSession().timeStamp, executionDay, 3)){
+        if(isDaysBefore(lastSession, executionDay, 3)){
 
 
             System.out.println("    -- Sending a three day churn warning poke" );
@@ -76,7 +76,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
         }
         else{
 
-            System.out.println("    -- Campaign " + Name + " not firing. Not three day churn warning (last:" + lastSession.timeStamp.toString() );
+            System.out.println("    -- Campaign " + Name + " not firing. Not three day churn warning (last:" + lastSession.toString() );
             return null;
 
         }

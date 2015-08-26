@@ -66,7 +66,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
         }
 
 
-        GameSession lastSession = info.getLastSession();
+        Timestamp lastSession = info.getLastSession();
 
         if(lastSession == null){
 
@@ -77,7 +77,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
         }
 
 
-        if(!hoursBefore(lastSession.timeStamp, executionTime, 24) || hoursBefore(lastSession.timeStamp, executionTime, 42)) {
+        if(!hoursBefore(lastSession, executionTime, 24) || hoursBefore(lastSession, executionTime, 42)) {
 
             System.out.println("    -- Campaign " + Name + " not firing. Not in time range." );
             return null;

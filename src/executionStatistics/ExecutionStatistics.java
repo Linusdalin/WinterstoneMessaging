@@ -5,9 +5,10 @@ import campaigns.CampaignInterface;
 
 import java.util.List;
 
-/***********************************************************************''
+/***********************************************************************
  *
- * Execution statistics collects information about executed and passed actions for all active campaigns
+ *              Execution statistics collects information about executed
+ *              and passed actions for all active campaigns
  *
  */
 
@@ -53,7 +54,8 @@ public class ExecutionStatistics {
         StringBuffer out = new StringBuffer();
         for (CampaignStatistics statisticsForCampaign : campaignStatistics) {
 
-            out.append(statisticsForCampaign.getName() + ":" + statisticsForCampaign.toString() + "\n");
+            if(statisticsForCampaign != null)
+                out.append(statisticsForCampaign.getName() + ":" + statisticsForCampaign.toString() + "\n");
 
         }
 

@@ -209,8 +209,8 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     protected int getInactivity(PlayerInfo info, Timestamp executionTime) {
 
-        GameSession lastSession = info.getLastSession();
-        return getDaysBetween(lastSession.timeStamp, executionTime);
+        Timestamp lastSession = info.getLastSession();
+        return getDaysBetween(lastSession, executionTime);
 
     }
 

@@ -64,14 +64,14 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
         }
 
 
-        GameSession lastSession = playerInfo.getLastSession();
+        Timestamp lastSession = playerInfo.getLastSession();
         if(lastSession == null){
 
             System.out.println("    -- Campaign " + Name + " not firing. No sessions for user" );
             return null;
 
         }
-        int inactivity = getDaysBetween(lastSession.timeStamp, executionDay);
+        int inactivity = getDaysBetween(lastSession, executionDay);
 
         if(inactivity == INACTIVITY_LIMIT){
 
@@ -116,7 +116,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
         }
 
-            System.out.println("    -- Campaign " + Name + " not firing. waiting "+ INACTIVITY_LIMIT+" days (last:" + lastSession.timeStamp.toString() );
+            System.out.println("    -- Campaign " + Name + " not firing. waiting "+ INACTIVITY_LIMIT+" days (last:" + lastSession.toString() );
             return null;
 
 

@@ -54,9 +54,24 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
         //System.out.println("Registration Date: " + getDay(user.created).toString());
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
+        String message;
+
+        if(user.level == Level_up_halfWay)
+            message = "You reached level 25! Congratulations. You are halfway to the level 50 bonus!";
+        else if(user.level == Level_up_50)
+            message = "You are getting close to the level 50 bonus!";
+        else if(user.level == Level_up_100)
+            message = "You are getting close to the level 100 bonus!";
+        else{
+
+            System.out.println("    -- Campaign " + Name + " not firing. Not applicable level " + user.level );
+            return null;
+
+        }
 
 
-        GameSession lastSession = playerInfo.getLastSession();
+
+        Timestamp lastSession = playerInfo.getLastSession();
         if(lastSession == null){
 
             System.out.println("    -- Campaign " + Name + " not firing. No sessions for user" );
@@ -64,7 +79,7 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
 
         }
 
-        int inactivation = getDaysBetween(lastSession.timeStamp, executionTime);
+        int inactivation = getDaysBetween(lastSession, executionTime);
         if(inactivation <= 1){
 
 
@@ -81,30 +96,12 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
         }
         else{
 
-            if(user.level == Level_up_halfWay){
 
-                System.out.println("    -- Campaign " + Name + " firing halfway message)" );
-                return new NotificationAction("You reached level 25! Congratulations. You are halfway to the level 50 bonus!", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivation), Name);
+                System.out.println("    -- Campaign " + Name + " firing message for level " + user.level );
+                return new NotificationAction(message, user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivation), Name);
 
-            }
-
-            if(user.level == Level_up_50){
-
-                System.out.println("    -- Campaign " + Name + " firing close to 50 message)" );
-                return new NotificationAction("You are getting close to the level 50 bonus!", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivation), Name);
-
-            }
-
-            if(user.level == Level_up_100){
-
-                System.out.println("    -- Campaign " + Name + " firing close to 50 message)" );
-                return new NotificationAction("You are getting close to the level 100 bonus!", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivation), Name);
-
-            }
 
         }
-        System.out.println("    -- Player is NOT close to any level. Not sending a message" );
-        return null;
     }
 
     /*********************************************************************

@@ -85,12 +85,15 @@ public class ExposureTable extends GenericTable {
      *
      * @param user
      * @return
+     *
+     *
+     *          //TODO: Optimization. Precalculate 7 days once and for all and don't let MySQL do it once per user.
      */
 
 
     public int getUserExposure(User user) {
 
-        load(connection, "user= '"+ user.facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL 7 day)");
+        load(connection, "and user= '"+ user.facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL 7 day)");
         List<Exposure> exposuresForUser = getAll();
         System.out.println("Found " + exposuresForUser.size() + " exposures for user " + user.name);
         return exposuresForUser.size();
@@ -100,7 +103,7 @@ public class ExposureTable extends GenericTable {
 
     public Exposure getLastExposure(String campaign, User user){
 
-        load(connection, "user= '"+ user.facebookId+"' and campaignName='"+campaign+"'", "DESC", 1);
+        load(connection, "and user= '"+ user.facebookId+"' and campaignName='"+campaign+"'", "DESC", 1);
 
         return getNext();
 

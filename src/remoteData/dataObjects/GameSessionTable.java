@@ -20,7 +20,7 @@ public class GameSessionTable extends GenericTable{
                 "select * " +
                 "        from game_session \n"+
                 "        where 1 = 1\n"+
-                "        $(RESTRICTION)  order by "+ orderBy+" $(LIMIT);";
+                "        $(RESTRICTION)  order by "+ orderBy+" $(ORDER) $(LIMIT);";
 
 
 
@@ -89,7 +89,7 @@ public class GameSessionTable extends GenericTable{
 
     public List<GameSession> getSessionsForUser(User user, Connection connection) {
 
-        load(connection, "users.facebookId = '"+ user.facebookId+"'");
+        load(connection, "and users.facebookId = '"+ user.facebookId+"'");
         List<GameSession> sessionsForUser = getAll();
         System.out.println("Found " + sessionsForUser.size() + " sessions for user " + user.name);
         return sessionsForUser;
