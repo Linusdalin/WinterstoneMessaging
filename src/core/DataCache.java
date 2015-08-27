@@ -1,8 +1,13 @@
 package core;
 
+import localData.CachedUser;
+import localData.CachedUserTable;
 import remoteData.dataObjects.*;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +22,7 @@ public class DataCache {
     private List<GameSession> allSessions = new ArrayList<GameSession>();
     private static List<Payment> allPayments;
     private Connection connection;
+    private CachedUserTable cachedUserTable = new CachedUserTable();
 
     /********************************************************************************
      *
@@ -34,7 +40,7 @@ public class DataCache {
         this.connection = connection;
 
         //GameSessionTable sessionTable = new GameSessionTable();
-        //sessionTable.load(connection,"timestamp > '"+ startDate+"'", limit );
+        //sessionTable.load(connection,"and timestamp > '"+ startDate+"'", limit );
         //allSessions = sessionTable.getAll();
 
         //System.out.println(" -- Got " + allSessions.size() + " sessions after " + startDate);
@@ -43,20 +49,22 @@ public class DataCache {
 
 
             PaymentTable paymentTable = new PaymentTable();
-            paymentTable.load(this.connection,"timestamp > '"+ startDate+"'", "ASC", limit );
+            paymentTable.load(this.connection,"and timestamp > '"+ startDate+"'", "ASC", limit );
             allPayments = paymentTable.getAll();
 
         }
 
 
-        //System.out.println(" -- Got " + allPayments.size() + " payments after " + startDate);
+        System.out.println(" -- Caching last Sessions for users");
+        cacheLastSessions();
 
     }
+
 
     public List<GameSession> getSessionsForUser(User user) {
 
         GameSessionTable sessionTable = new GameSessionTable();
-        sessionTable.load(connection,"facebookId='" + user.facebookId + "'","ASC", -1 );
+        sessionTable.load(connection,"and facebookId='" + user.facebookId + "'","ASC", -1 );
 
         List<GameSession> sessionsForUser = sessionTable.getAll();
 
@@ -66,18 +74,20 @@ public class DataCache {
 
     }
 
-    public GameSession getLastSessionForUser(User user) {
+    public Timestamp getLastSessionForUser(User user) {
 
-        GameSessionTable sessionTable = new GameSessionTable();
-        sessionTable.load(connection,"facebookId='" + user.facebookId + "'","DESC", 1 );
+        CachedUserTable userTable = new CachedUserTable();
+        userTable.load(connection,"and facebookId='" + user.facebookId + "'","ASC", 1 );
 
-        GameSession last = sessionTable.getNext();
+        CachedUser last = userTable.getNext();
+        if(last == null)
+            return null;
 
-        System.out.println(" -- Got last session @" + last.actionTime.toString() + " for user " + user.name);
-
-        return last;
+        return last.lastSession;
 
     }
+
+
 
 
 
@@ -104,7 +114,7 @@ public class DataCache {
             return new ArrayList<Payment>();
 
         PaymentTable paymentTable = new PaymentTable();
-        paymentTable.load(connection,"playerId='" + user.facebookId + "'","ASC", -1 );
+        paymentTable.load(connection,"and playerId='" + user.facebookId + "'","ASC", -1 );
 
         List<Payment> paymentsForUser = paymentTable.getAll();
 
@@ -114,4 +124,79 @@ public class DataCache {
 
     }
 
+    /**********************************************************************************
+     *
+     *          This is to update the last sessions for players by going through any new sessions.
+     *
+     *
+     */
+
+
+    private void cacheLastSessions() {
+
+        Timestamp lastForAnyone = cachedUserTable.getLastSession(connection);
+
+        if(lastForAnyone == null)
+            System.out.println(" No last session found");
+        else
+            System.out.println(" Last session in db: " + lastForAnyone.toString());
+
+
+        GameSessionTable gameSessions = new GameSessionTable();
+
+        if(lastForAnyone == null)
+            gameSessions.load(connection, "", "ASC", 10000);
+        else
+            gameSessions.load(connection, "and timeStamp > '" + lastForAnyone.toString() + "'", "ASC", 1200000);
+
+        GameSession session = gameSessions.getNext();
+
+        while(session != null){
+
+            updateLastSession(session);
+            session = gameSessions.getNext();
+        }
+
+
+    }
+
+    private void updateLastSession(GameSession session) {
+
+        cachedUserTable.load(connection, "and facebookId = '" + session.facebookId + "'", "ASC", 1);
+        CachedUser cachedUser = cachedUserTable.getNext();
+
+        if(cachedUser == null){
+
+            // Store new
+
+            cachedUser = new CachedUser(session.facebookId, session.timeStamp);
+            cachedUserTable.store(cachedUser, connection);
+            System.out.println("  - Creating new user " + cachedUser.facebookId + " with last session " + session.timeStamp);
+
+
+        }else{
+
+            if(cachedUser.lastSession.after(session.timeStamp))
+                System.out.println("  - NOT updating older session for user " + cachedUser.facebookId);
+            else{
+
+                cachedUser.lastSession = session.timeStamp;
+                cachedUserTable.update(cachedUser, connection);
+                System.out.println("  - Updating with new session for user " + cachedUser.facebookId + "@ " + session.timeStamp);
+            }
+        }
+
+
+    }
+
+    //select * from game_session where facebookId= '10154214671319358' and date(timestamp) = date(date_sub('2015-08-25', interval 1 day)) limit 100;
+
+
+    public List<GameSession> getSessionsYesterday(User user, Timestamp analysisDate) {
+
+        GameSessionTable gameSessions = new GameSessionTable();
+        gameSessions.load(connection, "and facebookId='"+ user.facebookId+"' and date(timeStamp) = date(date_sub('"+ analysisDate+"', interval 1 day))", "ASC", 100);
+        return gameSessions.getAll();
+
+    }
 }

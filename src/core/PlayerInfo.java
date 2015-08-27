@@ -4,6 +4,7 @@ import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**********************************************************************
@@ -24,7 +25,7 @@ public class PlayerInfo {
     private List<Payment> userPayments;
 
     private List<GameSession> userSessions = null;
-    private GameSession lastSession = null;
+    private Timestamp lastSession = null;
 
     public PlayerInfo(User user, DataCache dbCache){
 
@@ -34,16 +35,15 @@ public class PlayerInfo {
     }
 
 
-    public List<GameSession> getSessionsForUser() {
+    public List<GameSession> getSessionsYesterday(Timestamp analysisDate) {
 
-        if(userSessions == null)
-            userSessions = dbCache.getSessionsForUser(user);
+        List<GameSession> sessionsYesterday = dbCache.getSessionsYesterday(user, analysisDate);
 
-        if(userSessions.size() > 0)
-            lastSession = userSessions.get(userSessions.size()-1);
-
-        return userSessions;
+        System.out.println("     (Got " + sessionsYesterday.size() + "sessions yesterday)");
+        return sessionsYesterday;
     }
+
+
 
     public List<Payment> getPaymentsForUser() {
 
@@ -56,7 +56,9 @@ public class PlayerInfo {
     }
 
 
-    public GameSession getLastSession() {
+    //TODO: We could lookup last session directly it there is an index on DESC in the database
+
+    public Timestamp getLastSession() {
 
         if(lastSession != null)
             return lastSession;
@@ -64,13 +66,17 @@ public class PlayerInfo {
         if(user.sessions == 0)
             return null;
 
-        if(userSessions != null && userSessions.size() > 0){
-            lastSession = userSessions.get(userSessions.size()-1);
-            return lastSession;
+        lastSession = dbCache.getLastSessionForUser(user);
+
+        if(lastSession == null){
+
+            System.out.println(" -- Found no sessions for user " + user.name);
+            return null;
         }
 
-        lastSession = dbCache.getLastSessionForUser(user);
+        System.out.println(" -- Got last session @" + lastSession.toString() + " for user " + user.name);
         return lastSession;
+
 
     }
 

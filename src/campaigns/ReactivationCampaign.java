@@ -52,14 +52,14 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
-        GameSession lastSession = playerInfo.getLastSession();
+        Timestamp lastSession = playerInfo.getLastSession();
         if(lastSession == null){
 
             System.out.println("    -- Campaign " + Name + " not firing. No sessions for user" );
             return null;
 
         }
-        int inactivity = getDaysBetween(lastSession.timeStamp, executionDay);
+        int inactivity = getDaysBetween(lastSession, executionDay);
 
 
         /**
@@ -95,7 +95,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
         }
 
-            System.out.println("    -- Campaign " + Name + " not firing. waiting "+ INACTIVITY_LIMIT+" days (last:" + lastSession.timeStamp.toString() );
+            System.out.println("    -- Campaign " + Name + " not firing. waiting "+ INACTIVITY_LIMIT+" days (last:" + lastSession.toString() );
             return null;
 
 

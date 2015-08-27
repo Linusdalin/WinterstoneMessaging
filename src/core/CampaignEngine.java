@@ -94,9 +94,11 @@ public class CampaignEngine {
 
     public void executeRun(String startDate) {
 
+        DataCache dbCache = new DataCache(cacheConnection, "2015-01-01", analysis_cap);
+
         System.out.println(" -- Starting from " + startDate);
         System.out.println(" -- Retrieving "+(analysis_cap > -1 ? analysis_cap : "all")+" players from connection...");
-        allPlayers.load(dbConnection, "users.created > '"+ startDate+"'");      // Restriction for testing
+        allPlayers.load(dbConnection, " and users.created > '"+ startDate+"'", "ASC", analysis_cap);      // Restriction for testing
         Calendar calendar = Calendar.getInstance();
         Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
         ExposureTable campaignExposures = new ExposureTable(localConnection);
@@ -104,7 +106,6 @@ public class CampaignEngine {
         int count = 0;
         ExecutionStatistics executionStatistics = new ExecutionStatistics(CampaignRepository.activeCampaigns);
 
-        DataCache dbCache = new DataCache(cacheConnection, "2015-01-01", analysis_cap);
 
         System.out.println("******************************************************\n* Passing over all players...");
 
@@ -258,4 +259,5 @@ public class CampaignEngine {
 
         return false;
     }
+
 }
