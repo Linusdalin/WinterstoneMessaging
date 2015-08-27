@@ -147,7 +147,7 @@ public class DataCache {
         if(lastForAnyone == null)
             gameSessions.load(connection, "", "ASC", 10000);
         else
-            gameSessions.load(connection, "and timeStamp > '" + lastForAnyone.toString() + "'", "ASC", 1300000);
+            gameSessions.load(connection, "and timeStamp > '" + lastForAnyone.toString() + "'", "ASC", 1200000);
 
         GameSession session = gameSessions.getNext();
 
