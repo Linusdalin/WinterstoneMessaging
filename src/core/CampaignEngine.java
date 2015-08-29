@@ -208,9 +208,17 @@ public class CampaignEngine {
 
                 ActionInterface action = campaign.evaluate(playerInfo, executionTime);
 
-                if(isPrefered(action, selectedAction))
+                if(isPrefered(action, selectedAction)){
+
+                    // The action is preferred over the existing selected action
+                    // Register tis and then store a new selected action
+
+                    if(selectedAction != null)
+                        executionStatistics.registerOverrun(selectedAction);
+
                     selectedAction = action;
 
+                }
             }
         }
 

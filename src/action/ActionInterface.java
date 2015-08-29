@@ -28,4 +28,6 @@ public interface ActionInterface {
     ActionType getType();
 
     ActionInterface getAssociated();
+
+    boolean isLive();
 }

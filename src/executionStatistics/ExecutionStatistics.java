@@ -31,9 +31,24 @@ public class ExecutionStatistics {
         if(campaignStatistics[campaignIndex] == null)
             campaignStatistics[campaignIndex] = new CampaignStatistics(selectedAction.getCampaign());
 
-        campaignStatistics[campaignIndex].countFired();
+        if(selectedAction.isLive())
+            campaignStatistics[campaignIndex].countFired();
+        else
+            campaignStatistics[campaignIndex].countPotential();
 
     }
+
+    public void registerOverrun(ActionInterface action) {
+
+        int campaignIndex = getCampaignIndex(action);
+
+        if(campaignStatistics[campaignIndex] == null)
+            campaignStatistics[campaignIndex] = new CampaignStatistics(action.getCampaign());
+
+        campaignStatistics[campaignIndex].countOverrun();
+
+    }
+
 
     private int getCampaignIndex(ActionInterface action) {
 

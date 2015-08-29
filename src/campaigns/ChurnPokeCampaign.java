@@ -26,9 +26,9 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
     // Trigger specific config data
     private static final int Min_Sessions = 10;
 
-    ChurnPokeCampaign(int priority){
+    ChurnPokeCampaign(int priority, CampaignState active){
 
-        super(Name, priority);
+        super(Name, priority, active);
         setCoolDown(CoolDown_Days);
     }
 
@@ -70,7 +70,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a three day churn warning poke" );
             return new NotificationAction("Hello, you have new bonuses to collect at Slot America. Click here for more free slot FUN!",
-                    user, getPriority(), createTag(Name), createPromoCode(Name, user, getInactivity(playerInfo, executionTime)), Name);
+                    user, getPriority(), createTag(Name), createPromoCode(Name, user, getInactivity(playerInfo, executionTime)), Name, getState());
 
 
         }

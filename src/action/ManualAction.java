@@ -1,5 +1,6 @@
 package action;
 
+import campaigns.CampaignState;
 import localData.Exposure;
 import output.NotificationHandler;
 import remoteData.dataObjects.User;
@@ -15,9 +16,9 @@ import java.sql.Timestamp;
 
 public class ManualAction extends Action implements ActionInterface{
 
-    public ManualAction(String message, User user, int significance, String campaignName){
+    public ManualAction(String message, User user, int significance, String campaignName, CampaignState state){
 
-        super(ActionType.MANUAL_ACTION, user.facebookId, message, significance, campaignName );
+        super(ActionType.MANUAL_ACTION, user.facebookId, message, significance, campaignName, state );
 
     }
 

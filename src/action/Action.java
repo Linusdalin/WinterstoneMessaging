@@ -1,6 +1,7 @@
 package action;
 
 import campaigns.CampaignInterface;
+import campaigns.CampaignState;
 import remoteData.dataObjects.User;
 
 /*************************************************************************
@@ -20,15 +21,18 @@ public abstract class Action implements ActionInterface{
 
     private int significance;
     private String campaignName;
+    protected final CampaignState state;
     protected String promoCode;
 
-    public Action(ActionType type, String userId, String message, int significance, String campaignName){
+    public Action(ActionType type, String userId, String message, int significance, String campaignName, CampaignState state){
 
         this.type = type;
         this.userId = userId;
         this.message = message;
         this.significance = significance;
         this.campaignName = campaignName;
+
+        this.state = state;
     }
 
     public int getSignificance(int eligibility) {
@@ -52,6 +56,11 @@ public abstract class Action implements ActionInterface{
 
     public ActionInterface getAssociated() {
         return next;
+    }
+
+    @Override
+    public boolean isLive() {
+        return state.isLive();
     }
 
     public String getCampaign(){

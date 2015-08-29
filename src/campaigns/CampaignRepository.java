@@ -15,17 +15,19 @@ import java.util.List;
 
 public class CampaignRepository {
 
+
     // Static list of active campaigns
 
 
     public static final List<CampaignInterface> activeCampaigns = new ArrayList<CampaignInterface>(){{
 
-        add(new GettingStartedCampaign( 80 ));
-        add(new RememberDiamondCampaign( 80 ));
-        add(new ChurnPokeCampaign(70));
-        //add(new BadBeatCampaign(95));
-        add(new CoinsLeftCampaign(70));
-        add(new LevelUpCampaign( 60 ));
+        add(new GettingStartedCampaign  ( 80, CampaignState.ACTIVE ));
+        add(new RememberDiamondCampaign ( 80, CampaignState.ACTIVE ));
+        add(new ChurnPokeCampaign       ( 70, CampaignState.ACTIVE));
+        add(new BadBeatCampaign         ( 95, CampaignState.INACTIVE));
+        add(new CoinsLeftCampaign       ( 70, CampaignState.ACTIVE));
+        add(new LevelUpCampaign         ( 60, CampaignState.ACTIVE ));
+        add(new FakeCoinsLeftCampaign   ( 90, CampaignState.TEST_NODE ));
 
         //add(new GameNotification(90, "sweet_money", "Play SlotAmerica’s brand new Sweet Money, a delightful digital dessert guaranteed to not hurt your teeth! Click now"));
 
@@ -34,7 +36,11 @@ public class CampaignRepository {
     }};
 
 
+
+
     public List<CampaignInterface> getActiveCampaigns(){
+
+
 
         return activeCampaigns;
     }

@@ -28,11 +28,12 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
     private static final int Level_up_50        = 48;
     private static final int Level_up_100       = 97;
 
-    LevelUpCampaign(int priority){
+    LevelUpCampaign(int priority, CampaignState activation){
 
-        super(Name, priority);
+        super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
     }
+
 
 
     /********************************************************************
@@ -98,7 +99,7 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
 
 
                 System.out.println("    -- Campaign " + Name + " firing message for level " + user.level );
-                return new NotificationAction(message, user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivation), Name);
+                return new NotificationAction(message, user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivation), Name, getState());
 
 
         }

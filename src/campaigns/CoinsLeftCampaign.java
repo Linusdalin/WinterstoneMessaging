@@ -32,9 +32,9 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
     private static final int COINS_FOR_HIGH_SPENDER          = 20000;
 
 
-    CoinsLeftCampaign(int priority){
+    CoinsLeftCampaign(int priority, CampaignState active){
 
-        super(Name, priority);
+        super(Name, priority, active);
         setCoolDown(CoolDown_Days);
     }
 
@@ -82,7 +82,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                 if(user.balance > COINS_FOR_HIGH_SPENDER){
 
                     System.out.println("    -- Campaign " + Name + " firing for high spender with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name);
+                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name, getState());
 
                 }
                 else
@@ -95,7 +95,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                 if(user.balance > COINS_FOR_LOW_SPENDER){
 
                     System.out.println("    -- Campaign " + Name + " firing for low spender with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name);
+                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name, getState());
 
                 }
                 else
@@ -106,7 +106,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                 if(user.balance > COINS_FOR_FREE_PLAYER){
 
                     System.out.println("    -- Campaign " + Name + " firing for free player with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name);
+                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name, getState());
 
                 }
                 else

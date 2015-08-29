@@ -29,9 +29,9 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
     private final String message;
     private String gameCode;
 
-    GameNotification(int priority, String gameCode, String message){
+    GameNotification(int priority, String gameCode, String message, CampaignState activation){
 
-        super(Name, priority);
+        super(Name, priority, activation);
         this.gameCode = gameCode;
         setCoolDown(CoolDown_Days);
         this.message = message;
@@ -90,7 +90,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
         System.out.println("    -- Campaign " + Name + " firing. ");
 
-        return new NotificationAction(message, user, getPriority(), "release_notification", "release_notification", Name)
+        return new NotificationAction(message, user, getPriority(), "release_notification", "release_notification", Name, getState())
                 .withGame(gameCode);
 
 

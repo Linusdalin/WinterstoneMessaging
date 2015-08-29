@@ -23,11 +23,14 @@ public abstract class AbstractCampaign implements CampaignInterface{
     private String name;
     private int priority;         // Campaign base priority before persoal or situational adjustments
     private int coolDown;
+    private final CampaignState state;
 
-    AbstractCampaign(String name, int priority){
+
+    AbstractCampaign(String name, int priority, CampaignState state){
 
         this.name = name;
         this.priority = priority;
+        this.state = state;
     }
 
 
@@ -62,7 +65,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
      *
      * @param test
      * @param reference
-     * @return
+     * @return                   - number of full days between
      */
 
     public static int getDaysBetween(Timestamp test, Timestamp reference) {
@@ -213,6 +216,11 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return getDaysBetween(lastSession, executionTime);
 
     }
+
+    protected CampaignState getState() {
+        return this.state;
+    }
+
 
 
 }

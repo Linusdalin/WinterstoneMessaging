@@ -36,9 +36,9 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
 
     private static final int MAX_REMAINING_BALANCE = 2000 ;
 
-    BadBeatCampaign(int priority){
+    BadBeatCampaign(int priority, CampaignState active){
 
-        super(Name, priority);
+        super(Name, priority, active);
         setCoolDown(CoolDown_Days);
 
     }
@@ -49,13 +49,13 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
      *
      *              The output could be one of 4 different messages depending on the day
      *
-     * @param info             - the user to evaluate
+     * @param playerInfo             - the user to evaluate
      */
 
 
-    public ActionInterface evaluate(PlayerInfo info, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
 
-        User user = info.getUser();
+        User user = playerInfo.getUser();
 
         if(user.payments == 0){
 
@@ -69,7 +69,18 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
             return null;
         }
 
-        Yesterday yesterdayStats = new Yesterday(info, executionTime);
+        // Check if there were activity yesterday to avoid scanning sessions unneccesarily
+
+        Timestamp lastSession = playerInfo.getLastSession();
+        if(lastSession == null || !isDaysBefore(lastSession, executionTime, 1)){
+
+            System.out.println("    -- Campaign " + Name + " not firing. No activity yesterday" );
+            return null;
+
+        }
+
+
+        Yesterday yesterdayStats = new Yesterday(playerInfo, executionTime);
 
         System.out.println("    -- Campaign " + Name + " payout = " + yesterdayStats.getPayout() );
 
@@ -95,8 +106,8 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
 
 
                         return new NotificationAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!",
-                                user, getPriority(), createTag(Name), createPromoCode(Name, user, getInactivity(info, executionTime)), Name)
-                                .attach(new ManualAction("Credit user with " + compensation + " coins.", user, getPriority(), Name));
+                                user, getPriority(), createTag(Name), createPromoCode(Name, user, getInactivity(playerInfo, executionTime)), Name, getState())
+                                .attach(new ManualAction("Credit user with " + compensation + " coins.", user, getPriority(), Name, getState()));
 
                     }
                     else
