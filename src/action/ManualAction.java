@@ -38,6 +38,14 @@ public class ManualAction extends Action implements ActionInterface{
 
     public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection) {
 
+        if(!isLive()){
+
+            System.out.println("--------------------------------------------------------");
+            System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + userId + "("+message+")" );
+            return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - (reason: "+ state.name()+") " );
+
+        }
+
         System.out.println("--------------------------------------------------------");
         System.out.println("! Perform " + type.name() + " for player " + userId);
 

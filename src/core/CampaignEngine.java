@@ -261,6 +261,9 @@ public class CampaignEngine {
         if(selectedAction == null)
             return true;
 
+        if(!action.isLive())
+            return false;
+
 
         if(action.getSignificance() > selectedAction.getSignificance())
             return true;

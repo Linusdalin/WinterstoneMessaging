@@ -58,7 +58,7 @@ public abstract class Action implements ActionInterface{
         return next;
     }
 
-    @Override
+
     public boolean isLive() {
         return state.isLive();
     }

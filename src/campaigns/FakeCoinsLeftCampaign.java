@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 public class FakeCoinsLeftCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "Coins Left";
+    private static final String Name = "Fake Coins Left";
     private static final int CoolDown_Days = 36500;     // Only once per player
 
     // Trigger specific config data
@@ -28,6 +28,7 @@ public class FakeCoinsLeftCampaign extends AbstractCampaign implements CampaignI
 
 
     private static final int COINS_MIN                       = 1100;
+    private static final int COINS_MAX                       = 15000;
     private static final int COINS_FOR_LOW_SPENDER           = 15000;
     private static final int COINS_FOR_HIGH_SPENDER          = 20000;
 
@@ -65,6 +66,13 @@ public class FakeCoinsLeftCampaign extends AbstractCampaign implements CampaignI
         if(user.balance < COINS_MIN){
 
             System.out.println("    -- Campaign " + Name + " not firing. No money on the account" );
+            return null;
+        }
+
+
+        if(user.balance > COINS_MAX){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Too much money on the account" );
             return null;
         }
 
@@ -112,7 +120,7 @@ public class FakeCoinsLeftCampaign extends AbstractCampaign implements CampaignI
 
     private int createBalance(int balance, int coinsForHighSpender) {
 
-        int noise = (int)((Math.random() * 5) - 2) * 500;
+        int noise = (int)((Math.random() * 6) - 2) * 500;
 
         return balance + coinsForHighSpender + noise;
 

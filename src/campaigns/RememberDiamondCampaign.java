@@ -20,10 +20,10 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
     // Campaign config data
     private static final String Name = "Remember Diamond";
-    private static final int CoolDown_Days = 8;
+    private static final int CoolDown_Days = 9;
 
     // Trigger specific config data
-    private static final int MIN_DIAMONDS = 5;
+    private static final int MIN_DIAMONDS = 6;
     private static final int MAX_DIAMONDS = 11;
 
     RememberDiamondCampaign(int priority, CampaignState activation){

@@ -45,7 +45,7 @@ public class NotificationAction extends Action implements ActionInterface{
 
     public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection) {
 
-        if(!state.isLive()){
+        if(!isLive()){
 
             System.out.println("--------------------------------------------------------");
             System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + userId );

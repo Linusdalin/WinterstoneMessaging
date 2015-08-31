@@ -25,6 +25,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 10;   // 10 days inactivity before kicking in this offer
+    private static final int INACTIVITY_LIMIT2   = 16;   // 16 days inactivity before trying again
 
 
     private static final int COINS_FOR_FREE_PLAYER           = 5000;
@@ -73,7 +74,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
         }
         int inactivity = getDaysBetween(lastSession, executionDay);
 
-        if(inactivity == INACTIVITY_LIMIT){
+        if(inactivity == INACTIVITY_LIMIT || inactivity == INACTIVITY_LIMIT2 ){
 
             // Get the players on the day
 

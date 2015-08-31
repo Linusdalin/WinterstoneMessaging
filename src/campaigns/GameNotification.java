@@ -29,7 +29,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
     private final String message;
     private String gameCode;
 
-    GameNotification(int priority, String gameCode, String message, CampaignState activation){
+    GameNotification(int priority, CampaignState activation, String gameCode, String message){
 
         super(Name, priority, activation);
         this.gameCode = gameCode;
