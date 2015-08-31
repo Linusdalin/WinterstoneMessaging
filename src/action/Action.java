@@ -15,22 +15,24 @@ import remoteData.dataObjects.User;
 public abstract class Action implements ActionInterface{
 
     protected final ActionType type;
-    protected String userId;
+    protected User user;
     protected final String message;
     private ActionInterface next = null;             // Associated actions in a chain
 
     private int significance;
     private String campaignName;
+    private int messageId;
     protected final CampaignState state;
     protected String promoCode;
 
-    public Action(ActionType type, String userId, String message, int significance, String campaignName, CampaignState state){
+    public Action(ActionType type, User user, String message, int significance, String campaignName, int messageId, CampaignState state){
 
         this.type = type;
-        this.userId = userId;
+        this.user = user;
         this.message = message;
         this.significance = significance;
         this.campaignName = campaignName;
+        this.messageId = messageId;
 
         this.state = state;
     }
@@ -44,9 +46,9 @@ public abstract class Action implements ActionInterface{
     }
 
 
-    public String getUserId(){
+    public User getUser(){
 
-        return userId;
+        return user;
     }
 
     public ActionType getType(){
@@ -100,6 +102,16 @@ public abstract class Action implements ActionInterface{
         return this;
 
     }
+
+    protected String createPromoCode(String name, int messageType) {
+
+        String tag = name.replaceAll(" ", "");
+        return tag + "-" + messageType;
+
+    }
+
+
+
 
 
 }

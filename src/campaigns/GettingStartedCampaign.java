@@ -48,12 +48,14 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
         if( user.amount == 0 && user.lastgamePlayed.equals("")){
 
+            int sessions = (user.sessions > 1 ? 2 : 1 );
+
 
             if(daysBefore(user.created, executionDay, 1 )){
 
                 System.out.println("    -- Campaign " + Name + " Running message 1 for " + user.name );
                 return new NotificationAction("Remember you get an extra diamond pick for every day in a row you are playing. The games are waiting. Click here for your free bonus!",
-                        user, getPriority(), "GettingStarted", "GettingStarted", Name, getState());
+                        user, getPriority(), "GettingStarted1-" + sessions , "GettingStarted", 1, getState());
 
             }
 
@@ -72,7 +74,7 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
                 System.out.println("    -- Campaign " + Name + " Running message 3 for " + user.name );
                 return new NotificationAction("We here at SlotAmerica are missing you! The thrilling slot machines are awaiting and you can use the FREE bonus to find your favorite game! Click here to get started",
-                        user, getPriority(), "GettingStarted2", "GettingStarted2", Name, getState());
+                        user, getPriority(), "GettingStarted2-" + sessions, "GettingStarted2", 3, getState());
 
             }
 

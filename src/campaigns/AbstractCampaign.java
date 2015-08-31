@@ -115,22 +115,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
     }
 
 
-    /********************************************************************'
-     *
-     *          Create a promo code based on the characteristics of a player.
-     *
-     *
-     * @param name                   - the name of the campaign
-     * @param user                   - the name of the user
-     * @return                       - the promocode
-     */
 
-    protected String createPromoCode(String name, User user, int inactivity) {
-
-        String tag = name.replaceAll(" ", "");
-        return tag + "-C" + user.userCategory + "-P" + user.payments + "-S"+user.sessions+ "-G"+user.group+ "-L"+user.level+"-D"+user.nextNumberOfPicks+"-M"+inactivity;
-
-    }
 
     protected String createTag(String name) {
 

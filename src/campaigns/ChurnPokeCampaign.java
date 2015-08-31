@@ -70,7 +70,16 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a three day churn warning poke" );
             return new NotificationAction("Hello, you have new bonuses to collect at Slot America. Click here for more free slot FUN!",
-                    user, getPriority(), createTag(Name), createPromoCode(Name, user, getInactivity(playerInfo, executionTime)), Name, getState());
+                    user, getPriority(), createTag(Name),  Name, 3, getState());
+
+
+        }
+        else if(isDaysBefore(lastSession, executionDay, 8)){
+
+
+            System.out.println("    -- Sending a EIGHT day churn warning poke" );
+            return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
+                    user, getPriority(), createTag(Name),  Name,  8, getState());
 
 
         }

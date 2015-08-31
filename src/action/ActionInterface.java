@@ -19,7 +19,7 @@ public interface ActionInterface {
     int getSignificance(int eligibility);
     int getSignificance();
 
-    String getUserId();
+    User getUser();
     public String getCampaign();
 
     boolean isFiredBy(CampaignInterface campaign);

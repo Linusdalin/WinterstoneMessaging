@@ -2,29 +2,37 @@ package action;
 
 import campaigns.CampaignState;
 import localData.Exposure;
-import output.NotificationHandler;
-import remoteData.dataObjects.User;
+import output.EmailHandler;import remoteData.dataObjects.User;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
 
 /*******************************************************************
  *
- *          Notification
+ *          Email
  *
  *          An instance of the abstract Action resulting in a notification sent to the user
  */
 
-public class NotificationAction extends Action implements ActionInterface{
+public class EmailAction extends Action implements ActionInterface{
 
-    String ref;   // Reference for facebook tracking
-    private String reward;
-    private String game;
+    /******************************************************
+     *
+     *          Create a new email action
+     *
+     *
+     * @param message                 - the message (html)
+     * @param user                    - recipient
+     * @param significance
+     * @param campaignName            - campaign for followup in exposure tracking
+     * @param messageId               - the id of the message (within the campaign)
+     * @param state                   - state of campaign (to send or ignore)
+     */
 
-    public NotificationAction(String message, User user, int significance, String ref, String campaignName, int messageId, CampaignState state){
+
+    public EmailAction(String message, User user, int significance, String campaignName, int messageId, CampaignState state){
 
         super(ActionType.NOTIFICATION, user, message, significance, campaignName, messageId, state );
-        this.ref = ref;
         setPromoCode(createPromoCode(campaignName, messageId));
 
     }
@@ -49,23 +57,16 @@ public class NotificationAction extends Action implements ActionInterface{
 
             System.out.println("--------------------------------------------------------");
             System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + user);
-            return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - (reason: "+ state.name()+") " );
+            return new ActionResponse(ActionResponseStatus.IGNORED,   "No email sent - (reason: "+ state.name()+") " );
 
         }
-
 
         System.out.println("--------------------------------------------------------");
         System.out.println("! Executing " + type.name() + " for player " + user);
 
-        NotificationHandler handler = new NotificationHandler(testUser)
-                    .withCap(1)
-                    .withRecipient(user.facebookId)
-                    .withMessage(message)
-                    .withRef(ref)
-                    .withPromoCode(promoCode)
-                    .withReward(reward)
-                    .withGame(game);
-
+        EmailHandler handler = new EmailHandler(testUser)
+                .withMessage( message )
+                .withRecipient( user );
 
         // Now check if we are to send off the message or just log it (dry run)
 
@@ -98,23 +99,6 @@ public class NotificationAction extends Action implements ActionInterface{
 
     private int getMessageId() {
         return 0;  //TODO: Not implemented message id
-    }
-
-    public NotificationAction withReward(String reward) {
-        this.reward = reward;
-        return this;
-    }
-
-    public NotificationAction withGame(String game) {
-        this.game = game;
-        return this;
-    }
-
-    protected String createPromoCode(String name, int messageType) {
-
-        String tag = name.replaceAll(" ", "");
-        return tag + "-" + messageType;
-
     }
 
 

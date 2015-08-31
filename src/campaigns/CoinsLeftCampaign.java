@@ -83,7 +83,8 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                 if(user.balance > COINS_FOR_HIGH_SPENDER){
 
                     System.out.println("    -- Campaign " + Name + " firing for high spender with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name, getState());
+                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
+                            user, getPriority(), createTag(Name), Name, 1, getState());
 
                 }
                 else
@@ -96,7 +97,8 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                 if(user.balance > COINS_FOR_LOW_SPENDER){
 
                     System.out.println("    -- Campaign " + Name + " firing for low spender with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name, getState());
+                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
+                            user, getPriority(), createTag(Name), Name, 2, getState());
 
                 }
                 else
@@ -107,7 +109,8 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                 if(user.balance > COINS_FOR_FREE_PLAYER){
 
                     System.out.println("    -- Campaign " + Name + " firing for free player with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ", user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivity), Name, getState());
+                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
+                            user, getPriority(), createTag(Name), Name, 3, getState());
 
                 }
                 else

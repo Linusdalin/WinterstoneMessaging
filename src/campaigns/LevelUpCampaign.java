@@ -28,7 +28,16 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
     private static final int Level_up_50        = 48;
     private static final int Level_up_100       = 97;
 
-    LevelUpCampaign(int priority, CampaignState activation){
+
+    private static final String[] messages = {
+            "You reached level 25! Congratulations. You are halfway to the level 50 bonus!",
+            "You are getting close to the level 50 bonus!",
+            "You are getting close to the level 100 bonus!"
+    };
+
+
+
+LevelUpCampaign(int priority, CampaignState activation){
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
@@ -55,15 +64,15 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
         //System.out.println("Registration Date: " + getDay(user.created).toString());
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
-        String message;
+        int message;
 
-        if(user.level == Level_up_halfWay)
-            message = "You reached level 25! Congratulations. You are halfway to the level 50 bonus!";
-        else if(user.level == Level_up_50)
-            message = "You are getting close to the level 50 bonus!";
-        else if(user.level == Level_up_100)
-            message = "You are getting close to the level 100 bonus!";
-        else{
+        if(user.level == Level_up_halfWay){
+            message =0;
+        }else if(user.level == Level_up_50){
+            message = 1;
+        }else if(user.level == Level_up_100){
+            message = 2;
+        }else{
 
             System.out.println("    -- Campaign " + Name + " not firing. Not applicable level " + user.level );
             return null;
@@ -99,7 +108,7 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
 
 
                 System.out.println("    -- Campaign " + Name + " firing message for level " + user.level );
-                return new NotificationAction(message, user, getPriority(), createTag(Name), createPromoCode(Name, user, inactivation), Name, getState());
+                return new NotificationAction(messages[message], user, getPriority(), createTag(Name),  Name, 1, getState());
 
 
         }

@@ -89,7 +89,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
         System.out.println("    -- Campaign " + Name + " fire notification" );
         return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
-                user, getPriority(), createTag(Name), createPromoCode(Name, user, getInactivity(info, executionTime)), Name, getState());
+                user, getPriority(), createTag(Name), Name, 1, getState());
 
 
     }

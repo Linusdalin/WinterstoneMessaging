@@ -2,9 +2,6 @@ package output;
 
 import action.ActionInterface;
 import action.ActionResponse;
-import action.NotificationAction;
-import localData.Exposure;
-import remoteData.dataObjects.User;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -58,7 +55,7 @@ public class Outbox {
                 success++;
             }
             else
-                noteFailedMessageDelivery(action.getUserId());
+                noteFailedMessageDelivery(action.getUser().facebookId);
 
             count++;
 
@@ -93,7 +90,7 @@ public class Outbox {
 
             for (ActionInterface action : queue) {
 
-                System.out.println("\"" + action.getUserId() + "\", ");
+                System.out.println("\"" + action.getUser().facebookId + "\", ");
 
 
             }
