@@ -99,9 +99,6 @@ public class NotificationAction extends Action implements ActionInterface{
         exposure.store(localConnection);
     }
 
-    private int getMessageId() {
-        return 0;  //TODO: Not implemented message id
-    }
 
     public NotificationAction withReward(String reward) {
         this.reward = reward;

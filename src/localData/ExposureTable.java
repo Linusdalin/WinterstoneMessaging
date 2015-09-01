@@ -83,7 +83,9 @@ public class ExposureTable extends GenericTable {
      *
      *              Exposure is calculated as the number of messages the last week.
      *
+     *
      * @param user
+     * @param personal_CoolOff
      * @return
      *
      *
@@ -91,9 +93,9 @@ public class ExposureTable extends GenericTable {
      */
 
 
-    public int getUserExposure(User user) {
+    public int getUserExposure(User user, int personal_CoolOff) {
 
-        load(connection, "and user= '"+ user.facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL 7 day)");
+        load(connection, "and user= '"+ user.facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)");
         List<Exposure> exposuresForUser = getAll();
         System.out.println("Found " + exposuresForUser.size() + " exposures for user " + user.name);
         return exposuresForUser.size();

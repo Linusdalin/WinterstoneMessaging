@@ -15,6 +15,9 @@ import java.sql.Timestamp;
  *
  *                  This is a one shot campaign addressing all our old
  *                  paying and active players with appropriate bonuses
+ *
+ *                  //TODO: It would be nice to know if the user has claimed a bonus or not to be able to schedule n messages for reminder
+ *
  */
 
 public class ReactivationCampaign extends AbstractCampaign implements CampaignInterface {
@@ -24,7 +27,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
     private static final int CoolDown_Days = 36500;     // Only once per player
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT   = 22;   // 22 days inactivity before kicking in this offer
+    private static final int INACTIVITY_LIMIT   = 60;   // This set very high to test out potential
 
     ReactivationCampaign(int priority, CampaignState activation){
 
@@ -98,8 +101,8 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
         }
 
-            System.out.println("    -- Campaign " + Name + " not firing. waiting "+ INACTIVITY_LIMIT+" days (last:" + lastSession.toString() );
-            return null;
+        System.out.println("    -- Campaign " + Name + " not firing. waiting "+ INACTIVITY_LIMIT+" days (last:" + lastSession.toString() );
+        return null;
 
 
 

@@ -12,6 +12,7 @@ public class TimeAnalyser {
 
 
     private PlayerInfo playerInfo;
+    private final int Personal_CoolOff = 7;
 
     public TimeAnalyser(PlayerInfo playerInfo) {
 
@@ -20,7 +21,7 @@ public class TimeAnalyser {
 
     public int eligibilityForCommunication(ExposureTable campaignExposures){
 
-        int exposures = campaignExposures.getUserExposure(playerInfo.getUser());
+        int exposures = campaignExposures.getUserExposure(playerInfo.getUser(), Personal_CoolOff);
 
         if(exposures > 1 ){
 

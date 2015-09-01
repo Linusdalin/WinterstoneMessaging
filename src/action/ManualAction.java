@@ -10,6 +10,8 @@ import java.sql.Timestamp;
  *
  *          Perform a manual action
  *
+ *
+ *          //TODO: There is no feedback for the manual action. No exposure is registered.
  */
 
 public class ManualAction extends Action implements ActionInterface{

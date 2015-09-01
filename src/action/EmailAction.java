@@ -75,7 +75,7 @@ public class EmailAction extends Action implements ActionInterface{
         if(!dryRun){
             successCount =  handler.send();
             if(successCount > 0){
-                noteSuccessFulExposure( (testUser == null ? user.facebookId : testUser ) , executionTime, localConnection );
+                noteSuccessFulExposure( (testUser == null ? user.facebookId : testUser ), executionTime, localConnection );
                 return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
             }
             else
@@ -95,10 +95,6 @@ public class EmailAction extends Action implements ActionInterface{
 
         Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode);
         exposure.store(localConnection);
-    }
-
-    private int getMessageId() {
-        return 0;  //TODO: Not implemented message id
     }
 
 

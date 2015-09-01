@@ -116,7 +116,7 @@ public abstract class Action implements ActionInterface{
     }
 
 
-
-
-
+    protected int getMessageId() {
+        return messageId;
+    }
 }
