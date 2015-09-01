@@ -14,4 +14,9 @@ public enum CampaignState {
     public boolean isLive() {
         return this == ACTIVE;
     }
+
+    public boolean isTestMode() {
+        return this == TEST_NODE;
+    }
+
 }

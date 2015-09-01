@@ -32,7 +32,7 @@ public class EmailAction extends Action implements ActionInterface{
 
     public EmailAction(String message, User user, int significance, String campaignName, int messageId, CampaignState state){
 
-        super(ActionType.NOTIFICATION, user, message, significance, campaignName, messageId, state );
+        super(ActionType.EMAIL, user, message, significance, campaignName, messageId, state );
         setPromoCode(createPromoCode(campaignName, messageId));
 
     }
@@ -83,7 +83,7 @@ public class EmailAction extends Action implements ActionInterface{
 
         }
         else{
-            System.out.println("  %%%Dryrun: Ignoring sending message to user "+ user +" " + "-\""+ message+"\" Promocode:" + promoCode);
+            System.out.println("  %%%Dryrun: Ignoring sending email to user "+ getUser().name + "(" + getUser().email + ") " + "-\""+ message+"\" Promocode:" + promoCode);
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - dry run");
         }
 

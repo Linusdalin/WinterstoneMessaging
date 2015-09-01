@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.GameSession;
@@ -84,7 +85,9 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
                     System.out.println("    -- Campaign " + Name + " firing for high spender with balance " + user.balance );
                     return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                            user, getPriority(), createTag(Name), Name, 1, getState());
+                            user, getPriority(), createTag(Name), Name, 1, getState())
+                    .attach(new EmailAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
+                            user, getPriority(), Name, 1, getState()));
 
                 }
                 else
@@ -98,7 +101,9 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
                     System.out.println("    -- Campaign " + Name + " firing for low spender with balance " + user.balance );
                     return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                            user, getPriority(), createTag(Name), Name, 2, getState());
+                            user, getPriority(), createTag(Name), Name, 2, getState())
+                    .attach(new EmailAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
+                            user, getPriority(), Name, 1, getState()));
 
                 }
                 else
@@ -120,7 +125,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
         }
 
-            System.out.println("    -- Campaign " + Name + " not firing. waiting "+ INACTIVITY_LIMIT+" days (last:" + lastSession.toString() );
+            System.out.println("    -- Campaign " + Name + " not firing. waiting " + INACTIVITY_LIMIT + " days (last:" + lastSession.toString());
             return null;
 
 

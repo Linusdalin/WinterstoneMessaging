@@ -37,6 +37,7 @@ public class CampaignEngine {
     private int analysis_cap;
     private Outbox notificationOutbox;
     private Outbox manualActionOutbox;          // Manual messages
+    private Outbox emailOutbox;
 
 
     /******************************************************''
@@ -70,8 +71,9 @@ public class CampaignEngine {
 
             // Create an outbox for all messages
 
-            notificationOutbox = new Outbox(send_cap, dryRun, testUser, localConnection);
-            manualActionOutbox = new Outbox(send_cap, dryRun, testUser, localConnection);
+            notificationOutbox  = new Outbox(send_cap, dryRun, testUser, localConnection);
+            manualActionOutbox  = new Outbox(send_cap, dryRun, testUser, localConnection);
+            emailOutbox         = new Outbox(send_cap, dryRun, testUser, localConnection);
 
         }catch(Exception e){
 
@@ -142,8 +144,12 @@ public class CampaignEngine {
 
         System.out.println(" ******************************************\n * Purging Notifications ");
 
-        notificationOutbox.listRecepients();
+        //notificationOutbox.listRecepients();
         notificationOutbox.purge(executionTime);
+
+        System.out.println(" ******************************************\n * Purging Email ");
+
+        emailOutbox.purge(executionTime);
 
         System.out.println(" ******************************************\n * Manual Actions ");
 
@@ -243,6 +249,8 @@ public class CampaignEngine {
 
         if(action.getType() == ActionType.NOTIFICATION )
             notificationOutbox.queue(action);
+        if(action.getType() == ActionType.EMAIL )
+            emailOutbox.queue(action);
         if(action.getType() == ActionType.MANUAL_ACTION )
             manualActionOutbox.queue(action);
 

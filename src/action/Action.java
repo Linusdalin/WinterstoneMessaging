@@ -65,6 +65,11 @@ public abstract class Action implements ActionInterface{
         return state.isLive();
     }
 
+    public boolean isTestMode() {
+        return state.isTestMode();
+    }
+
+
     public String getCampaign(){
 
         return campaignName;
