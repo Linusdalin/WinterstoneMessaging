@@ -24,7 +24,7 @@ public class CampaignRepository {
         add(new GettingStartedCampaign  ( 80, CampaignState.ACTIVE ));
         add(new RememberDiamondCampaign ( 80, CampaignState.ACTIVE ));
         add(new ChurnPokeCampaign       ( 70, CampaignState.ACTIVE));
-        add(new BadBeatCampaign         ( 95, CampaignState.ACTIVE));
+        //add(new BadBeatCampaign         ( 95, CampaignState.ACTIVE));
         add(new CoinsLeftCampaign       ( 70, CampaignState.ACTIVE));
         add(new LevelUpCampaign         ( 60, CampaignState.ACTIVE ));
         add(new EngagementCampaign      ( 65, CampaignState.ACTIVE ));

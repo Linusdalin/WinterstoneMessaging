@@ -16,6 +16,8 @@ import java.sql.Timestamp;
 
 public class EmailAction extends Action implements ActionInterface{
 
+    public static final boolean inUse = false;
+
     /******************************************************
      *
      *          Create a new email action
@@ -52,6 +54,12 @@ public class EmailAction extends Action implements ActionInterface{
      */
 
     public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection) {
+
+        if(!inUse){
+
+            return new ActionResponse(ActionResponseStatus.IGNORED,   "No email sent - (not in use)");
+
+        }
 
         if(!isLive()){
 
