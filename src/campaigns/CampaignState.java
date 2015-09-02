@@ -9,14 +9,14 @@ package campaigns;
  */
 public enum CampaignState {
 
-    ACTIVE, INACTIVE, TEST_NODE;
+    ACTIVE, INACTIVE, TEST_MODE;
 
     public boolean isLive() {
         return this == ACTIVE;
     }
 
     public boolean isTestMode() {
-        return this == TEST_NODE;
+        return this == TEST_MODE;
     }
 
 }

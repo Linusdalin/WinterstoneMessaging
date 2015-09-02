@@ -27,7 +27,12 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
     private static final int CoolDown_Days = 36500;     // Only once per player
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT   = 60;   // This set very high to test out potential
+    private static final int INACTIVITY_LIMIT   = 240;   // This set very high to test out potential
+
+    private static final int DAILY_CAP   = 100;         // Max per day
+
+    private int count = 0;
+
 
     ReactivationCampaign(int priority, CampaignState activation){
 
@@ -50,8 +55,15 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
     public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
 
+        count++;
 
-        //System.out.println("Registration Date: " + getDay(user.created).toString());
+        if(count > DAILY_CAP){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Daily cap reached for user" );
+            return null;
+
+        }
+
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
