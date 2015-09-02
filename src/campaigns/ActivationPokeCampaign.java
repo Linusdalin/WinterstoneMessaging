@@ -19,11 +19,12 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
     // Campaign config data
     private static final String Name = "ActivationPoke";
-    private static final int CoolDown_Days = 7;
+    private static final int CoolDown_Days = 8;
 
     // Trigger specific config data
     private static final int Min_Sessions = 3;
-    private static final int Max_Sessions = 10;
+    private static final int Max_Sessions = 12;
+    private static final int Max_Age = 5;
 
     ActivationPokeCampaign(int priority, CampaignState active){
 
@@ -36,7 +37,6 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
      *
      *              Decide on the campaign
      *
-     *              The output could be one of 4 different messages depending on the day
      *
      *
      *
@@ -63,6 +63,13 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
         }
 
+        if(getDaysBetween(user.created, executionDay) > Max_Age){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Player too old (created: " + user.created );
+            return null;
+
+        }
+
         Timestamp lastSession = playerInfo.getLastSession();
         if(lastSession == null){
 
@@ -75,7 +82,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
 
             System.out.println("    -- Sending a two day activation poke" );
-            return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica? Play to level up and get nice bonuses!",
+            return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica? Check out the rewards by clicking on the level bar.!",
                     user, getPriority(), createTag(Name),  Name, 3, getState());
 
 

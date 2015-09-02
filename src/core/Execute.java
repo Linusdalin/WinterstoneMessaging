@@ -15,10 +15,10 @@ public class Execute {
 
     private static final int     Threshold              = 50;
     private static final int     Send_Cap               = 2000;
-    private static final int     User_Cap               = 200000;
+    private static final int     User_Cap               = 120000;
     private static final boolean DRY_RUN                = true;
-    private static final boolean OVERRIDE_TIME_CONSTR   = false;
-    private static final String  UserScrapeStart        = "2015-07-21";                      // "2015-06-01";
+    private static final boolean OVERRIDE_TIME_CONSTR   = true;
+    private static final String  UserScrapeStart        = "2015-07-23";                      // "2015-02-01";
     private static final String  TEST_USER              = null;                              // "627716024";          // Tina:     "105390519812878";
 
 

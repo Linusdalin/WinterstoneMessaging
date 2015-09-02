@@ -197,11 +197,17 @@ public class CampaignEngine {
 
             if(lastExposure != null){
 
+
                 if(campaign.failCoolDown(lastExposure, executionTime)){
 
                     System.out.println("    -- Last exposure for campaign "+ campaign.getName()+" is " + lastExposure.exposureTime.toString() + ", less than "+ campaign.getCoolDown()+" days ago. Avoiding over exposure");
                     continue;
                 }
+
+            }
+            else{
+
+                System.out.println("    -- Last exposure for campaign "+ campaign.getName()+" is  null");
 
             }
 
