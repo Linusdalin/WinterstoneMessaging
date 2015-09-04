@@ -95,7 +95,7 @@ public class NotificationAction extends Action implements ActionInterface{
 
     private void noteSuccessFulExposure(String actualUser, Timestamp executionTime, Connection localConnection) {
 
-        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode);
+        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.NOTIFICATION.name());
         exposure.store(localConnection);
     }
 

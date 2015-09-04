@@ -24,8 +24,9 @@ public class Exposure {
     public final int messageId;
     public final Timestamp exposureTime;
     public final String promoCode;
+    public final String type;
 
-    public Exposure(String facebookId, String campaignName, int messageId, Timestamp exposureTime, String promoCode){
+    public Exposure(String facebookId, String campaignName, int messageId, Timestamp exposureTime, String promoCode, String type){
 
 
         this.facebookId = facebookId;
@@ -33,18 +34,19 @@ public class Exposure {
         this.messageId = messageId;
         this.exposureTime = exposureTime;
         this.promoCode = promoCode;
+        this.type = type;
 
     }
 
     public String toString(){
 
-        return "(" + facebookId + ", " +campaignName + ", " +messageId+ ", " +exposureTime+ ", " +promoCode+   ")";
+        return "(" + facebookId + ", " +campaignName + ", " +messageId+ ", " +exposureTime+ ", " +promoCode+ ", " + type +  ")";
 
     }
 
     private String toSQLValues() {
 
-        return "'" + facebookId + "', '" +campaignName + "', " +messageId+ ", '" +exposureTime+ "', '" +promoCode + "'";
+        return "'" + facebookId + "', '" +campaignName + "', " +messageId+ ", '" +exposureTime+ "', '" +promoCode + "', '" +type +"'";
 
 
     }

@@ -33,7 +33,7 @@ public class CampaignRepository {
         add(new FakeCoinsLeftCampaign   ( 90, CampaignState.TEST_MODE));
         add(new ReactivationCampaign    ( 60, CampaignState.TEST_MODE));
 
-        //add(new GameNotification        (90, CampaignState.INACTIVE, "triple_pay", "Spin your way into orbit with our game of the week, Triple Pay 3000! Click here for take-off!"));
+        add(new GameNotification        (90, CampaignState.INACTIVE, "wild_cherries", "Flower Power – the Japanese Way! Click to play our brand new ‘Wild Cherries’ now!"));
 
 
     }};

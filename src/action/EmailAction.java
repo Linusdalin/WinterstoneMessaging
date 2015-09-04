@@ -16,7 +16,9 @@ import java.sql.Timestamp;
 
 public class EmailAction extends Action implements ActionInterface{
 
-    public static final boolean inUse = false;
+    public static final boolean inUse = true;
+    private final String subject;
+    private final String plain;
 
     /******************************************************
      *
@@ -32,9 +34,11 @@ public class EmailAction extends Action implements ActionInterface{
      */
 
 
-    public EmailAction(String message, User user, int significance, String campaignName, int messageId, CampaignState state){
+    public EmailAction(String subject, String message, String plain, User user, int significance, String campaignName, int messageId, CampaignState state){
 
         super(ActionType.EMAIL, user, message, significance, campaignName, messageId, state );
+        this.subject = subject;
+        this.plain = plain;
         setPromoCode(createPromoCode(campaignName, messageId));
 
     }
@@ -74,15 +78,19 @@ public class EmailAction extends Action implements ActionInterface{
 
         EmailHandler handler = new EmailHandler(testUser)
                 .withMessage( message )
+                .withAlt( plain )
+                .withSubject( subject )
                 .withRecipient( user );
 
         // Now check if we are to send off the message or just log it (dry run)
 
-        int successCount = 0;
+
 
         if(!dryRun){
-            successCount =  handler.send();
-            if(successCount > 0){
+
+            boolean success =  handler.send();
+
+            if(success){
                 noteSuccessFulExposure( (testUser == null ? user.facebookId : testUser ), executionTime, localConnection );
                 return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
             }
@@ -101,7 +109,7 @@ public class EmailAction extends Action implements ActionInterface{
 
     private void noteSuccessFulExposure(String actualUser, Timestamp executionTime, Connection localConnection) {
 
-        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode);
+        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.EMAIL.name());
         exposure.store(localConnection);
     }
 

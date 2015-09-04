@@ -54,7 +54,7 @@ public class ExposureTable extends GenericTable {
             if(!resultSet.next())
                 return null;
 
-            return new Exposure(resultSet.getString(1), resultSet.getString(2),resultSet.getInt(3),resultSet.getTimestamp(4),resultSet.getString(5));
+            return new Exposure(resultSet.getString(1), resultSet.getString(2),resultSet.getInt(3),resultSet.getTimestamp(4),resultSet.getString(5), resultSet.getString(6));
 
         } catch (SQLException e) {
             e.printStackTrace();
