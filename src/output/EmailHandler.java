@@ -20,7 +20,14 @@ public class EmailHandler {
     private String message = null;
     private String subject = null;
     private String plain = null;
+    private String title = null;
+    private String url = null;
+    private String game = "";
+
+    private String messageTemplate;
     private User recipient;
+    public static final String MESSAGE_TEMPLATE = "campaignMailTemplate";
+    public static final String GAME_TEMPLATE = "messageMailTemplate";
 
     public EmailHandler( ){
 
@@ -102,22 +109,21 @@ public class EmailHandler {
         }
 
         //recipient = "627716024"; //TODO: Remove this when tested to actually send
-        //recipient = "105390519812878";
 
-
-        // playerId=836390979715760&subject=test
-        //      &textVersion=Hello+World
-        //      &htmlVersion=%3Cp+style%3D%22Margin-top%3A+0%3Bcolor%3A+%23333333%3Bfont-family%3A+sans-serif%3Bfont-size%3A+16px%3Bline-height%3A+24px%3BMargin-bottom%3A+24px%22%3EHello%20World%3C%2Fp%3E
-
-        //System.out.println("Sending to: " + recipient);
         RequestHandler requestHandler = new RequestHandler(mailService);
+
+        String imageLinkURL = "https://apps.facebook.com/slotamerica/?ref=email&promoCode=email&game=" + game;
+
+        imageLinkURL = "http://aftonbladet.se";
 
         String response = requestHandler.executePost(
                         "playerId=" + actualUser +
+                        "&templateName=" + messageTemplate +
                         "&subject=" + subject +
+                        (title != null ? "&title=" + URLEncoder.encode(title) : "") +
+                        (url != null ? "&imageURL=" + URLEncoder.encode( url ) + "&imageLinkURL="+URLEncoder.encode(imageLinkURL)  : "") +
                         "&textVersion=" + URLEncoder.encode(plain) +
                         "&htmlVersion="+ URLEncoder.encode(message));
-        //String response = requestHandler.executePost("");
 
         if(response != null){
             System.out.println("   -> Got Response: " + response);
@@ -130,4 +136,24 @@ public class EmailHandler {
         }
 
     }
+
+    public EmailHandler withTemplate(String messageTemplate) {
+
+        this.messageTemplate = messageTemplate;
+        return this;
+    }
+
+    public EmailHandler withImageURL(String url, String game) {
+
+        this.url = url;
+        this.game = game;
+        return this;
+    }
+
+    public EmailHandler withTitle(String title) {
+
+        this.title = title;
+        return this;
+    }
+
 }

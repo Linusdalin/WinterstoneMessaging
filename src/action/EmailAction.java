@@ -17,15 +17,14 @@ import java.sql.Timestamp;
 public class EmailAction extends Action implements ActionInterface{
 
     public static final boolean inUse = true;
-    private final String subject;
-    private final String plain;
+    private final Email email;
 
     /******************************************************
      *
      *          Create a new email action
      *
      *
-     * @param message                 - the message (html)
+     * @param email                   - the email to send
      * @param user                    - recipient
      * @param significance
      * @param campaignName            - campaign for followup in exposure tracking
@@ -34,11 +33,10 @@ public class EmailAction extends Action implements ActionInterface{
      */
 
 
-    public EmailAction(String subject, String message, String plain, User user, int significance, String campaignName, int messageId, CampaignState state){
+    public EmailAction(Email email, User user, int significance, String campaignName, int messageId, CampaignState state){
 
-        super(ActionType.EMAIL, user, message, significance, campaignName, messageId, state );
-        this.subject = subject;
-        this.plain = plain;
+        super(ActionType.EMAIL, user, email.plainText, significance, campaignName, messageId, state );
+        this.email = email;
         setPromoCode(createPromoCode(campaignName, messageId));
 
     }
@@ -77,9 +75,9 @@ public class EmailAction extends Action implements ActionInterface{
         System.out.println("! Executing " + type.name() + " for player " + user);
 
         EmailHandler handler = new EmailHandler(testUser)
-                .withMessage( message )
-                .withAlt( plain )
-                .withSubject( subject )
+                .withMessage( email.html )
+                .withAlt( email.plainText )
+                .withSubject( email.subject )
                 .withRecipient( user );
 
         // Now check if we are to send off the message or just log it (dry run)

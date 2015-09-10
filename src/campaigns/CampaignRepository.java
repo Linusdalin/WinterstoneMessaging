@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.Email;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +35,24 @@ public class CampaignRepository {
         add(new FakeCoinsLeftCampaign   ( 90, CampaignState.TEST_MODE));
         add(new ReactivationCampaign    ( 60, CampaignState.TEST_MODE));
 
-        add(new GameNotification        (90, CampaignState.INACTIVE, "wild_cherries", "Flower Power – the Japanese Way! Click to play our brand new ‘Wild Cherries’ now!"));
+        add(new GameNotification        (90, CampaignState.INACTIVE, "ribbons", "It is back! Ribbons - the celebrity of celebration!", createGameEmail()));
 
 
     }};
 
 
+    /**********************************************************************************
+     *
+     *          Not implemented.
+     *          A NULL email will result in not sending any mail
+     *
+     *
+     * @return      - a styled email ready to send
+     */
+
+    private static Email createGameEmail() {
+        return null;
+    }
 
 
     public List<CampaignInterface> getActiveCampaigns(){

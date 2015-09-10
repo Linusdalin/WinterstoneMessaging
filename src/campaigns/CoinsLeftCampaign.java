@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.Email;
 import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
@@ -86,8 +87,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                     System.out.println("    -- Campaign " + Name + " firing for high spender with balance " + user.balance );
                     return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
                             user, getPriority(), getTag(), Name, 1, getState())
-                    .attach(new EmailAction("there is more fun awaiting you", "<p>You have <b>"+ user.balance+"</b> coins left on your account.</p><p> There are some fabulous new games you can try out with it. </p>",
-                            "You have "+ user.balance+ " coins left on your account.There are some fabulous new games you can try out with it.",
+                    .attach(new EmailAction(coinLeftEmail(user),
                             user, getPriority(), Name, 1, getState()));
 
                 }
@@ -103,8 +103,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                     System.out.println("    -- Campaign " + Name + " firing for low spender with balance " + user.balance );
                     return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
                             user, getPriority(), getTag(), Name, 2, getState())
-                            .attach(new EmailAction("there is more fun awaiting you", "<p>You have <b>"+ user.balance+"</b> coins left on your account.</p><p> There are some fabulous new games you can try out with it </p>",
-                                    "You have "+ user.balance+ " coins left on your account.There are some fabulous new games you can try out with it.",
+                            .attach(new EmailAction(coinLeftEmail(user),
                                     user, getPriority(), Name, 1, getState()));
 
                 }
@@ -132,6 +131,11 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
 
 
+    }
+
+    private Email coinLeftEmail(User user) {
+        return new Email("there is more fun awaiting you", "<p>You have <b>"+ user.balance+"</b> coins left on your account.</p><p> There are some fabulous new games you can try out with it. </p>",
+                "You have "+ user.balance+ " coins left on your account.There are some fabulous new games you can try out with it.");
     }
 
 

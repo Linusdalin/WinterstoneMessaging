@@ -1,15 +1,10 @@
 package test;
 
 
-import core.DataCache;
-import core.PlayerInfo;
-import dbManager.ConnectionHandler;
 import org.junit.Test;
 import output.EmailHandler;
 import remoteData.dataObjects.User;
-import remoteData.dataObjects.UserTable;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -38,7 +33,8 @@ public class EmailTest {
         String subject = " this is a message for you!";
 
         EmailHandler handler = new EmailHandler()
-                .withRecipient( user )
+                .withTemplate( EmailHandler.MESSAGE_TEMPLATE)
+                .withRecipient(user)
                 .withSubject( subject )
                 .withMessage( message )
                 .withAlt( altMessage );
@@ -58,7 +54,8 @@ public class EmailTest {
         String subject = " this is a message for you!";
 
         EmailHandler handler = new EmailHandler()
-                .withRecipient( wrongUsesr )
+                .withTemplate( EmailHandler.MESSAGE_TEMPLATE)
+                .withRecipient(wrongUsesr)
                 .withSubject( subject )
                 .withMessage( message )
                 .withAlt( altMessage );
@@ -79,7 +76,8 @@ public class EmailTest {
         String subject = " this is just test!";
 
         EmailHandler handler = new EmailHandler( user.facebookId )
-                .withRecipient( wrongUsesr )
+                .withTemplate( EmailHandler.MESSAGE_TEMPLATE )
+                .withRecipient(wrongUsesr)
                 .withSubject( subject )
                 .withMessage( message )
                 .withAlt( altMessage );
@@ -89,5 +87,34 @@ public class EmailTest {
         assertThat("Should work", success, is(true) );
 
     }
+
+
+    @Test
+    public void emailStyleTest(){
+
+
+        String message = "this is a new game release message";
+        String altMessage = "Plain text version";
+        String subject = "it is back";
+        String title = "it is Back";
+        String url = "https://d24xsy76095nfe.cloudfront.net/campaigns/sweet_money.jpg";
+        String game = "sweet_money";
+
+        EmailHandler handler = new EmailHandler()
+                .withTemplate( EmailHandler.GAME_TEMPLATE)
+                .withRecipient( user )
+                .withSubject( subject )
+                .withTitle( title )
+                .withImageURL( url, game )
+                .withMessage( message )
+                .withAlt( altMessage );
+
+        boolean success = handler.send();
+
+        assertThat("Should work", success, is(true) );
+
+    }
+
+
 
 }

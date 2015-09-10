@@ -1,6 +1,8 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.Email;
+import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.GameSession;
@@ -28,11 +30,13 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
     private final String message;
     private String gameCode;
+    private final Email email;
 
-    GameNotification(int priority, CampaignState activation, String gameCode, String message){
+    GameNotification(int priority, CampaignState activation, String gameCode, String message, Email email){
 
         super(Name, priority, activation);
         this.gameCode = gameCode;
+        this.email = email;
         setCoolDown(CoolDown_Days);
         this.message = message;
     }
@@ -57,10 +61,18 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
+        // First generate a generic email action
+
+        ActionInterface emailAction = null;
+
+        if(email != null)
+            emailAction = new EmailAction(email, user, getPriority(), Name,  1, getState());
+
+
         if(user.sessions < ACTIVITY_MIN){
 
             System.out.println("    -- Campaign " + Name + " not active. Player has not been active enough ("+ user.sessions +" sessions <  " + ACTIVITY_MIN);
-            return null;
+            return emailAction;
 
         }
 
@@ -68,7 +80,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
         if(lastSession == null){
 
             System.out.println("    -- Campaign " + Name + " not firing. No sessions for user" );
-            return null;
+            return emailAction;
 
         }
         int inactivity = getDaysBetween(lastSession, executionDay);
@@ -76,14 +88,14 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
         if(user.payments == 0 && inactivity > INACTIVITY_LIMIT_FREE){
 
             System.out.println("    -- Campaign " + Name + " not active. Free player is inactive. ("+ inactivity+" days >  " + INACTIVITY_LIMIT_FREE);
-            return null;
+            return emailAction;
 
         }
 
         if(user.payments > 0 && inactivity > INACTIVITY_LIMIT_PAYING){
 
             System.out.println("    -- Campaign " + Name + " not active. Paying player is inactive. ("+ inactivity+" days >  " + INACTIVITY_LIMIT_PAYING);
-            return null;
+            return emailAction;
 
         }
 
@@ -91,7 +103,8 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
         System.out.println("    -- Campaign " + Name + " firing. ");
 
         return new NotificationAction(message, user, getPriority(), getTag(), Name,  1, getState())
-                .withGame(gameCode);
+                .withGame(gameCode)
+                .attach(emailAction);
 
 
 
