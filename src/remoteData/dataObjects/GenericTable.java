@@ -84,14 +84,14 @@ public class GenericTable {
     public String getQueryString(String restriction, int limit, String order){
 
         String query = getRemoteSQL;
-        query = query.replace("$(RESTRICTION)",  restriction);
+        query = query.replaceAll("$(RESTRICTION)",  restriction);
 
         if(limit != -1)
-            query = query.replace("$(LIMIT)", "LIMIT "+limit);
+            query = query.replaceAll("$(LIMIT)", "LIMIT "+limit);
         else
-            query = query.replace("$(LIMIT)", "");
+            query = query.replaceAll("$(LIMIT)", "");
 
-        query = query.replace("$(ORDER)", order);
+        query = query.replaceAll("$(ORDER)", order);
 
         return query;
     }

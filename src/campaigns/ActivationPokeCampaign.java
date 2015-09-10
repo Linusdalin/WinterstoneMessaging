@@ -83,7 +83,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
             System.out.println("    -- Sending a two day activation poke" );
             return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica? Check out the rewards by clicking on the level bar.!",
-                    user, getPriority(), createTag(Name),  Name, 3, getState());
+                    user, getPriority(), getTag(),  Name, 3, getState());
 
 
         }

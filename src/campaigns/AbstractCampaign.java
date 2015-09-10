@@ -24,13 +24,22 @@ public abstract class AbstractCampaign implements CampaignInterface{
     private int priority;         // Campaign base priority before persoal or situational adjustments
     private int coolDown;
     private final CampaignState state;
+    private String shortName;
 
 
     AbstractCampaign(String name, int priority, CampaignState state){
 
         this.name = name;
+        this.shortName = generateShortName(name);
         this.priority = priority;
         this.state = state;
+    }
+
+    private String generateShortName(String name){
+        if(name.length() < 12)
+            return name;
+
+        return name.substring(0,11);
     }
 
 
@@ -117,7 +126,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
 
 
-    protected String createTag(String name) {
+    public String getTag() {
 
         return name.replaceAll(" ", "");
 
@@ -125,6 +134,17 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     public String getName() {
         return name;
+    }
+
+
+    protected void setShortName(String abbr){
+
+        this.shortName = abbr;
+    }
+
+    @Override
+    public String getShortName() {
+        return shortName;
     }
 
     public int getCoolDown() {

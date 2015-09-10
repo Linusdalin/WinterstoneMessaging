@@ -124,7 +124,7 @@ LevelUpCampaign(int priority, CampaignState activation){
 
 
                 System.out.println("    -- Campaign " + Name + " firing message for level " + user.level );
-                return new NotificationAction(messages[message], user, getPriority(), createTag(Name),  Name, (message + 1), getState());
+                return new NotificationAction(messages[message], user, getPriority(), getTag(),  Name, (message + 1), getState());
 
 
         }

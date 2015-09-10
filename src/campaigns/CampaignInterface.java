@@ -16,8 +16,11 @@ public interface CampaignInterface {
 
     ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime);
     String getName();
+    String getShortName();
+    String getTag();
 
-    String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime);
+
+        String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime);
     int getCoolDown();
 
     boolean failCoolDown(Exposure lastExposure, Timestamp executionTime);

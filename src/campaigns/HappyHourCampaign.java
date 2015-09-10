@@ -71,7 +71,7 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
 
         System.out.println("    -- Sending a happy hour reminder" );
         return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all coin purchases. Click here to join the thrill!!",
-                user, getPriority(), createTag(Name),  Name, 3, getState());
+                user, getPriority(), getTag(),  Name, 3, getState());
 
 
     }

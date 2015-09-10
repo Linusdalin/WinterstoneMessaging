@@ -85,7 +85,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
                     System.out.println("    -- Campaign " + Name + " firing for high spender with balance " + user.balance );
                     return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                            user, getPriority(), createTag(Name), Name, 1, getState())
+                            user, getPriority(), getTag(), Name, 1, getState())
                     .attach(new EmailAction("there is more fun awaiting you", "<p>You have <b>"+ user.balance+"</b> coins left on your account.</p><p> There are some fabulous new games you can try out with it. </p>",
                             "You have "+ user.balance+ " coins left on your account.There are some fabulous new games you can try out with it.",
                             user, getPriority(), Name, 1, getState()));
@@ -102,7 +102,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
                     System.out.println("    -- Campaign " + Name + " firing for low spender with balance " + user.balance );
                     return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                            user, getPriority(), createTag(Name), Name, 2, getState())
+                            user, getPriority(), getTag(), Name, 2, getState())
                             .attach(new EmailAction("there is more fun awaiting you", "<p>You have <b>"+ user.balance+"</b> coins left on your account.</p><p> There are some fabulous new games you can try out with it </p>",
                                     "You have "+ user.balance+ " coins left on your account.There are some fabulous new games you can try out with it.",
                                     user, getPriority(), Name, 1, getState()));
@@ -117,7 +117,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
                     System.out.println("    -- Campaign " + Name + " firing for free player with balance " + user.balance );
                     return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                            user, getPriority(), createTag(Name), Name, 3, getState());
+                            user, getPriority(), getTag(), Name, 3, getState());
 
                 }
                 else

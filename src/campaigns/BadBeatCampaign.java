@@ -106,7 +106,7 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
 
 
                         return new NotificationAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!",
-                                user, getPriority(), createTag(Name), Name, 1, getState())
+                                user, getPriority(), getTag(), Name, 1, getState())
                                 .attach(new ManualAction("Credit user with " + compensation + " coins.", user, getPriority(), Name, 1, getState()));
 
                     }
