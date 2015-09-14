@@ -1,5 +1,6 @@
 package response;
 
+import campaigns.AbstractCampaign;
 import campaigns.CampaignInterface;
 import campaigns.CampaignRepository;
 import localData.Response;
@@ -31,9 +32,19 @@ public class ResponseHandler {
 
     }
 
-    //TODO: Get campaign and sessionid from session
-    //TODO: Check that there is a real response
     //TODO: Filter on first in the day. All game sessions are tagged with the promoCode
+
+    /***********************************************************************************************
+     *
+     *
+     *
+     *
+     *
+     *
+     * @param session
+     * @param connection
+     */
+
 
     public void storeResponse(GameSession session, Connection connection) {
 
@@ -50,7 +61,7 @@ public class ResponseHandler {
 
         int messageId = getMessageId(session.promocode);
 
-        ResponseTable responseTable = new ResponseTable("and user = '"+ user+"' and campaign = '"+ campaign+"' and messageId = " + messageId + " and date(lastUpdate) = date('"+ session.timeStamp+"')", 1);
+        ResponseTable responseTable = new ResponseTable("and user = '"+ user+"' and campaign = '"+ campaign+"' and messageId = " + messageId, 1);
         responseTable.load(connection);
         Response response = responseTable.getNext();
 
@@ -59,10 +70,27 @@ public class ResponseHandler {
             System.out.println(" !Storing a new response");
             Response newResp = new Response(session.facebookId, campaign, messageId, 1, session.timeStamp);
             newResp.store(connection);
+            return;
         }
         else{
 
-            System.out.println(" !Found response for user" + session.facebookId + " update NOT IMPLEMENTED!");
+            System.out.println(" !Found response "+ response+" for user" + session.facebookId + " update NOT IMPLEMENTED!");
+
+            if(AbstractCampaign.isDaysBefore(response.lastUpdate, session.timeStamp, 0)){
+
+                // Same day. Ignore this. The user is responding to the same message
+                System.out.println(" !Duplicate response. Ignoring!");
+                return;
+
+            }
+            else{
+
+                // Increate the count with 1 and update the last update timestamp
+
+                Response updatedResponse = new Response(session.facebookId, campaign, messageId, response.count + 1, session.timeStamp);
+                updatedResponse.update(connection);
+
+            }
 
         }
 

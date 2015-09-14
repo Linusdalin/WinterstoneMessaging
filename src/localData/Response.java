@@ -17,9 +17,9 @@ public class Response {
 
     public final String facebookId;
     public final String campaignName;
-    private final int messageId;
+    public final int messageId;
     public final int count;
-    private final Timestamp lastUpdate;
+    public final Timestamp lastUpdate;
 
     public Response(String facebookId, String campaignName, int messageId, int count, Timestamp lastUpdate){
 
@@ -65,4 +65,21 @@ public class Response {
     }
 
 
+    public void update(Connection connection) {
+
+        String update = "update response set values (" + toSQLValues() + ") where user = '"+ facebookId+"'";
+
+        System.out.println("Update with: " + update);
+
+        try{
+
+            Statement statement = connection.createStatement();
+            statement.execute(update);
+
+        }catch(SQLException e){
+
+            System.out.println("Error accessing data in database. SQL:" + update);
+            e.printStackTrace();
+        }
+    }
 }
