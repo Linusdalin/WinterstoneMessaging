@@ -30,9 +30,11 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
     private static final int MIN_AVERAGE_BET = 490;
     private static final int MIN_ACTIONS = 130;
     private static final int LONG_SESSION = 350;
+    private static final int VERY_LONG_SESSION = 700;
 
     private static final int VERY_UNLUCKY_PAYOUT = 60;
-    private static final int UNLUCKY_PAYOUT = 70;
+    private static final int UNLUCKY_PAYOUT = 75;
+    private static final int BAD_PAYOUT = 80;
 
     private static final int MAX_REMAINING_BALANCE = 2000 ;
 
@@ -87,7 +89,9 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
         if( yesterdayStats.getActions() >= MIN_ACTIONS){
 
             // There are two different thresholds for shorter and longer sessions.
-            if(yesterdayStats.getPayout() < VERY_UNLUCKY_PAYOUT || (yesterdayStats.getPayout() < UNLUCKY_PAYOUT && yesterdayStats.getActions() > LONG_SESSION)){
+            if(yesterdayStats.getPayout() < VERY_UNLUCKY_PAYOUT ||
+                    (yesterdayStats.getPayout() < UNLUCKY_PAYOUT && yesterdayStats.getActions() > LONG_SESSION) ||
+                    (yesterdayStats.getPayout() < BAD_PAYOUT && yesterdayStats.getActions() > VERY_LONG_SESSION)){
 
                 if(yesterdayStats.getAverageBet() > MIN_AVERAGE_BET ){
                     if(user.balance < MAX_REMAINING_BALANCE ){

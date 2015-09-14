@@ -89,6 +89,8 @@ public class PlayerInfo {
     public Payment getLastPayment() {
 
         getPaymentsForUser();
+        if(userPayments.size() == 0)
+            return null;
         return userPayments.get(userPayments.size() - 1);
 
     }

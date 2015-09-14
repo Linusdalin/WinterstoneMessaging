@@ -142,7 +142,6 @@ public abstract class AbstractCampaign implements CampaignInterface{
         this.shortName = abbr;
     }
 
-    @Override
     public String getShortName() {
         return shortName;
     }

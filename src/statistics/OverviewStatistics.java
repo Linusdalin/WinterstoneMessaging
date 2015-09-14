@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class OverviewStatistics {
 
-    private static final int DAYS = 10;
+    private static final int DAYS = 12;
 
     /***********************************************************
      *
@@ -83,7 +83,10 @@ public class OverviewStatistics {
 
         int sent        = getSentMessages(day, campaign, localConnection);
         int sessions    = getSessions(day, campaign, remoteConnection);
-        int ctr = (100*sessions)/sent;
+        int ctr = 0;
+
+        if(sent > 0)
+            ctr = (100*sessions)/sent;
 
         System.out.print(sent+"\t"+sessions+"\t"+ ctr+"%\t\t");
 
@@ -105,7 +108,7 @@ public class OverviewStatistics {
 
     private static int getSentMessages(Timestamp day, CampaignInterface campaign, Connection connection){
 
-        String sql = "select count(*) from exposure where date(timestamp) = '"+ day.toString().substring(0, 10)+"' and promoCode like ('%"+campaign.getTag()+"%')";
+        String sql = "select count(*) from exposure where date(exposureTime) = '"+ day.toString().substring(0, 10)+"' and promoCode like ('%"+campaign.getTag()+"%')";
 
         try{
 

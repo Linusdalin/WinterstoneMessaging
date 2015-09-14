@@ -1,5 +1,7 @@
 package output;
 
+import email.EmailInterface;
+import email.ReleaseEmail;
 import remoteData.dataObjects.User;
 
 import java.net.URLEncoder;
@@ -17,17 +19,9 @@ public class EmailHandler {
 
 
     private String overrideUser = null;
-    private String message = null;
-    private String subject = null;
-    private String plain = null;
-    private String title = null;
-    private String url = null;
-    private String game = "";
+    private EmailInterface email = null;
 
-    private String messageTemplate;
     private User recipient;
-    public static final String MESSAGE_TEMPLATE = "campaignMailTemplate";
-    public static final String GAME_TEMPLATE = "messageMailTemplate";
 
     public EmailHandler( ){
 
@@ -40,31 +34,17 @@ public class EmailHandler {
         this.overrideUser = override;
     }
 
-    public EmailHandler withMessage(String message) {
+    public EmailHandler withEmail(EmailInterface email) {
 
-        this.message = message;
+        this.email = email;
         return this;
     }
 
-    public EmailHandler withAlt(String message) {
-
-        this.plain = message;
-        return this;
-    }
-
-    public EmailHandler withSubject(String subject) {
-
-        this.subject = subject;
-        return this;
-    }
-
-    public EmailHandler withRecipient(User user) {
+    public EmailHandler toRecipient(User user) {
 
         this.recipient = user;
         return this;
     }
-
-
 
     /***********************************************************
      *
@@ -76,25 +56,14 @@ public class EmailHandler {
 
     public boolean send() {
 
-        if(message == null){
-            System.out.println("No message given");
+        if(email == null){
+            System.out.println("No email");
             return false;
 
         }
 
-        if(plain == null){
-            System.out.println("No plain alt given");
-            return false;
 
-        }
-
-        if(subject == null){
-            System.out.println("No subject given");
-            return false;
-
-        }
-
-        System.out.println("Preparing to send email \""+ message+"\"");
+        System.out.println("Preparing to send email \""+ email.getSubject()+"\"");
 
         if(recipient == null){
             System.out.println("No recipient given");
@@ -108,22 +77,34 @@ public class EmailHandler {
             actualUser = overrideUser;
         }
 
+        String title = null;
+        String imageURL = null;
+        String link = null;
+
+        if(email instanceof ReleaseEmail){
+
+            // Special configuration for release emails
+            ReleaseEmail instance = (ReleaseEmail)email;
+
+            title    = instance.getTitle();
+            imageURL = instance.getImageURL();
+            link     = instance.getLink();
+
+        }
+
+
         //recipient = "627716024"; //TODO: Remove this when tested to actually send
 
         RequestHandler requestHandler = new RequestHandler(mailService);
 
-        String imageLinkURL = "https://apps.facebook.com/slotamerica/?ref=email&promoCode=email&game=" + game;
-
-        imageLinkURL = "http://aftonbladet.se";
-
         String response = requestHandler.executePost(
                         "playerId=" + actualUser +
-                        "&templateName=" + messageTemplate +
-                        "&subject=" + subject +
+                        "&templateName=" + email.getTemplate() +
+                        "&subject=" + email.getSubject() +
                         (title != null ? "&title=" + URLEncoder.encode(title) : "") +
-                        (url != null ? "&imageURL=" + URLEncoder.encode( url ) + "&imageLinkURL="+URLEncoder.encode(imageLinkURL)  : "") +
-                        "&textVersion=" + URLEncoder.encode(plain) +
-                        "&htmlVersion="+ URLEncoder.encode(message));
+                        (imageURL != null ? "&imageURL=" + URLEncoder.encode( imageURL ) + "&imageLinkURL="+URLEncoder.encode(link)  : "") +
+                        "&textVersion=" + URLEncoder.encode(email.getPlainText()) +
+                        "&htmlVersion="+ URLEncoder.encode(email.getBody()));
 
         if(response != null){
             System.out.println("   -> Got Response: " + response);
@@ -137,23 +118,5 @@ public class EmailHandler {
 
     }
 
-    public EmailHandler withTemplate(String messageTemplate) {
-
-        this.messageTemplate = messageTemplate;
-        return this;
-    }
-
-    public EmailHandler withImageURL(String url, String game) {
-
-        this.url = url;
-        this.game = game;
-        return this;
-    }
-
-    public EmailHandler withTitle(String title) {
-
-        this.title = title;
-        return this;
-    }
 
 }

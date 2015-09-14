@@ -12,7 +12,8 @@ import java.sql.Timestamp;
  *
  *              Sending a message to players early in the progress to get them going
  *
- *
+ *          Sending a 2 day activation poke and a 7 day activation poke with a
+ *          8 day cool down will ensure that the message is only sent once per player
  */
 
 public class ActivationPokeCampaign extends AbstractCampaign implements CampaignInterface {
@@ -24,7 +25,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
     // Trigger specific config data
     private static final int Min_Sessions = 3;
     private static final int Max_Sessions = 12;
-    private static final int Max_Age = 5;
+    private static final int Max_Age = 12;
 
     ActivationPokeCampaign(int priority, CampaignState active){
 
@@ -81,12 +82,24 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
         if(isDaysBefore(lastSession, executionDay, 2)){
 
 
-            System.out.println("    -- Sending a two day activation poke" );
+            System.out.println("    -- Sending a day two activation poke" );
             return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica? Check out the rewards by clicking on the level bar.!",
                     user, getPriority(), getTag(),  Name, 3, getState());
 
 
         }
+
+
+        if(isDaysBefore(lastSession, executionDay, 7)){
+
+
+            System.out.println("    -- Sending a seven day activation poke" );
+            return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica? Check out the rewards by clicking on the level bar.!",
+                    user, getPriority(), getTag(),  Name, 3, getState());
+
+
+        }
+
 
         System.out.println("    -- Campaign " + Name + " not firing. Not the right day. (last:" + lastSession.toString() );
         return null;

@@ -134,11 +134,15 @@ public class CampaignEngine {
 
         try {
 
+            Thread.sleep(3000);
             System.in.read();
 
         } catch (IOException e) {
 
             System.out.println("Error getting input. Aborting");
+            return;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
             return;
         }
 
@@ -207,7 +211,7 @@ public class CampaignEngine {
             }
             else{
 
-                System.out.println("    -- Last exposure for campaign "+ campaign.getName()+" is  null");
+                //System.out.println("    -- Last exposure for campaign "+ campaign.getName()+" is  null");
 
             }
 

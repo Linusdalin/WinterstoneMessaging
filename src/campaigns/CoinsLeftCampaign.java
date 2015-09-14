@@ -1,11 +1,11 @@
 package campaigns;
 
 import action.ActionInterface;
-import action.Email;
+import email.AbstractEmail;
 import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
-import remoteData.dataObjects.GameSession;
+import email.NotificationEmail;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -28,9 +28,10 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 10;   // 10 days inactivity before kicking in this offer
     private static final int INACTIVITY_LIMIT2   = 16;   // 16 days inactivity before trying again
+    private static final int INACTIVITY_LIMIT3   = 22;   // 22 days inactivity before trying again
 
 
-    private static final int COINS_FOR_FREE_PLAYER           = 5000;
+    private static final int COINS_FOR_FREE_PLAYER           = 4500;
     private static final int COINS_FOR_LOW_SPENDER           = 15000;
     private static final int COINS_FOR_HIGH_SPENDER          = 20000;
 
@@ -76,7 +77,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
         }
         int inactivity = getDaysBetween(lastSession, executionDay);
 
-        if(inactivity == INACTIVITY_LIMIT || inactivity == INACTIVITY_LIMIT2 ){
+        if(inactivity == INACTIVITY_LIMIT || inactivity == INACTIVITY_LIMIT2 || inactivity == INACTIVITY_LIMIT3){
 
             // Get the players on the day
 
@@ -133,8 +134,8 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
     }
 
-    private Email coinLeftEmail(User user) {
-        return new Email("there is more fun awaiting you", "<p>You have <b>"+ user.balance+"</b> coins left on your account.</p><p> There are some fabulous new games you can try out with it. </p>",
+    private AbstractEmail coinLeftEmail(User user) {
+        return new NotificationEmail("there is more fun awaiting you", "<p>You have <b>"+ user.balance+"</b> coins left on your account.</p><p> There are some fabulous new games you can try out with it. </p>",
                 "You have "+ user.balance+ " coins left on your account.There are some fabulous new games you can try out with it.");
     }
 

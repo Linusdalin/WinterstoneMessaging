@@ -1,11 +1,11 @@
 package campaigns;
 
 import action.ActionInterface;
-import action.Email;
+import email.AbstractEmail;
 import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
-import remoteData.dataObjects.GameSession;
+import email.EmailInterface;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -23,16 +23,16 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
     private static final int CoolDown_Days = 5;     // Avoid duplicate runs
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 17;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 18;   // Max days inactivity to get message
     private static final int INACTIVITY_LIMIT_PAYING    = 30;   // Max days inactivity to get message
     private static final int ACTIVITY_MIN   = 8;                // Min sessions to be active
 
 
     private final String message;
     private String gameCode;
-    private final Email email;
+    private final EmailInterface email;
 
-    GameNotification(int priority, CampaignState activation, String gameCode, String message, Email email){
+    GameNotification(int priority, CampaignState activation, String gameCode, String message, EmailInterface email){
 
         super(Name, priority, activation);
         this.gameCode = gameCode;

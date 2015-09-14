@@ -9,16 +9,26 @@ import java.io.IOException;
  *              Execute is the main class for running campaigns
  *
  *              This will both produce and consume....
+ *
+ *              TODO:
+ *
+ *               - Get statistics per campaign+message per day
+ *               - Generate an email
+ *               - Test a specific player
+ *               - Add exposure for message as a block
+ *               - Check recent click to add allowed messages
+ *               - Check the overrun functionality for game message over churn poke and teh 45 limit
+ *               - connect Happy Hour event with Happy Hour Campaign (check that it is on)
  */
 
 public class Execute {
 
     private static final int     Threshold              = 50;
-    private static final int     Send_Cap               = 2000;
-    private static final int     User_Cap               = 120000;
+    private static final int     Send_Cap               = 1;
+    private static final int     User_Cap               = 1000;
     private static final boolean DRY_RUN                = true;
     private static final boolean OVERRIDE_TIME_CONSTR   = true;
-    private static final String  UserScrapeStart        = "2015-07-23";                      // "2015-02-01";
+    private static final String  UserScrapeStart        = "2015-09-06 18:54";                // "2015-01-18";
     private static final String  TEST_USER              = null;                              // "627716024";          // Tina:     "105390519812878";
 
 

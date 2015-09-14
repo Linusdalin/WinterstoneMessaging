@@ -27,10 +27,10 @@ public class EngagementCampaign extends AbstractCampaign implements CampaignInte
 
     // Trigger specific config data
     private static final int PAYMENT_INACTIVITY_LIMIT   = 180;      // Only players that has paid since
-    private static final int PAYMENT_MIN                = 2;        // Minimum number of payments
-    private static final int SESSION_MIN                = 10;       // Minimum number of sessions
+    private static final int PAYMENT_MIN                = 1;        // Minimum number of payments
+    private static final int SESSION_MIN                = 5;       // Minimum number of sessions
     private static final int INACTIVITY_MIN             = 8;        // Minimum inactivity before the campaign starts
-    private static final int INACTIVITY_MAX             = 20;       // Max inactivity before the campaign ends
+    private static final int INACTIVITY_MAX             = 40;       // Max inactivity before the campaign ends
 
     EngagementCampaign(int priority, CampaignState activation){
 
@@ -93,6 +93,12 @@ public class EngagementCampaign extends AbstractCampaign implements CampaignInte
         }
 
         Payment lastPayment = playerInfo.getLastPayment();
+        if(lastPayment == null){
+
+            System.out.println("    -- Campaign " + Name + " no payments found." );
+            return null;
+        }
+
         int daySincePayment = getDaysBetween(lastPayment.timeStamp, executionTime);
 
         if(daySincePayment > PAYMENT_INACTIVITY_LIMIT){

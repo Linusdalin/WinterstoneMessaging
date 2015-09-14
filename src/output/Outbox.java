@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Outbox {
 
-    private List<ActionInterface> queue = new ArrayList<ActionInterface>();
+    private List<ActionInterface> queue = new ArrayList<ActionInterface>(4000);
     private final int cap;
     private boolean dryRun;
     private String testUser;

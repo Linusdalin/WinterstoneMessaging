@@ -1,6 +1,8 @@
 package action;
 
 import campaigns.CampaignState;
+import email.AbstractEmail;
+import email.EmailInterface;
 import localData.Exposure;
 import output.EmailHandler;import remoteData.dataObjects.User;
 
@@ -16,15 +18,15 @@ import java.sql.Timestamp;
 
 public class EmailAction extends Action implements ActionInterface{
 
-    public static final boolean inUse = true;
-    private final Email email;
+    public static final boolean inUse = false;
+    private final EmailInterface email;
 
     /******************************************************
      *
      *          Create a new email action
      *
      *
-     * @param email                   - the email to send
+     * @param email                 - the message (html)
      * @param user                    - recipient
      * @param significance
      * @param campaignName            - campaign for followup in exposure tracking
@@ -33,9 +35,9 @@ public class EmailAction extends Action implements ActionInterface{
      */
 
 
-    public EmailAction(Email email, User user, int significance, String campaignName, int messageId, CampaignState state){
+    public EmailAction(EmailInterface email, User user, int significance, String campaignName, int messageId, CampaignState state){
 
-        super(ActionType.EMAIL, user, email.plainText, significance, campaignName, messageId, state );
+        super(ActionType.EMAIL, user, email.getPlainText(), significance, campaignName, messageId, state );
         this.email = email;
         setPromoCode(createPromoCode(campaignName, messageId));
 
@@ -75,10 +77,8 @@ public class EmailAction extends Action implements ActionInterface{
         System.out.println("! Executing " + type.name() + " for player " + user);
 
         EmailHandler handler = new EmailHandler(testUser)
-                .withMessage( email.html )
-                .withAlt( email.plainText )
-                .withSubject( email.subject )
-                .withRecipient( user );
+                .withEmail( email )
+                .toRecipient( user );
 
         // Now check if we are to send off the message or just log it (dry run)
 
