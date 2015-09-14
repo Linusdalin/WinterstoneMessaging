@@ -25,7 +25,7 @@ public class Execute {
 
     private static final int     Threshold              = 50;
     private static final int     Send_Cap               = 1;
-    private static final int     User_Cap               = 1000;
+    private static final int     User_Cap               = 10;
     private static final boolean DRY_RUN                = true;
     private static final boolean OVERRIDE_TIME_CONSTR   = true;
     private static final String  UserScrapeStart        = "2015-09-06 18:54";                // "2015-01-18";

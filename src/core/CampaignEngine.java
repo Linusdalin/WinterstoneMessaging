@@ -10,6 +10,7 @@ import localData.Exposure;
 import localData.ExposureTable;
 import output.Outbox;
 import remoteData.dataObjects.*;
+import response.ResponseHandler;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -185,7 +186,8 @@ public class CampaignEngine {
         PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
 
         TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo);
-        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures);
+        ResponseHandler handler = new ResponseHandler( user.facebookId );
+        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler, localConnection, dbConnection);
 
 
         ActionInterface selectedAction = null;

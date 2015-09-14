@@ -19,8 +19,7 @@ public interface CampaignInterface {
     String getShortName();
     String getTag();
 
-
-        String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime);
+    String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime);
     int getCoolDown();
 
     boolean failCoolDown(Exposure lastExposure, Timestamp executionTime);

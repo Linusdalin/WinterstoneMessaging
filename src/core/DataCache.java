@@ -3,6 +3,7 @@ package core;
 import localData.CachedUser;
 import localData.CachedUserTable;
 import remoteData.dataObjects.*;
+import response.ResponseHandler;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -154,11 +155,14 @@ public class DataCache {
         while(session != null){
 
             updateLastSession(session);
+            ResponseHandler responseHandler = new ResponseHandler(session.facebookId);
+            responseHandler.storeResponse(session, connection);
             session = gameSessions.getNext();
         }
 
 
     }
+
 
     private void updateLastSession(GameSession session) {
 

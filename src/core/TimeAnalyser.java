@@ -1,6 +1,10 @@
 package core;
 
 import localData.ExposureTable;
+import response.ResponseStat;
+import response.ResponseHandler;
+
+import java.sql.Connection;
 
 /**************************************************************************
  *
@@ -19,7 +23,10 @@ public class TimeAnalyser {
         this.playerInfo = playerInfo;
     }
 
-    public int eligibilityForCommunication(ExposureTable campaignExposures){
+    public int eligibilityForCommunication(ExposureTable campaignExposures, ResponseHandler handler, Connection localConnection, Connection remoteConnection){
+
+        ResponseStat response = handler.getOverallResponseRate(localConnection, remoteConnection);
+        System.out.println("      Got response " + response.toString() + " for user.");
 
         int exposures = campaignExposures.getUserExposure(playerInfo.getUser(), Personal_CoolOff);
 
