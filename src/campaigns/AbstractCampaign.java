@@ -2,7 +2,6 @@ package campaigns;
 
 import core.PlayerInfo;
 import localData.Exposure;
-import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -18,7 +17,7 @@ import java.util.Calendar;
 
 public abstract class AbstractCampaign implements CampaignInterface{
 
-    private static final int HIGH_SPENDER       = 10;   // Average spend of $15
+    private static final int HIGH_SPEND_AVERAGE = 10;   // Average spend of $15
 
     private String name;
     private int priority;         // Campaign base priority before persoal or situational adjustments
@@ -192,13 +191,10 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     protected boolean isHighSpender(User user) {
 
-        return user.payments > 0 && user.amount / user.payments > HIGH_SPENDER;
+        return user.payments >= 3 &&
+                (user.amount / user.payments) > HIGH_SPEND_AVERAGE;
     }
 
-    protected boolean isLowSpender(User user) {
-
-        return user.payments > 0 && user.amount / user.payments < HIGH_SPENDER;
-    }
 
     protected boolean isFrequent(User user) {
 

@@ -97,7 +97,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
 
 
-            }else if(isLowSpender(user)){
+            }else if(isPaying(user)){
 
                 if(user.balance > COINS_FOR_LOW_SPENDER){
 

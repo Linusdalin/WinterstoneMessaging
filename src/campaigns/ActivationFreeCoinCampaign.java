@@ -12,8 +12,9 @@ import java.sql.Timestamp;
  *
  *          Sending a message to players in the progress to kep them going
  *
- *          Sending a 2 day activation poke and a 7 day activation poke with a
- *          8 day cool down will ensure that the message is only sent once per player
+ *          //TODO: We want to be able to repeat the message n times provided there is no response
+ *
+ *
  */
 
 public class ActivationFreeCoinCampaign extends AbstractCampaign implements CampaignInterface {
@@ -25,8 +26,9 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
     // Trigger specific config data
     private static final int Min_Sessions = 3;
     private static final int Max_Sessions = 25;
-    private static final int Min_Age = 10;
-    private static final int Max_Age = 20;
+    private static final int Min_Age = 12;
+
+    private static final int IdleDays = 4;
 
     ActivationFreeCoinCampaign(int priority, CampaignState active){
 
@@ -65,12 +67,6 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
         }
 
-        if(getDaysBetween(user.created, executionDay) > Max_Age){
-
-            System.out.println("    -- Campaign " + Name + " not firing. Player too old (created: " + user.created );
-            return null;
-
-        }
 
         if(getDaysBetween(user.created, executionDay) < Min_Age){
 
@@ -89,16 +85,30 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
         }
 
-        if(isDaysBefore(lastSession, executionDay, 3)){
+        if(getDaysBetween(lastSession, executionDay) > IdleDays){
+
+            System.out.println("    -- Sending a day "+ IdleDays+" activation poke with coins" );
+
+            if(isPaying(user)){
+
+                return new NotificationAction( user.name +", We have added 1000 free coins for you to play with on your account. Click here to collect and play!",
+                        user, getPriority(), getTag(),  Name, 1, getState())
+                        .withReward("8606fa50-6c62-4c25-ba21-40600fc79d42");
 
 
-            System.out.println("    -- Sending a day three activation poke" );
-            return new NotificationAction( user.name +", We have added 3000 coins for you to play with on your account. Click here to collect and play!",
-                    user, getPriority(), getTag(),  Name, 1, getState())
-                    .withReward("<undefined>");                                  // Todo: Add reward here
+            }
+            else{
+
+                return new NotificationAction( user.name +", We have added 3000 coins extra on top of the bonus for you to play with on your account. Click here to collect and play!",
+                        user, getPriority(), getTag(),  Name, 1, getState())
+                        .withReward("512853e3-8389-453a-b92d-479e330414ba");
+
+
+            }
 
 
         }
+
 
 
 

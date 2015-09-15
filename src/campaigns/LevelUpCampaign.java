@@ -3,7 +3,6 @@ package campaigns;
 import action.ActionInterface;
 import action.NotificationAction;
 import core.PlayerInfo;
-import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -24,25 +23,28 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
 
     // Campaign config data
     private static final String Name = "Level-Up";
-    private static final int CoolDown_Days = 14;      // This should really be once per level. Especially when players are not playing too much
+    private static final int CoolDown_Days = 11;      // This should really be once per level. Especially when players are not playing too much
 
     // Trigger specific config data
 
-    private static final int Level_up_started   = 10;
-    private static final int Level_up_halfWay   = 25;
-    private static final int Level_up_50        = 48;
-    private static final int Level_up_100       = 97;
-    private static final int Level_up_150       = 148;
-    private static final int Level_up_200       = 198;
+    private static final int Level_up_started       = 10;
+    private static final int Level_up_close         = 23;
+    private static final int Level_up_2500          = 25;
+    private static final int Level_up_50            = 48;
+    private static final int Level_up_100           = 97;
+    private static final int Level_up_150           = 148;
+    private static final int Level_up_200           = 198;
 
 
     private static final String[] messages = {
             "You are moving up the levels. Already at 10! Don't forget to check out the bonuses you get by levelling up at Slot America!",
-            "You reached level 25! Congratulations. You are halfway to the level 50 bonus!",
+            "",  // Deprecated
             "You are getting close to the level 50 bonus! The diamond bonus baseline will give you more free coins. Click here for a final push...",
             "You are getting close to the level 100 bonus with a personal permanent coin discount Click here for a final push...",
             "You are getting close to the level 150 bonus! The new diamond bonus baseline will give you even more free coins. Click here for a final push...",
             "You are getting close to the level 200 bonus with an INCREASED personal permanent coin discount Click here for a final push...",
+            "You closing in on level 25! There will be a little extra bonus at 25. Click here to reach the final stage.",
+            "You reached level 25! Congratulations. Click here for a little surprise bonus!",
     };
 
 
@@ -71,15 +73,15 @@ LevelUpCampaign(int priority, CampaignState activation){
     public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
 
 
-        //System.out.println("Registration Date: " + getDay(user.created).toString());
-        Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
         int message;
 
         if(user.level == Level_up_started){
             message = 0;
-        }else if(user.level == Level_up_halfWay){
-            message = 1;
+        }else if(user.level == Level_up_close){
+            message = 6;
+        }else if(user.level == Level_up_2500){
+            message = 7;
         }else if(user.level == Level_up_50){
             message = 2;
         }else if(user.level == Level_up_100){
@@ -106,14 +108,8 @@ LevelUpCampaign(int priority, CampaignState activation){
         }
 
         int inactivation = getDaysBetween(lastSession, executionTime);
-        if(inactivation <= 1){
 
-
-            System.out.println("    -- Player is active. Not sending a message" );
-            return null;
-
-        }
-        else if(inactivation > 10){
+        if(inactivation > 10){
 
 
             System.out.println("    -- Player is NOT active. Not sending a message" );
@@ -124,9 +120,14 @@ LevelUpCampaign(int priority, CampaignState activation){
 
 
                 System.out.println("    -- Campaign " + Name + " firing message for level " + user.level );
-                return new NotificationAction(messages[message], user, getPriority(), getTag(),  Name, (message + 1), getState());
+                NotificationAction action =  new NotificationAction(messages[message], user, getPriority(), getTag(),  Name, (message + 1), getState());
 
+            if(message == 7){
 
+                action.withReward("9282b539-40b0-4744-a793-2e022bfd85a8");
+            }
+
+            return action;
         }
     }
 

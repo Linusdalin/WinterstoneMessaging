@@ -24,6 +24,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
     // Trigger specific config data
     private static final int Min_Sessions = 20;
+    private static final int Max_Inactivity = 30;
 
     GameActivationCampaign(int priority, CampaignState active){
 
@@ -55,9 +56,23 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
         }
 
+        Timestamp lastSession = playerInfo.getLastSession();
+        if(lastSession == null){
+
+            System.out.println("    -- Campaign " + Name + " not firing. No sessions for user" );
+            return null;
+
+        }
+        int inactivity = getDaysBetween(lastSession, executionDay);
+
+        if(inactivity >  Max_Inactivity){
+
+            System.out.println("    -- Campaign " + Name + " not firing. User inactive too long. (" + inactivity + " >" + Max_Inactivity + ")" );
+            return null;
+        }
 
 
-        GameRecommender recommender = new GameRecommender(playerInfo, executionTime);
+            GameRecommender recommender = new GameRecommender(playerInfo, executionTime);
         GameRecommendation gameRecommendation = recommender.getGameRecommendation();
 
         if(gameRecommendation == null){
