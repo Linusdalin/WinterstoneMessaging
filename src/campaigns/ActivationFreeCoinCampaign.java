@@ -27,8 +27,9 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
     private static final int Min_Sessions = 3;
     private static final int Max_Sessions = 25;
     private static final int Min_Age = 12;
+    private static final int Max_Age = 20;
 
-    private static final int IdleDays = 4;
+    private static final int IdleDays = 5;
 
     ActivationFreeCoinCampaign(int priority, CampaignState active){
 
@@ -75,6 +76,13 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
         }
 
+        if(getDaysBetween(user.created, executionDay) > Max_Age){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Player too old (created: " + user.created );
+            return null;
+
+        }
+
 
 
         Timestamp lastSession = playerInfo.getLastSession();
@@ -91,17 +99,18 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
             if(isPaying(user)){
 
-                return new NotificationAction( user.name +", We have added 1000 free coins for you to play with on your account. Click here to collect and play!",
+                return new NotificationAction( user.name +", We have added 3000 coins extra on top of the bonus for you to play with on your account. Click here to collect and play!",
                         user, getPriority(), getTag(),  Name, 1, getState())
-                        .withReward("8606fa50-6c62-4c25-ba21-40600fc79d42");
+                        .withReward("512853e3-8389-453a-b92d-479e330414ba");
 
 
             }
             else{
 
-                return new NotificationAction( user.name +", We have added 3000 coins extra on top of the bonus for you to play with on your account. Click here to collect and play!",
+                return new NotificationAction( user.name +", We have added 1000 free coins for you to play with on your account. Click here to collect and play!",
                         user, getPriority(), getTag(),  Name, 1, getState())
-                        .withReward("512853e3-8389-453a-b92d-479e330414ba");
+                        .withReward("8606fa50-6c62-4c25-ba21-40600fc79d42");
+
 
 
             }

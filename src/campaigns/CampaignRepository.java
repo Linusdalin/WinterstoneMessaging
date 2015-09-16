@@ -39,6 +39,7 @@ public class CampaignRepository {
         //add(new EngagementCampaign      ( 65, CampaignState.TEST_MODE ));
         //add(new FakeCoinsLeftCampaign   ( 90, CampaignState.TEST_MODE));
         add(new ReactivationCampaign    ( 60, CampaignState.TEST_MODE));
+        add(new PersonalBonusCampaign    ( 60, CampaignState.TEST_MODE));
 
         //add(new GameNotification        (90, CampaignState.ACTIVE, "ribbons", "Game of the week: Ribbons is our \"reel\" American tribute.", null));
 
