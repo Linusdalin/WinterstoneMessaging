@@ -4,6 +4,7 @@ import campaigns.CampaignState;
 import localData.Exposure;
 import output.NotificationHandler;
 import remoteData.dataObjects.User;
+import rewards.Reward;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -105,6 +106,13 @@ public class NotificationAction extends Action implements ActionInterface{
         return this;
     }
 
+    public NotificationAction withReward(Reward reward) {
+
+        this.reward = reward.getCode();
+        return this;
+    }
+
+
     public NotificationAction withGame(String game) {
         this.game = game;
         return this;
@@ -116,7 +124,6 @@ public class NotificationAction extends Action implements ActionInterface{
         return tag + "-" + messageType;
 
     }
-
 
 
 }

@@ -4,6 +4,7 @@ import action.ActionInterface;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
+import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
@@ -99,17 +100,18 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
             if(isPaying(user)){
 
-                return new NotificationAction( user.name +", We have added 3000 coins extra on top of the bonus for you to play with on your account. Click here to collect and play!",
+                return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationPaying.getCoins()+" coins extra on top of the bonus for you to play with on your account. Click here to collect and play!",
                         user, getPriority(), getTag(),  Name, 1, getState())
-                        .withReward("512853e3-8389-453a-b92d-479e330414ba");
+                        .withReward(RewardRepository.freeCoinAcitivationPaying);
+
 
 
             }
             else{
 
-                return new NotificationAction( user.name +", We have added 1000 free coins for you to play with on your account. Click here to collect and play!",
+                return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationFree.getCoins()+" free coins for you to play with on your account. Click here to collect and play!",
                         user, getPriority(), getTag(),  Name, 1, getState())
-                        .withReward("8606fa50-6c62-4c25-ba21-40600fc79d42");
+                        .withReward(RewardRepository.freeCoinAcitivationFree);
 
 
 

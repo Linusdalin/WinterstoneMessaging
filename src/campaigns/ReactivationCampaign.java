@@ -5,6 +5,7 @@ import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
+import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
