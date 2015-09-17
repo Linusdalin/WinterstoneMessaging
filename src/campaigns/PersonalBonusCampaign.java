@@ -23,7 +23,7 @@ public class PersonalBonusCampaign extends AbstractCampaign implements CampaignI
     private static final int CoolDown_Days = 12;     // Only once per player
 
     // Trigger specific config data
-    private static final Timestamp LEVEL_SYSTEM_LANCH = Timestamp.valueOf("2015-08-26");     // The day when the level system was introduced
+    private static final Timestamp LEVEL_SYSTEM_LANCH = Timestamp.valueOf("2015-08-26 00:00:00");     // The day when the level system was introduced
     private static final int LEVEL   = 100;                      // The level where players get a purchase bonus
     private static final int MIN_ACTIVITY   = 40;           // This set very high to test out potential
 

@@ -1,10 +1,13 @@
 package localData;
 
+import campaigns.CampaignInterface;
 import remoteData.dataObjects.GenericTable;
 import remoteData.dataObjects.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +67,52 @@ public class ResponseTable extends GenericTable {
         }
 
         return responses;
+
+    }
+
+    /***************************************************************************
+     *
+     *              Get the number of responses for a user for a specific campaign
+     *
+     * @param user              - the user
+     * @param campaign          - the campaign
+     * @return                  - The count of responses
+     */
+
+    public int getResponses(User user, CampaignInterface campaign){
+
+        return getResponses(user, campaign, -1);
+    }
+
+    public int getResponses(User user, CampaignInterface campaign, int messageId){
+
+        String query = "select sum(count) from response where user = '"+ user.facebookId+"' and campaign = '"+ campaign.getTag()+"'";
+
+        if(messageId != -1){
+            query += " and messageId = " + messageId;
+        }
+
+        try{
+
+            Statement statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+
+            if(resultSet == null)
+                return 0;
+
+            if(!resultSet.next())
+                return 0;
+
+            return resultSet.getInt( 1 );
+
+        }catch(SQLException e){
+
+            System.out.println("Error accessing data in database with the query:\n" + query);
+            e.printStackTrace();
+        }
+
+
+        return 0;
 
     }
 

@@ -1,10 +1,16 @@
 package core;
 
+import campaigns.CampaignInterface;
 import localData.ExposureTable;
+import localData.ResponseTable;
+import remoteData.dataObjects.User;
 import response.ResponseStat;
 import response.ResponseHandler;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 
 /**************************************************************************
  *
@@ -30,19 +36,30 @@ public class TimeAnalyser {
 
         int exposures = campaignExposures.getUserExposure(playerInfo.getUser(), Personal_CoolOff);
 
-        if(exposures > 1 ){
+        int limit = 1;
 
-            System.out.println("Already tvo messages this week. Not sending any more");
+        if(exposures > 1){
+
+            System.out.println("Already "+ exposures+" messages this week. Not sending any more");
             return 0;
         }
 
         if(exposures == 1 ){
 
-            System.out.println("Already one message this week. Only high priority messages");
+            System.out.println("Already "+ exposures+" message this week. Only high priority messages");
             return 65;
         }
 
         return 100;
+    }
+
+
+    private boolean hasResponded(Connection connection, User user, CampaignInterface campaign){
+
+        ResponseTable responseTable = new ResponseTable(connection);
+        int responses = responseTable.getResponses(user, campaign);
+
+        return (responses > 0);
     }
 
 }

@@ -41,7 +41,7 @@ public class CampaignRepository {
         add(new ReactivationCampaign    ( 60, CampaignState.TEST_MODE));
         add(new PersonalBonusCampaign    ( 60, CampaignState.TEST_MODE));
 
-        //add(new GameNotification        (90, CampaignState.ACTIVE, "ribbons", "Game of the week: Ribbons is our \"reel\" American tribute.", null));
+        add(new GameNotification        (90, CampaignState.ACTIVE, "fire_fruit", "The heat is on! Our new game Fire Fruit is hot and freshly served. 2,500 free coins to try it out. Click Now!", null));
 
 
     }};
