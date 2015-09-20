@@ -1,7 +1,6 @@
 package campaigns;
 
 import action.ActionInterface;
-import email.AbstractEmail;
 import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
@@ -23,20 +22,22 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
     private static final int CoolDown_Days = 5;     // Avoid duplicate runs
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 18;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 30;   // Max days inactivity to get message
-    private static final int ACTIVITY_MIN   = 8;                // Min sessions to be active
+    private static final int INACTIVITY_LIMIT_FREE      = 15;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = 60;   // Max days inactivity to get message
+    private static final int ACTIVITY_MIN   = 10;               // Min sessions to be active
 
 
     private final String message;
     private String gameCode;
     private final EmailInterface email;
+    private String reward;
 
-    GameNotification(int priority, CampaignState activation, String gameCode, String message, EmailInterface email){
+    GameNotification(int priority, CampaignState activation, String gameCode, String message, EmailInterface email, String code){
 
         super(Name, priority, activation);
         this.gameCode = gameCode;
         this.email = email;
+        this.reward = code;
         setCoolDown(CoolDown_Days);
         this.message = message;
     }
@@ -102,12 +103,13 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
         System.out.println("    -- Campaign " + Name + " firing. ");
 
-        return new NotificationAction(message, user, getPriority(), getTag(), Name,  1, getState())
-                .withGame(gameCode)
-                .attach(emailAction);
+        NotificationAction action =  new NotificationAction(message, user, getPriority(), getTag(), Name,  1, getState())
+                .withGame(gameCode);
 
+        if(reward != null)
+            action.withReward(reward);
 
-
+        return action;
 
     }
 

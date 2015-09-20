@@ -198,6 +198,11 @@ public class CampaignEngine {
 
         for (CampaignInterface campaign : repository.getActiveCampaigns()) {
 
+            if(timeAnalyser.hasResponded(localConnection, user, campaign)){
+
+                System.out.println("   NOTE: The user has previously responded to the campaign. (Not implemented adjusting for this...)");
+            }
+
             String failCalendarReason = campaign.testFailCalendarRestriction(executionTime, overrideTime);
             Exposure lastExposure = campaignExposures.getLastExposure(campaign.getName(), user);
 

@@ -74,7 +74,7 @@ public class ResponseHandler {
         }
         else{
 
-            System.out.println(" !Found response "+ response+" for user" + session.facebookId + " update NOT IMPLEMENTED!");
+            System.out.println(" !Found response "+ response+" for user" + session.facebookId + " update!");
 
             if(AbstractCampaign.isDaysBefore(response.lastUpdate, session.timeStamp, 0)){
 
@@ -108,7 +108,18 @@ public class ResponseHandler {
     }
 
     private int getMessageId(String promoCode) {
-        return new Integer(promoCode.substring(promoCode.indexOf("-")+1));
+
+        try{
+
+            return new Integer(promoCode.substring(promoCode.indexOf("-")+1));
+
+        }catch(Exception e){
+
+            e.printStackTrace();
+            System.out.println("Fail to get message id from promo code: " + promoCode );
+            throw new RuntimeException();
+        }
+
     }
 
 }

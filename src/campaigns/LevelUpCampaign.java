@@ -22,7 +22,7 @@ import java.sql.Timestamp;
 public class LevelUpCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "Level-Up";
+    private static final String Name = "LevelUp";
     private static final int CoolDown_Days = 11;      // This should really be once per level. Especially when players are not playing too much
 
     // Trigger specific config data

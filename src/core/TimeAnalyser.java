@@ -38,13 +38,21 @@ public class TimeAnalyser {
 
         int limit = 1;
 
-        if(exposures > 1){
+        if(playerInfo.getUser().payments > 0)
+            limit++;
+
+        if(playerInfo.getUser().payments > 3)
+            limit++;
+
+
+
+        if(exposures > limit){
 
             System.out.println("Already "+ exposures+" messages this week. Not sending any more");
             return 0;
         }
 
-        if(exposures == 1 ){
+        if(exposures == limit ){
 
             System.out.println("Already "+ exposures+" message this week. Only high priority messages");
             return 65;
@@ -54,7 +62,7 @@ public class TimeAnalyser {
     }
 
 
-    private boolean hasResponded(Connection connection, User user, CampaignInterface campaign){
+    public boolean hasResponded(Connection connection, User user, CampaignInterface campaign){
 
         ResponseTable responseTable = new ResponseTable(connection);
         int responses = responseTable.getResponses(user, campaign);
