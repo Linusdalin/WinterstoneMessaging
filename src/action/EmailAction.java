@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 
 public class EmailAction extends Action implements ActionInterface{
 
-    public static final boolean inUse = false;
+    public static final boolean inUse = true;
     private final EmailInterface email;
 
     /******************************************************

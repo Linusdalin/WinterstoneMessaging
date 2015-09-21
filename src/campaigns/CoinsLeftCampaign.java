@@ -23,7 +23,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
     // Campaign config data
     private static final String Name = "Coins Left";
-    private static final int CoolDown_Days = 36500;     // Only once per player
+    private static final int CoolDown_Days = 14;     // Only once per player
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 10;   // 10 days inactivity before kicking in this offer

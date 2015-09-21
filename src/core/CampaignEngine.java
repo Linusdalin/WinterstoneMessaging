@@ -1,6 +1,7 @@
 package core;
 
 import action.ActionInterface;
+import action.ActionResponse;
 import action.ActionType;
 import campaigns.CampaignInterface;
 import campaigns.CampaignRepository;
@@ -84,6 +85,14 @@ public class CampaignEngine {
 
     }
 
+    public CampaignEngine(ConnectionHandler.Location dataSource) {
+
+        dbConnection    = ConnectionHandler.getConnection(dataSource);
+        cacheConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
+        localConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
+
+    }
+
 
     /*****************************************************************************
      *
@@ -117,8 +126,10 @@ public class CampaignEngine {
         while(user != null && (userCount++ < analysis_cap || analysis_cap == -1)){
 
             System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
+            PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
 
-            evaluateUser(user, executionTime, dbCache, campaignExposures, executionStatistics);
+            ActionInterface action = evaluateUser(playerInfo, executionTime, campaignExposures, executionStatistics);
+            handleAction(action, playerInfo, campaignExposures, executionStatistics);
 
             user = allPlayers.getNext();
             count++;
@@ -162,32 +173,71 @@ public class CampaignEngine {
     }
 
 
-    /************************************************************************''
-     *
-     *          Evaluate if and what to send to the player
-     *
-     *
-     *
-     *
-     * @param user                  - the user in question
-     * @param executionTime         - time of execution (for time dependent rules
-     * @param dbCache               - cached information from the database
-     * @param campaignExposures     - Exposure for campaigns
-     * @param executionStatistics   - collection of all statistics
-     */
+
+    public void playerTest(String[] testPlayers) {
+
+        DataCache dbCache = new DataCache(cacheConnection, "2015-01-01", analysis_cap);
+
+        System.out.println(" -- testing " + testPlayers.length + "players...");
+
+        Calendar calendar = Calendar.getInstance();
+        Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
+
+        ExecutionStatistics executionStatistics = new ExecutionStatistics(CampaignRepository.activeCampaigns);
+        ExposureTable campaignExposures = new ExposureTable(localConnection);
+
+        System.out.println("******************************************************\n* Passing over all players...");
+        int userCount = 0;
+
+        for (String userId : testPlayers) {
+
+            UserTable userTable = new UserTable("and userId = " + userId, 1);
+            User user = userTable.getNext();
+
+            PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
 
 
-    private void evaluateUser(User user, Timestamp executionTime, DataCache dbCache, ExposureTable campaignExposures, ExecutionStatistics executionStatistics) {
+            if(user == null){
+
+                System.out.println(" ----------------------------------------------------------\n  " + userCount + "- !!!!  User "+ userId + " not found!");
+                continue;
+            }
+
+            System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
+
+            ActionInterface action = evaluateUser(playerInfo, executionTime, campaignExposures, executionStatistics);
+
+
+            // Dummy execution ( dry-run hard coded to true) to see the outcome
+            action.execute(true, null, executionTime, localConnection);
+
+        }
+
+    }
+
+
+        /************************************************************************''
+        *
+        *          Evaluate if and what to send to the player
+        *
+        *
+        *
+        *
+        * @param playerInfo                  - the user in question
+        * @param executionTime         - time of execution (for time dependent rules
+        * @param campaignExposures     - Exposure for campaigns
+        * @param executionStatistics   - collection of all statistics
+        */
+
+
+    private ActionInterface evaluateUser(PlayerInfo playerInfo, Timestamp executionTime, ExposureTable campaignExposures, ExecutionStatistics executionStatistics) {
 
 
         // Package and pre calculate the playerInfo
         // This is used for all the analysis and defines the API to the information in the database
 
-        PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
-
         TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo);
-        ResponseHandler handler = new ResponseHandler( user.facebookId );
-        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler, localConnection, dbConnection);
+        User user = playerInfo.getUser();
 
 
         ActionInterface selectedAction = null;
@@ -244,6 +294,16 @@ public class CampaignEngine {
                 }
             }
         }
+
+        return selectedAction;
+    }
+
+    private void handleAction(ActionInterface selectedAction, PlayerInfo playerInfo, ExposureTable campaignExposures, ExecutionStatistics executionStatistics){
+
+        TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo);
+        User user = playerInfo.getUser();
+        ResponseHandler handler = new ResponseHandler( user.facebookId );
+        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler, localConnection, dbConnection);
 
         if(selectedAction == null){
 
