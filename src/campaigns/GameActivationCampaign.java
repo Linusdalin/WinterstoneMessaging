@@ -1,8 +1,11 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
+import email.EmailInterface;
+import email.NotificationEmail;
 import recommendation.GameRecommendation;
 import recommendation.GameRecommender;
 import remoteData.dataObjects.User;
@@ -20,11 +23,12 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
     // Campaign config data
     private static final String Name = "GameActivationPoke";
-    private static final int CoolDown_Days = 10;
+    private static final int CoolDown_Days = 9;
 
     // Trigger specific config data
     private static final int Min_Sessions = 20;
-    private static final int Max_Inactivity = 30;
+    private static final int Max_Inactivity = 50;
+    private static final int Max_Inactivity_Notification = 30;
 
     GameActivationCampaign(int priority, CampaignState active){
 
@@ -72,7 +76,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
         }
 
 
-            GameRecommender recommender = new GameRecommender(playerInfo, executionTime);
+        GameRecommender recommender = new GameRecommender(playerInfo, executionTime);
         GameRecommendation gameRecommendation = recommender.getGameRecommendation();
 
         if(gameRecommendation == null){
@@ -82,16 +86,33 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
         }
 
+        if(inactivity < Max_Inactivity_Notification){
 
-        System.out.println("    -- Sending a game recommendation \"" + gameRecommendation.getRecommendation() + "\n" );
-        return new NotificationAction("We have a new game for you! Check out " + gameRecommendation.getRecommendation(),
-                user, getPriority(), getTag(),  Name, 1, getState())
-                .withGame(gameRecommendation.getCode());
+            System.out.println("    -- Sending a game recommendation \"" + gameRecommendation.getRecommendation() + "\n" );
+            return new NotificationAction("We have a new game for you! Check out " + gameRecommendation.getRecommendation(),
+                    user, getPriority(), getTag(),  Name, 1, getState())
+                    .withGame(gameRecommendation.getCode());
+
+        }
+        else{
+
+            // Sending a mail instead
+
+            System.out.println("    -- Sending an EMAIL  game recommendation \"" + gameRecommendation.getRecommendation() + "\n" );
+            return new EmailAction(gameActivationEmail(user, gameRecommendation), user, getEmailPriority(), getTag(), 2, getState());
 
 
 
+        }
 
     }
+
+    private EmailInterface gameActivationEmail(User user, GameRecommendation recommendation) {
+        return new NotificationEmail("we have a recommendation for you", "<p>Hello "+ user.name+" Don't miss out the new game we released here at Slot America. We think you will like it...</p>" +
+                "<p> Check out <a href=\"https://apps.facebook.com/slotAmerica/?game="+recommendation.getCode()+"promocode=EGameActivation-2\">"+ recommendation.getRecommendation()+"</a></p>",
+                "Hello "+ user.name+" Don't miss out the new game we released here at Slot America. We think you will like it...");
+    }
+
 
 
     /*********************************************************************

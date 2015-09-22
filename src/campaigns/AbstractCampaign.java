@@ -210,6 +210,13 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return priority;
     }
 
+    protected int getEmailPriority() {
+
+        return 51;
+    }
+
+
+
     protected int getInactivity(PlayerInfo info, Timestamp executionTime) {
 
         Timestamp lastSession = info.getLastSession();

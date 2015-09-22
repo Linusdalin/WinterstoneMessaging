@@ -1,8 +1,11 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
+import email.EmailInterface;
+import email.NotificationEmail;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 
@@ -21,7 +24,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
     // Campaign config data
     private static final String Name = "ChurnPoke";
-    private static final int CoolDown_Days = 7;
+    private static final int CoolDown_Days = 5;
 
     // Trigger specific config data
     private static final int Min_Sessions = 8;
@@ -65,7 +68,9 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
         }
 
-        if(isDaysBefore(lastSession, executionDay, 3)){
+        int idleDays = getDaysBetween(lastSession, executionDay);
+
+        if(idleDays == 3 || idleDays == 4){
 
 
             System.out.println("    -- Sending a three day churn warning poke" );
@@ -74,13 +79,31 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
 
         }
-        else if(isDaysBefore(lastSession, executionDay, 8)){
+        else if(idleDays == 9 || idleDays == 10){
 
 
-            System.out.println("    -- Sending a EIGHT day churn warning poke" );
+
+            System.out.println("    -- Sending a NINE day churn warning poke" );
             return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
                     user, getPriority(), getTag(),  Name,  8, getState());
 
+
+        }
+        else if(idleDays == 14 || idleDays == 15){
+
+
+            System.out.println("    -- Sending a Fifteen day churn warning poke" );
+            return new NotificationAction("Hello, there are some new exiting releases at Slot America. Click here to check it out!",
+                    user, getPriority(), getTag(),  Name,  15, getState());
+
+
+        }
+        else if(idleDays > 10 && idleDays < 30){
+
+
+            System.out.println("    -- Sending a churn warning poke mail" );
+
+                    return new EmailAction(churnPokeEmail(user), user, getPriority(), getTag(), 30, getState());
 
         }
         else{
@@ -90,10 +113,17 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
         }
 
-
-
-
     }
+
+
+
+    private EmailInterface churnPokeEmail(User user) {
+        return new NotificationEmail("where did you go?", "<p>Hello "+ user.name+" Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out!</p>" +
+                "<p> Why don't you come in and use four free bonus to try them? Click <a href=\"https://apps.facebook.com/slotAmerica/?promocode=EcoinsLeft-30\">here</a> to test it out :-) </p>",
+                "Hello "+ user.name+" Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out." +
+        "Why don't you come in and use four free bonus to try them?");
+    }
+
 
     /*********************************************************************
      *
