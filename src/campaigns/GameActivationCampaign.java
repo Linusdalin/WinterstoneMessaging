@@ -108,7 +108,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
     }
 
     private EmailInterface gameActivationEmail(User user, GameRecommendation recommendation) {
-        return new NotificationEmail("we have a recommendation for you", "<p>Hello "+ user.name+" Don't miss out the new game we released here at Slot America. We think you will like it...</p>" +
+        return new NotificationEmail("we have a recommendation for you", "<p>Don't miss out the new game we released here at Slot America. We think you will like it...</p>" +
                 "<p> Check out <a href=\"https://apps.facebook.com/slotAmerica/?game="+recommendation.getCode()+"promocode=EGameActivation-2\">"+ recommendation.getRecommendation()+"</a></p>",
                 "Hello "+ user.name+" Don't miss out the new game we released here at Slot America. We think you will like it...");
     }

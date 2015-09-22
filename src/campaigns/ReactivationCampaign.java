@@ -29,7 +29,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 240;     // This set very high to test out potential
-    private static final int MIN_ACTIVITY   = 40;           // This set very high to test out potential
+    private static final int MIN_ACTIVITY   = 20;           // This set very high to test out potential
 
     private static final int DAILY_CAP   = 100;         // Max per day
     private int count = 0;
@@ -117,7 +117,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
         }
 
-        System.out.println("    -- Campaign " + Name + " not firing. waiting "+ INACTIVITY_LIMIT+" days (last:" + lastSession.toString() );
+        System.out.println("    -- Campaign " + Name + " not firing. waiting "+ INACTIVITY_LIMIT+" days ( found "+ inactivity+". last:" + lastSession.toString() );
         return null;
 
 

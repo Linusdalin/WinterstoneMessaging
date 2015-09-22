@@ -1,10 +1,12 @@
 package test;
 
 
+import campaigns.FirstPaymentCampaign;
 import email.NotificationEmail;
 import email.ReleaseEmail;
 import org.junit.Test;
 import output.EmailHandler;
+import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -43,8 +45,10 @@ public class EmailTest {
 
     );
 
+    private static final Payment payment = new Payment("627716024", 30, "", new Timestamp(2015, 1, 1, 1, 1, 1, 1), "promo", new Timestamp(2015, 1, 1, 1, 1, 1, 1));
 
-    @Test
+
+        @Test
     public void sendTest(){
 
 
@@ -102,6 +106,19 @@ public class EmailTest {
 
     }
 
+    @Test
+    public void vipMailTest(){
+
+
+        EmailHandler handler = new EmailHandler()
+                .withEmail(FirstPaymentCampaign.firstDepositEmail(user, payment))
+                .toRecipient(user);
+
+        boolean success = handler.send();
+
+        assertThat("Should work", success, is(true) );
+
+    }
 
 
 }

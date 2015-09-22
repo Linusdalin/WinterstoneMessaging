@@ -21,7 +21,7 @@ public class Payment {
     public final String promoCode;
     public final Timestamp firstLogin;
 
-    Payment(String facebookId, int amount, String game, Timestamp timeStamp, String promoCode, Timestamp firstLogin){
+    public Payment(String facebookId, int amount, String game, Timestamp timeStamp, String promoCode, Timestamp firstLogin){
 
         if(firstLogin.toString().equals("1970-01-01 00:00:00.0")){
 

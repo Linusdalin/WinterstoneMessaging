@@ -136,7 +136,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
     }
 
     private EmailInterface coinLeftEmail(User user) {
-        return new NotificationEmail("there is more fun awaiting you", "<p>Hello there! Did you know you have <b>"+ user.balance+"</b> coins left on your account? It would be a shame to let them go to waste, right?</p>" +
+        return new NotificationEmail("there is more fun awaiting you", "<p>Did you know you have <b>"+ user.balance+"</b> coins left on your account? It would be a shame to let them go to waste, right?</p>" +
                 "<p> There are some new and fabulous new games you can try out with it! Like <a href=\"https://apps.facebook.com/slotAmerica/?game=wild_cherries&promocode=coinsLeftEmail-1\">Wild Cherries</a>. Welcome back to test it out :-) </p>",
                 "You have "+ user.balance+ " coins left on your account.There are some fabulous new games you can try out with it.");
     }
