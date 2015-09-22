@@ -31,17 +31,6 @@ public class ExecutePlayer {
         CampaignEngine engine = new CampaignEngine(dataSource);
 
         System.out.println(" -- Test PLayer Dry Run");
-
-        try {
-
-            System.in.read();
-
-        } catch (IOException e) {
-
-            System.out.println("Aborting");
-            return;
-        }
-
         engine.playerTest(testPlayers);
 
     }

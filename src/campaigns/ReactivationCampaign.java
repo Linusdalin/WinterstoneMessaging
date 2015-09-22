@@ -32,7 +32,6 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
     private static final int MIN_ACTIVITY   = 40;           // This set very high to test out potential
 
     private static final int DAILY_CAP   = 100;         // Max per day
-
     private int count = 0;
 
 

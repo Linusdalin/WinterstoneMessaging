@@ -91,6 +91,9 @@ public class CampaignEngine {
         cacheConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
         localConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
 
+        this.dryRun = true;
+        this.overrideTime = true;
+
     }
 
 
@@ -178,7 +181,7 @@ public class CampaignEngine {
 
         DataCache dbCache = new DataCache(cacheConnection, "2015-01-01", analysis_cap);
 
-        System.out.println(" -- testing " + testPlayers.length + "players...");
+        System.out.println(" -- testing with " + testPlayers.length + " players...");
 
         Calendar calendar = Calendar.getInstance();
         Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
@@ -191,7 +194,8 @@ public class CampaignEngine {
 
         for (String userId : testPlayers) {
 
-            UserTable userTable = new UserTable("and userId = " + userId, 1);
+            UserTable userTable = new UserTable("and facebookId = " + userId, 1);
+            userTable.load(dbConnection);
             User user = userTable.getNext();
 
             PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
@@ -209,7 +213,10 @@ public class CampaignEngine {
 
 
             // Dummy execution ( dry-run hard coded to true) to see the outcome
-            action.execute(true, null, executionTime, localConnection);
+            if(action == null)
+                System.out.println(" -- No action for player");
+            else
+                action.execute(true, null, executionTime, localConnection);
 
         }
 

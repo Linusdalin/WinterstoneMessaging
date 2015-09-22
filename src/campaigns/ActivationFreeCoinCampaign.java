@@ -32,6 +32,9 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
     private static final int IdleDays = 5;
 
+    private static final int DAILY_CAP   = 100;         // Max per day
+    private int count = 0;
+
     ActivationFreeCoinCampaign(int priority, CampaignState active){
 
         super(Name, priority, active);
@@ -52,6 +55,16 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
     public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
 
+        count++;
+
+        if(count > DAILY_CAP){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Daily cap reached for campaign." );
+            return null;
+
+        }
+
+
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
@@ -64,7 +77,7 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
         if(user.sessions > Max_Sessions){
 
-            System.out.println("    -- Campaign " + Name + " not applicable. User is already active (" + user.sessions + " < " + Min_Sessions + ")" );
+            System.out.println("    -- Campaign " + Name + " not applicable. User is already active (" + user.sessions + " > " + Max_Sessions + ")" );
             return null;
 
         }

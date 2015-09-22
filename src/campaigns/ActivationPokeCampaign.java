@@ -59,7 +59,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
         if(user.sessions > Max_Sessions){
 
-            System.out.println("    -- Campaign " + Name + " not applicable. User is already active (" + user.sessions + " < " + Min_Sessions + ")" );
+            System.out.println("    -- Campaign " + Name + " not applicable. User is already active (" + user.sessions + " > " + Max_Sessions + ")" );
             return null;
 
         }
