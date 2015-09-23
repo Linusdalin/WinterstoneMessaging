@@ -85,6 +85,15 @@ public class PlayerInfo {
         return user;
     }
 
+    public Payment getFirstPayment() {
+
+        getPaymentsForUser();
+        if(userPayments.size() == 0)
+            return null;
+        return userPayments.get( 0 );
+
+    }
+
 
     public Payment getLastPayment() {
 

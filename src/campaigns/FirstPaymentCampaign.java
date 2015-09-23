@@ -23,14 +23,12 @@ import java.sql.Timestamp;
 public class FirstPaymentCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "GameActivationPoke";
+    private static final String Name = "FirstPayment";
     private static final int CoolDown_Days = 9;
 
     // Trigger specific config data
     private static final int Min_Sessions = 2;
 
-    private static final String GroupA = "A";        // For A/B testing
-    private static final String GroupB = "B";        // For A/B testing
 
     FirstPaymentCampaign(int priority, CampaignState active){
 
@@ -61,21 +59,21 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
 
         }
 
-        if(user.payments != 1){
 
-            System.out.println("    -- Campaign " + Name + " not applicable. Player has made " + user.payments + " payments" );
-            return null;
-
-        }
-
-        if(!user.group.equalsIgnoreCase(GroupA) && !user.group.equalsIgnoreCase(GroupB)){
+        if(!abSelect(user)){
 
             System.out.println("    -- Campaign " + Name + " ignoring for A/B test" );
             return null;
 
         }
 
-        Payment payment = playerInfo.getLastPayment();
+        Payment payment = playerInfo.getFirstPayment();
+        if(payment == null){
+
+            System.out.println("    -- Campaign " + Name + " not applicable. No payments" );
+            return null;
+
+        }
 
         if(isDaysBefore(payment.timeStamp, executionTime, 1)){
 
@@ -88,8 +86,18 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
 
         }
 
-        System.out.println("    -- Campaign " + Name + " not applicable. No payment yesterday");
+        System.out.println("    -- Campaign " + Name + " not applicable. No first payment yesterday");
         return null;
+
+    }
+
+    private boolean abSelect(User user) {
+
+        return  user.facebookId.endsWith("1") ||
+                user.facebookId.endsWith("2") ||
+                user.facebookId.endsWith("3") ||
+                user.facebookId.endsWith("4") ||
+                user.facebookId.endsWith("5");
 
     }
 

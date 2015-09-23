@@ -145,11 +145,11 @@ public class CampaignEngine {
 
         System.out.println("  NOTE! Dry run is " + (dryRun ? "ON" : "OFF"));
 
-        System.out.println("Press key to enter\n>");
+        System.out.println("\nPress key to enter\n>");
 
         try {
 
-            Thread.sleep(3000);
+            Thread.sleep(5000);
             System.in.read();
 
         } catch (IOException e) {

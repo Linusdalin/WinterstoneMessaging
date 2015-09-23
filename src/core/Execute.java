@@ -23,12 +23,12 @@ import java.io.IOException;
 public class Execute {
 
     private static final int     Threshold              = 50;
-    private static final int     Send_Cap               = 2000;
-    private static final int     User_Cap               = 60000;
+    private static final int     Send_Cap               = 20;
+    private static final int     User_Cap               = 150000;
     private static final boolean DRY_RUN                = false;
     private static final boolean OVERRIDE_TIME_CONSTR   = true;
-    private static final String  UserScrapeStart        = "2015-09-10 12:51:34";             // "2015-01-18";
-    private static final String  TEST_USER              = null;                              // "627716024";          // Tina:     "105390519812878";
+    private static final String  UserScrapeStart        = "2015-05-11 14:15";               // "2015-01-18";
+    private static final String  TEST_USER              = null;                       // "627716024";          // Tina:     "105390519812878";
 
 
     public static void main(String[] args){
