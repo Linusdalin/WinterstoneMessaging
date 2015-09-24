@@ -1,8 +1,11 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
+import email.EmailInterface;
+import email.NotificationEmail;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -78,15 +81,15 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
             }
 
-            /*
-            if(daysBefore(user.created, executionDay, 5 )){
 
-                System.out.println("    -- Campaign " + Name + " Running message 4 for " + user.name );
-                return new NotificationAction("SlotAmerica has the best free slot experience on Facebook. Click here to get started", user, 90, "GettingStarted3", "GettingStarted3", Name);
+            if(daysBefore(user.created, executionDay, 8 )){
+
+                System.out.println("    -- Campaign " + Name + " Emailing 8 day getting started message for " + user.name );
+                return new EmailAction(activationEmail(user), user, getPriority(), getTag(), 8, getState());
 
             }
 
-              */
+
 
             System.out.println("    -- Campaign " + Name + " not applicable for player" + user.name + ". Timing is not correct" );
             return null;
@@ -98,6 +101,15 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
             return null;
         }
 
+
+    }
+
+    private EmailInterface activationEmail(User user) {
+
+            return new NotificationEmail("the fun still awaits you!", "<p>Don't miss out on the new game releases here at Slot America. We try to put out a new prime game for you every week and there is a new games for you to check out now!</p>" +
+                    "<p> Why don't you come in and use your free bonus to try it out? Click <a href=\"https://apps.facebook.com/slotAmerica/?promocode=EGettingStarted-8\">here</a> to test it out :-) </p>",
+                    "Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out." +
+                            "Why don't you come in and use four free bonus to try them?");
 
     }
 

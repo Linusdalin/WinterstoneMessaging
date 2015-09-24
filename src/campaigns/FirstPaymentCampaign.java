@@ -24,7 +24,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
 
     // Campaign config data
     private static final String Name = "FirstPayment";
-    private static final int CoolDown_Days = 9;
+    private static final int CoolDown_Days = 365000;
 
     // Trigger specific config data
     private static final int Min_Sessions = 2;

@@ -119,9 +119,9 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
     private EmailInterface churnPokeEmail(User user) {
         return new NotificationEmail("where did you go?", "<p>Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out!</p>" +
-                "<p> Why don't you come in and use four free bonus to try them? Click <a href=\"https://apps.facebook.com/slotAmerica/?promocode=EcoinsLeft-30\">here</a> to test it out :-) </p>",
+                "<p> Why don't you come in and use your free bonus to try them? Click <a href=\"https://apps.facebook.com/slotAmerica/?promocode=EcoinsLeft-30\">here</a> to test it out :-) </p>",
                 "Hello "+ user.name+" Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out." +
-        "Why don't you come in and use four free bonus to try them?");
+        "Why don't you come in and use your free bonus to try them?");
     }
 
 
