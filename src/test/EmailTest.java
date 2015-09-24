@@ -2,6 +2,7 @@ package test;
 
 
 import campaigns.FirstPaymentCampaign;
+import campaigns.GettingStartedCampaign;
 import email.NotificationEmail;
 import email.ReleaseEmail;
 import org.junit.Test;
@@ -109,14 +110,26 @@ public class EmailTest {
     @Test
     public void vipMailTest(){
 
+        boolean success;
+        EmailHandler handler;
 
-        EmailHandler handler = new EmailHandler()
+        handler = new EmailHandler()
                 .withEmail(FirstPaymentCampaign.firstDepositEmail(user, payment))
                 .toRecipient(user);
 
-        boolean success = handler.send();
+        success = handler.send();
 
         assertThat("Should work", success, is(true) );
+
+
+        handler = new EmailHandler()
+                .withEmail(GettingStartedCampaign.gettingStartedEmail(user))
+                .toRecipient(user);
+
+        success = handler.send();
+
+        assertThat("Should work", success, is(true) );
+
 
     }
 
