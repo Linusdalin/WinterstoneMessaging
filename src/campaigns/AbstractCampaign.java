@@ -215,6 +215,11 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return 51;
     }
 
+    protected boolean isMale(User user) {
+
+        return user.sex.equalsIgnoreCase("male");
+    }
+
 
 
     protected int getInactivity(PlayerInfo info, Timestamp executionTime) {
@@ -228,6 +233,26 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return this.state;
     }
 
+
+    protected boolean abSelect1(User user) {
+
+        return  user.facebookId.endsWith("1") ||
+                user.facebookId.endsWith("2") ||
+                user.facebookId.endsWith("3") ||
+                user.facebookId.endsWith("4") ||
+                user.facebookId.endsWith("5");
+
+    }
+
+    protected boolean abSelect2(User user) {
+
+        return  user.facebookId.endsWith("1") ||
+                user.facebookId.endsWith("3") ||
+                user.facebookId.endsWith("5") ||
+                user.facebookId.endsWith("7") ||
+                user.facebookId.endsWith("9");
+
+    }
 
 
 }

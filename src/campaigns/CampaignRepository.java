@@ -24,15 +24,15 @@ public class CampaignRepository {
 
     public static final List<CampaignInterface> activeCampaigns = new ArrayList<CampaignInterface>(){{
 
-        //add(new GettingStartedCampaign      ( 80, CampaignState.ACTIVE ));
-        //add(new RememberDiamondCampaign     ( 80, CampaignState.ACTIVE ));
-        //add(new ChurnPokeCampaign           ( 70, CampaignState.ACTIVE));
+        add(new GettingStartedCampaign      ( 80, CampaignState.ACTIVE ));
+        add(new RememberDiamondCampaign     ( 80, CampaignState.ACTIVE ));
+        add(new ChurnPokeCampaign           ( 70, CampaignState.ACTIVE));
         //add(new BadBeatCampaign             ( 95, CampaignState.ACTIVE));
-        //add(new CoinsLeftCampaign           ( 70, CampaignState.ACTIVE));
-        //add(new LevelUpCampaign             ( 60, CampaignState.ACTIVE ));
-        //add(new ActivationPokeCampaign      ( 55, CampaignState.ACTIVE));
-        //add(new GameActivationCampaign      ( 65, CampaignState.ACTIVE));
-        //add(new ActivationFreeCoinCampaign  ( 62, CampaignState.ACTIVE));
+        add(new CoinsLeftCampaign           ( 70, CampaignState.ACTIVE));
+        add(new LevelUpCampaign             ( 60, CampaignState.ACTIVE ));
+        add(new ActivationPokeCampaign      ( 55, CampaignState.ACTIVE));
+        add(new GameActivationCampaign      ( 65, CampaignState.ACTIVE));
+        add(new ActivationFreeCoinCampaign  ( 62, CampaignState.ACTIVE));
 
         //add(new HappyHourCampaign       ( 95, CampaignState.ACTIVE));
 
@@ -41,7 +41,8 @@ public class CampaignRepository {
         //add(new ReactivationCampaign    ( 60, CampaignState.ACTIVE));
         add(new FirstPaymentCampaign    ( 95, CampaignState.ACTIVE));
 
-        //add(new GameNotification        (90, CampaignState.ACTIVE, "fire_fruit", "The heat is on! Our new game Fire Fruit is hot and freshly served. 2,500 free coins to try it out. Click Now!", null, "115a00be-c90f-4c2c-80bc-7624273f4197"));
+        //add(new GameNotification        (90, CampaignState.ACTIVE, "os2x3x4x5x", "Try it out!", null, null));
+        add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
 
 
     }};

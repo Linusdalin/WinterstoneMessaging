@@ -60,7 +60,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
         }
 
 
-        if(!abSelect(user)){
+        if(!abSelect1(user)){
 
             System.out.println("    -- Campaign " + Name + " ignoring for A/B test" );
             return null;
@@ -91,15 +91,6 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
 
     }
 
-    private boolean abSelect(User user) {
-
-        return  user.facebookId.endsWith("1") ||
-                user.facebookId.endsWith("2") ||
-                user.facebookId.endsWith("3") ||
-                user.facebookId.endsWith("4") ||
-                user.facebookId.endsWith("5");
-
-    }
 
     public static EmailInterface firstDepositEmail(User user, Payment payment) {
 
