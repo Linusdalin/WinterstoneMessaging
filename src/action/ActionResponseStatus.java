@@ -8,5 +8,15 @@ package action;
 
 public enum ActionResponseStatus {
 
-    OK, FAILED, ABORTED, IGNORED, MANUAL
+    OK,
+    FAILED,
+    FAILED_PERMANENTLY,
+    ABORTED,
+    IGNORED,
+    MANUAL;
+
+    public boolean isPermanentError() {
+
+        return this == FAILED_PERMANENTLY;
+    }
 }

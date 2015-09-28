@@ -41,7 +41,7 @@ public class CachedUserTable extends GenericTable {
 
             //    public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed,Timestamp created, int totalWager, int balance, int nextNumberOfPicks){
 
-            return new CachedUser(resultSet.getString(1), resultSet.getTimestamp(2));
+            return new CachedUser(resultSet.getString(1), resultSet.getTimestamp(2), resultSet.getInt(3) , resultSet.getInt(4));
 
 
         } catch (SQLException e) {
@@ -84,7 +84,7 @@ public class CachedUserTable extends GenericTable {
 
     public void store(CachedUser user, Connection connection) {
 
-        String insertQuery = "INSERT INTO user VALUES ('" + user.facebookId + "', '" + user.lastSession.toString() +"')";
+        String insertQuery = "INSERT INTO user VALUES ('" + user.facebookId + "', '" + user.lastSession.toString() +"', "+ user.failMail+", "+ user.failNotification+")";
 
         try{
 
@@ -103,7 +103,7 @@ public class CachedUserTable extends GenericTable {
 
     }
 
-    public void update(CachedUser user, Connection connection) {
+    public void updateTime(CachedUser user, Connection connection) {
 
         String updateQuery = "UPDATE user SET lastSession='" + user.lastSession + "' WHERE facebookId='"+user.facebookId+"'";
 
@@ -123,6 +123,50 @@ public class CachedUserTable extends GenericTable {
         }
 
     }
+
+    public void updateFailMail(String facebookId, Connection connection) {
+
+        String updateQuery = "UPDATE user SET failMail=failMail+1  WHERE facebookId='"+facebookId+"'";
+
+        try{
+
+            Statement statement = connection.createStatement();
+            //System.out.println(updateQuery);
+
+            // execute update SQL stetement
+            statement.execute(updateQuery);
+
+        } catch (SQLException e) {
+
+
+            System.out.println(e.getMessage());
+
+        }
+
+    }
+
+
+    public void updateFailNotification(String facebookId, Connection connection) {
+
+        String updateQuery = "UPDATE user SET failNotification=failNotification+1  WHERE facebookId='"+facebookId+"'";
+
+        try{
+
+            Statement statement = connection.createStatement();
+            //System.out.println(updateQuery);
+
+            // execute update SQL stetement
+            statement.execute(updateQuery);
+
+        } catch (SQLException e) {
+
+
+            System.out.println(e.getMessage());
+
+        }
+
+    }
+
 
 
 }

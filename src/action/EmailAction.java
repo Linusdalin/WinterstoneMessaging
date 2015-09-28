@@ -68,17 +68,17 @@ public class EmailAction extends Action implements ActionInterface{
         if(!isLive()){
 
             System.out.println("--------------------------------------------------------");
-            System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + user);
+            System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + actionParameter.name);
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No email sent - (reason: "+ state.name()+") " );
 
         }
 
         System.out.println("--------------------------------------------------------");
-        System.out.println("! Executing " + type.name() + " for player " + user);
+        System.out.println("! Executing " + type.name() + " for player " + actionParameter.name);
 
         EmailHandler handler = new EmailHandler(testUser)
                 .withEmail( email )
-                .toRecipient( user );
+                .toRecipient( actionParameter.name );
 
         // Now check if we are to send off the message or just log it (dry run)
 
@@ -89,7 +89,7 @@ public class EmailAction extends Action implements ActionInterface{
             boolean success =  handler.send();
 
             if(success){
-                noteSuccessFulExposure( (testUser == null ? user.facebookId : testUser ), executionTime, localConnection );
+                noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ), executionTime, localConnection );
                 return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
             }
             else
@@ -97,7 +97,7 @@ public class EmailAction extends Action implements ActionInterface{
 
         }
         else{
-            System.out.println("  %%%Dryrun: Ignoring sending email to user "+ getUser().name + "(" + getUser().email + ") " + "-\""+ message+"\" Promocode:" + promoCode);
+            System.out.println("  %%%Dryrun: Ignoring sending email to user "+ actionParameter.name + "(" + actionParameter.email + ") " + "-\""+ message+"\" Promocode:" + promoCode);
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - dry run");
         }
 

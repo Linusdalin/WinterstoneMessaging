@@ -46,16 +46,16 @@ public class GiveCoinAction extends Action implements ActionInterface{
         if(!isLive()){
 
             System.out.println("--------------------------------------------------------");
-            System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + user.facebookId + "("+message+ ": " + amount + ")" );
+            System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + actionParameter.facebookId + "("+message+ ": " + amount + ")" );
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - (reason: "+ state.name()+") " );
 
         }
 
         System.out.println("--------------------------------------------------------");
-        System.out.println("! Perform " + type.name() + " for player " + user.facebookId);
+        System.out.println("! Perform " + type.name() + " for player " + actionParameter.facebookId);
 
         GiveAwayHandler handler = new GiveAwayHandler(testUser)
-                .withRecipient(user)
+                .withRecipient(actionParameter.facebookId)
                 .withAmount(amount);
 
         handler.send();
@@ -71,7 +71,7 @@ public class GiveCoinAction extends Action implements ActionInterface{
 
         }
         else{
-            System.out.println("  %%%Dryrun: Ignoring giving "+ amount + "coins to user "+ user );
+            System.out.println("  %%%Dryrun: Ignoring giving "+ amount + "coins to user "+ actionParameter.name );
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Coins given - dry run");
         }
 

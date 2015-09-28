@@ -2,6 +2,9 @@ package output;
 
 import action.ActionInterface;
 import action.ActionResponse;
+import action.ActionResponseStatus;
+import action.ActionType;
+import localData.CachedUserTable;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -22,14 +25,14 @@ public class Outbox {
     private final int cap;
     private boolean dryRun;
     private String testUser;
-    private Connection localConnection;
+    private Connection connection;
 
     public Outbox(int cap, boolean dryRun, String testUser, Connection localConnection){
 
         this.cap = cap;
         this.dryRun = dryRun;
         this.testUser = testUser;
-        this.localConnection = localConnection;
+        this.connection = localConnection;
     }
 
 
@@ -50,13 +53,13 @@ public class Outbox {
             if(count >= cap)
                 break;
 
-            ActionResponse response = action.execute(dryRun, testUser, executionTime, localConnection);
+            ActionResponse response = action.execute(dryRun, testUser, executionTime, connection);
+
             if(response.isExecuted()){
                 success++;
             }
             else
-                noteFailedMessageDelivery(action.getUser().facebookId);
-
+                noteFailedMessageDelivery(action.getParameters().facebookId, action.getType(), response.getStatus());
             count++;
 
 
@@ -73,32 +76,40 @@ public class Outbox {
      *          If the delivery of a message did not work we should note this and avoid sending more messages in the future.
      *
      *
-     * @param user
+     * @param user       - the user which we tried to contact
+     * @param type       - type of message that failed. It will define how to note the action.
+     * @param status     - status of the message. (Temporary or permanent errors)
      */
 
-    private void noteFailedMessageDelivery(String user) {
+    private void noteFailedMessageDelivery(String user, ActionType type, ActionResponseStatus status) {
 
-        //TODO: Not implemented - remember that a message delivery did not work
+        CachedUserTable table = new CachedUserTable();
 
-    }
+        if(status.isPermanentError()){
 
-    public void listRecepients() {
+            switch (type) {
 
-        if(dryRun){
-
-            System.out.println(" -- Listing "+ queue.size() + " recipients");
-
-            for (ActionInterface action : queue) {
-
-                System.out.println("\"" + action.getUser().facebookId + "\", ");
-
-
+                case NOTIFICATION:
+                    table.updateFailNotification(user, connection);
+                    break;
+                case MANUAL_ACTION:
+                    break;
+                case EMAIL:
+                    table.updateFailNotification(user, connection);
+                    break;
+                case IN_GAME:
+                    break;
+                case COIN_ACTION:
+                    break;
             }
 
-            System.out.println("\n\n");
+        }
+        else{
 
+            System.out.println("  -- Temporary error sending message. Ignoring for now");
         }
 
 
     }
+
 }

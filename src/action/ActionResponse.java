@@ -9,8 +9,6 @@ public class ActionResponse {
     private final ActionResponseStatus status;
     private final String message;
 
-    public static final ActionResponse NOT_IMPLEMENTED  = new ActionResponse(ActionResponseStatus.FAILED, "Not implemented");
-
     public ActionResponse(ActionResponseStatus status, String message){
 
         this.status = status;
@@ -21,4 +19,10 @@ public class ActionResponse {
 
         return status == ActionResponseStatus.OK;
     }
+
+    public ActionResponseStatus getStatus() {
+
+        return status;
+    }
+
 }

@@ -16,7 +16,7 @@ public class GiveAwayHandler {
 
     private String overrideUserId = null;
     private int amount = 0;
-    private User recipient;
+    private String recipient;
 
     public GiveAwayHandler(String override) {
 
@@ -29,9 +29,9 @@ public class GiveAwayHandler {
         return this;
     }
 
-    public GiveAwayHandler withRecipient(User user) {
+    public GiveAwayHandler withRecipient(String userId) {
 
-        this.recipient = user;
+        this.recipient = userId;
         return this;
     }
 
@@ -68,7 +68,7 @@ public class GiveAwayHandler {
         RequestHandler requestHandler = new RequestHandler(coinService);
 
         String response = requestHandler.executePost(
-                        "player=" + recipient.facebookId +
+                        "player=" + recipient +
                         "&amount=" + amount);
 
         if(response != null){

@@ -16,19 +16,22 @@ public class CachedUser {
 
     public String facebookId;
     public Timestamp lastSession;
+    public int failMail;
+    public int failNotification;
 
-    public CachedUser(String facebookId, Timestamp lastSession){
+    public CachedUser(String facebookId, Timestamp lastSession, int failMail, int failNotification){
 
 
         this.facebookId = facebookId;
         this.lastSession = lastSession;
-
+        this.failMail = failMail;
+        this.failNotification = failNotification;
     }
 
 
     public String toString(){
 
-        return "(" + facebookId + ", " +lastSession.toString() +  ")";
+        return "(" + facebookId + ", " +lastSession.toString() + ", M:" +failNotification+ ", N:" +failNotification +  ")";
 
     }
 

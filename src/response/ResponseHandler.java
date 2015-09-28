@@ -1,8 +1,11 @@
 package response;
 
+import action.ActionType;
 import campaigns.AbstractCampaign;
 import campaigns.CampaignInterface;
 import campaigns.CampaignRepository;
+import localData.CachedUser;
+import localData.CachedUserTable;
 import localData.Response;
 import localData.ResponseTable;
 import remoteData.dataObjects.GameSession;
@@ -19,10 +22,13 @@ public class ResponseHandler {
 
 
     private String userId;
+    private Connection connection;
+    private CachedUser cachedUser = null;
 
-    public ResponseHandler(String userId){
+    public ResponseHandler(String userId, Connection connection){
 
         this.userId = userId;
+        this.connection = connection;
     }
 
     public ResponseStat getOverallResponseRate(Connection localConnection, Connection remoteConnection) {
@@ -122,4 +128,29 @@ public class ResponseHandler {
 
     }
 
+    public boolean permanentlyFail(ActionType type) {
+
+
+        if(cachedUser == null){
+
+            CachedUserTable table = new CachedUserTable("facebookId = '" + userId + "'", 1);
+            table.load(connection);
+            cachedUser = table.getNext();
+
+        }
+
+        switch (type) {
+
+            case NOTIFICATION:
+                return cachedUser.failNotification > 2;
+            case EMAIL:
+                return cachedUser.failMail > 2;
+            case IN_GAME:
+            case MANUAL_ACTION:
+            case COIN_ACTION:
+        }
+
+        return false;
+
+    }
 }

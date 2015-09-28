@@ -155,7 +155,7 @@ public class DataCache {
         while(session != null){
 
             updateLastSession(session);
-            ResponseHandler responseHandler = new ResponseHandler(session.facebookId);
+            ResponseHandler responseHandler = new ResponseHandler(session.facebookId, connection);
             responseHandler.storeResponse(session, connection);
             session = gameSessions.getNext();
         }
@@ -173,7 +173,7 @@ public class DataCache {
 
             // Store new
 
-            cachedUser = new CachedUser(session.facebookId, session.timeStamp);
+            cachedUser = new CachedUser(session.facebookId, session.timeStamp, 0, 0);
             cachedUserTable.store(cachedUser, connection);
             System.out.println("  - Creating new user " + cachedUser.facebookId + " with last session " + session.timeStamp);
 
@@ -185,7 +185,7 @@ public class DataCache {
             else{
 
                 cachedUser.lastSession = session.timeStamp;
-                cachedUserTable.update(cachedUser, connection);
+                cachedUserTable.updateTime(cachedUser, connection);
                 System.out.println("  - Updating with new session for user " + cachedUser.facebookId + "@ " + session.timeStamp);
             }
         }

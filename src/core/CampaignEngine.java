@@ -240,12 +240,13 @@ public class CampaignEngine {
     private ActionInterface evaluateUser(PlayerInfo playerInfo, Timestamp executionTime, ExposureTable campaignExposures, ExecutionStatistics executionStatistics) {
 
 
+
         // Package and pre calculate the playerInfo
         // This is used for all the analysis and defines the API to the information in the database
 
         TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo);
         User user = playerInfo.getUser();
-
+        ResponseHandler responseHandler = new ResponseHandler(user.facebookId, localConnection);
 
         ActionInterface selectedAction = null;
         System.out.println("    (found " + playerInfo.getUser().sessions + " sessions and "+ playerInfo.getPaymentsForUser().size()+" payments for the user)");
@@ -272,6 +273,7 @@ public class CampaignEngine {
                     continue;
                 }
 
+
             }
             else{
 
@@ -287,6 +289,16 @@ public class CampaignEngine {
             else{
 
                 ActionInterface action = campaign.evaluate(playerInfo, executionTime);
+
+                if(responseHandler.permanentlyFail(action.getType())){
+
+                    System.out.println("    -- User " + user.facebookId + "permanently failed on sending messages of type" + action.getType() + " ignoring.");
+                    continue;
+
+
+                }
+
+
 
                 if(isPrefered(action, selectedAction)){
 
@@ -309,7 +321,7 @@ public class CampaignEngine {
 
         TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo);
         User user = playerInfo.getUser();
-        ResponseHandler handler = new ResponseHandler( user.facebookId );
+        ResponseHandler handler = new ResponseHandler( user.facebookId, localConnection );
         int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler, localConnection, dbConnection);
 
         if(selectedAction == null){
@@ -328,6 +340,9 @@ public class CampaignEngine {
         executionStatistics.registerSelected(selectedAction);
 
     }
+
+
+
 
     private void queueAction(ActionInterface action) {
 

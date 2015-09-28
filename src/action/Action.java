@@ -15,7 +15,6 @@ import remoteData.dataObjects.User;
 public abstract class Action implements ActionInterface{
 
     protected final ActionType type;
-    protected User user;
     protected final String message;
     private ActionInterface next = null;             // Associated actions in a chain
 
@@ -25,15 +24,31 @@ public abstract class Action implements ActionInterface{
     protected final CampaignState state;
     protected String promoCode;
 
+    protected ActionParameter actionParameter;
+
+
+    /*******************************************************************************************
+     *
+     *          The base information in an action
+     *
+     *
+     * @param type                   - type of action
+     * @param user                   - The user to execute for
+     * @param message                - A message to communicate
+     * @param significance           - the significance (to see if actions overrule others)
+     * @param campaignName           - the name of the campaign (for tracking)
+     * @param messageId              - message id (within the campaign) for tracking
+     * @param state                  - The state of the campaign triggering the action (for dry runs and tests)
+     */
+
     public Action(ActionType type, User user, String message, int significance, String campaignName, int messageId, CampaignState state){
 
         this.type = type;
-        this.user = user;
+        this.actionParameter = new ActionParameter(user.name, user.facebookId, user.email);
         this.message = message;
         this.significance = significance;
         this.campaignName = campaignName;
         this.messageId = messageId;
-
         this.state = state;
     }
 
@@ -46,9 +61,9 @@ public abstract class Action implements ActionInterface{
     }
 
 
-    public User getUser(){
+    public ActionParameter getParameters(){
 
-        return user;
+        return actionParameter;
     }
 
     public ActionType getType(){

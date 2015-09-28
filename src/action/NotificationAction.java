@@ -22,6 +22,21 @@ public class NotificationAction extends Action implements ActionInterface{
     private String reward;
     private String game;
 
+    /*****************************************************************************************
+     *
+     *          Create an action
+     *
+     *
+     * @param message                 - the messahe to send
+     * @param user                    - the recipient
+     * @param significance            - action significance
+     * @param ref                     - facebook reference
+     * @param campaignName            - The name fro tracking
+     * @param messageId               - message id for tracking
+     * @param state                   - campaign state
+     */
+
+
     public NotificationAction(String message, User user, int significance, String ref, String campaignName, int messageId, CampaignState state){
 
         super(ActionType.NOTIFICATION, user, message, significance, campaignName, messageId, state );
@@ -49,7 +64,7 @@ public class NotificationAction extends Action implements ActionInterface{
         if(isTestMode()){
 
             System.out.println("--------------------------------------------------------");
-            System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + user);
+            System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + actionParameter.name);
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - (reason: "+ state.name()+") " );
 
         }
@@ -59,11 +74,11 @@ public class NotificationAction extends Action implements ActionInterface{
 
 
         System.out.println("--------------------------------------------------------");
-        System.out.println("! Executing " + type.name() + " for player " + user);
+        System.out.println("! Executing " + type.name() + " for player " + actionParameter.name);
 
         NotificationHandler handler = new NotificationHandler(testUser)
                     .withCap(1)
-                    .withRecipient(user.facebookId)
+                    .withRecipient(actionParameter.facebookId)
                     .withMessage(message)
                     .withRef(ref)
                     .withPromoCode(promoCode)
@@ -73,12 +88,12 @@ public class NotificationAction extends Action implements ActionInterface{
 
         // Now check if we are to send off the message or just log it (dry run)
 
-        int successCount = 0;
+        int successCount;
 
         if(!dryRun){
             successCount =  handler.send();
             if(successCount > 0){
-                noteSuccessFulExposure( (testUser == null ? user.facebookId : testUser ) , executionTime, localConnection );
+                noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ) , executionTime, localConnection );
                 return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
             }
             else
@@ -86,7 +101,7 @@ public class NotificationAction extends Action implements ActionInterface{
 
         }
         else{
-            System.out.println("  %%%Dryrun: Ignoring sending message to user "+ user +" " + "-\""+ message+"\" Promocode:" + promoCode);
+            System.out.println("  %%%Dryrun: Ignoring sending message to user "+ actionParameter.name +" " + "-\""+ message+"\" Promocode:" + promoCode);
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - dry run");
         }
 

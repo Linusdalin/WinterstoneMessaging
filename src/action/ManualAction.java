@@ -16,6 +16,21 @@ import java.sql.Timestamp;
 
 public class ManualAction extends Action implements ActionInterface{
 
+
+    /*******************************************************************************
+     *
+     *
+     *              Create a manual action
+     *
+     * @param message
+     * @param user
+     * @param significance
+     * @param campaignName
+     * @param messageId
+     * @param state
+     */
+
+
     public ManualAction(String message, User user, int significance, String campaignName, int messageId, CampaignState state){
 
         super(ActionType.MANUAL_ACTION, user, message, significance, campaignName, messageId, state );
@@ -41,23 +56,23 @@ public class ManualAction extends Action implements ActionInterface{
         if(!isLive()){
 
             System.out.println("--------------------------------------------------------");
-            System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + user.facebookId + "("+message+")" );
+            System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + actionParameter.facebookId + "("+message+")" );
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - (reason: "+ state.name()+") " );
 
         }
 
         System.out.println("--------------------------------------------------------");
-        System.out.println("! Perform " + type.name() + " for player " + user.facebookId);
+        System.out.println("! Perform " + type.name() + " for player " + actionParameter.facebookId);
 
         if(!dryRun){
 
-            System.out.println("! PLEASE EXECUTE: " + message + " for user " + getUser().name + " ( " + getUser().facebookId + " ) ");
+            System.out.println("! PLEASE EXECUTE: " + message + " for user " + actionParameter.name + " ( " + actionParameter.facebookId + " ) ");
             return new ActionResponse(ActionResponseStatus.MANUAL,   "Awaiting");
 
         }else{
 
 
-            System.out.println("  %%%Dryrun: Ignoring performing "+ message+" to user "+ user.facebookId);
+            System.out.println("  %%%Dryrun: Ignoring performing "+ message+" to user "+ actionParameter.facebookId);
             return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - dry run");
 
         }

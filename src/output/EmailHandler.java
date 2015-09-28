@@ -28,7 +28,7 @@ public class EmailHandler {
     private String overrideUser = null;
     private EmailInterface email = null;
 
-    private User recipient;
+    private String recipient;
 
     public EmailHandler( ){
 
@@ -47,9 +47,9 @@ public class EmailHandler {
         return this;
     }
 
-    public EmailHandler toRecipient(User user) {
+    public EmailHandler toRecipient(String userId) {
 
-        this.recipient = user;
+        this.recipient = userId;
         return this;
     }
 
@@ -77,7 +77,7 @@ public class EmailHandler {
             return false;
         }
 
-        String actualUser = recipient.facebookId;
+        String actualUser = recipient;
 
         if(overrideUser != null){
 
