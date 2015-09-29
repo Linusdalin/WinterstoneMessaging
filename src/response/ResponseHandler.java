@@ -133,11 +133,14 @@ public class ResponseHandler {
 
         if(cachedUser == null){
 
-            CachedUserTable table = new CachedUserTable("facebookId = '" + userId + "'", 1);
+            CachedUserTable table = new CachedUserTable("and facebookId = '" + userId + "'", 1);
             table.load(connection);
             cachedUser = table.getNext();
 
         }
+
+        if(cachedUser == null)
+            return false;
 
         switch (type) {
 

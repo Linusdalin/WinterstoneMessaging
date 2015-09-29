@@ -94,7 +94,6 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
         }
 
 
-        System.out.println("    -- Campaign " + Name + " firing. ");
 
         boolean abSelect = abSelect2(user);
         NotificationAction action = null;
@@ -104,12 +103,14 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
             if(abSelect){
                  action =  new NotificationAction(MessageF, user, getPriority(), getTag(), Name,  1, getState())
                         .withGame(gameCode);
+                System.out.println("    -- Campaign " + Name + " firing. (Testing Female message to Male audience) ");
 
             }
             else{
 
                 action =  new NotificationAction(MessageM, user, getPriority(), getTag(), Name,  2, getState())
                         .withGame(gameCode);
+                System.out.println("    -- Campaign " + Name + " firing. (Testing Male message to Male audience) ");
 
             }
         }else{
@@ -119,12 +120,14 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
 
                 action =  new NotificationAction(MessageM, user, getPriority(), getTag(), Name,  3, getState())
                         .withGame(gameCode);
+                System.out.println("    -- Campaign " + Name + " firing. (Testing Male message to Female audience) ");
 
             }
             else{
 
                 action =  new NotificationAction(MessageF, user, getPriority(), getTag(), Name,  4, getState())
                         .withGame(gameCode);
+                System.out.println("    -- Campaign " + Name + " firing. (Testing Female message to Female audience) ");
 
             }
 

@@ -88,7 +88,7 @@ public class OverviewStatistics {
         if(sent > 0)
             ctr = (100*sessions)/sent;
 
-        System.out.print(sent+"\t"+sessions+"\t"+ ctr+"%\t\t");
+        System.out.print(Display.fixedLengthRight(sent, 5)+" "+Display.fixedLengthRight(sessions, 5)+" "+ Display.fixedLengthRight(ctr,4)+"%  ");
 
     }
 
@@ -108,7 +108,7 @@ public class OverviewStatistics {
 
     private static int getSentMessages(Timestamp day, CampaignInterface campaign, Connection connection){
 
-        String sql = "select count(*) from exposure where date(exposureTime) = '"+ day.toString().substring(0, 10)+"' and promoCode like ('%"+campaign.getTag()+"%')";
+        String sql = "select count(*) from exposure where date(exposureTime) = '"+ day.toString().substring(0, 10)+"' and promoCode like ('%"+campaign.getTag()+"%') and type = 'NOTIFICATION'";
 
         try{
 

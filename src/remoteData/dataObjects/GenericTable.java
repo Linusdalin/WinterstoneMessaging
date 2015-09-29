@@ -21,6 +21,7 @@ public class GenericTable {
     private String restriction = "";
     protected int maxLimit = -1;
     protected String order = "DESC";
+    private Statement statement;
 
     public GenericTable(String getRemote, String restriction, int limit) {
 
@@ -69,7 +70,7 @@ public class GenericTable {
         try{
 
             //System.out.println("Query: " + queryString);
-            Statement statement = connection.createStatement();
+            statement = connection.createStatement();
             resultSet = statement.executeQuery(queryString);
 
         }catch(SQLException e){
@@ -96,6 +97,16 @@ public class GenericTable {
         return query;
     }
 
+
+
+    protected void close() {
+
+        try {
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
 
 

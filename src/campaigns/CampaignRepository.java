@@ -38,11 +38,11 @@ public class CampaignRepository {
 
         //add(new EngagementCampaign      ( 65, CampaignState.TEST_MODE ));
         //add(new FakeCoinsLeftCampaign   ( 90, CampaignState.TEST_MODE));
-        //add(new ReactivationCampaign    ( 60, CampaignState.ACTIVE));
+        add(new ReactivationCampaign    ( 60, CampaignState.ACTIVE));
         add(new FirstPaymentCampaign    ( 95, CampaignState.ACTIVE));
 
         //add(new GameNotification        (90, CampaignState.ACTIVE, "os2x3x4x5x", "Try it out!", null, null));
-        add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
+        //add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
 
 
     }};
