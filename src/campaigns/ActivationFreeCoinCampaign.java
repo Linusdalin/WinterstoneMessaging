@@ -55,7 +55,6 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
     public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
 
-        count++;
 
         if(count > DAILY_CAP){
 
@@ -110,6 +109,7 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
         if(getDaysBetween(lastSession, executionDay) > IdleDays){
 
             System.out.println("    -- Sending a day "+ IdleDays+" activation poke with coins" );
+            count++;
 
             if(isPaying(user)){
 

@@ -290,7 +290,7 @@ public class CampaignEngine {
 
                 ActionInterface action = campaign.evaluate(playerInfo, executionTime);
 
-                if(responseHandler.permanentlyFail(action.getType())){
+                if(action != null && responseHandler.permanentlyFail(action.getType())){
 
                     System.out.println("    -- User " + user.facebookId + "permanently failed on sending messages of type" + action.getType() + " ignoring.");
                     continue;

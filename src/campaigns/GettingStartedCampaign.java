@@ -21,7 +21,7 @@ import java.util.Calendar;
 public class GettingStartedCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "Getting Started";
+    private static final String Name = "GettingStarted";
     private static final int CoolDown_Days = 1;   // No real cool down. This will anyway only trigger once per message
 
     GettingStartedCampaign(int priority, CampaignState active){

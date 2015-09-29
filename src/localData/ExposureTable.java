@@ -1,5 +1,6 @@
 package localData;
 
+import core.Execute;
 import remoteData.dataObjects.GenericTable;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
@@ -106,11 +107,15 @@ public class ExposureTable extends GenericTable {
     public Exposure getLastExposure(String campaign, User user){
 
         load(connection, "and user= '"+ user.facebookId+"' and campaignName='"+campaign+"'", "DESC", 1);
+        Exposure exposure = getNext();
 
-        return getNext();
+        close();
+
+        return exposure;
 
 
     }
+
 
 
 }

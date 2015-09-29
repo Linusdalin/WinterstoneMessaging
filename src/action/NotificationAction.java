@@ -87,7 +87,7 @@ public class NotificationAction extends Action implements ActionInterface{
 
 
         // Now check if we are to send off the message or just log it (dry run)
-
+        // TODO: Handle notifications one by one and acknowledge error message 403 as permanent
         int successCount;
 
         if(!dryRun){
