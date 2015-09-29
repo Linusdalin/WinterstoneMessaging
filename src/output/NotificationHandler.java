@@ -16,9 +16,8 @@ public class NotificationHandler {
     private static final String appSecret = "c3a005258d928d6357606d046a2361c5";
     private static final String accessToken = appId + "|" + appSecret;
 
-    private int cap = 1;               // max notifications to send out. Default is 1
     private String message = null;
-    private String[] recipientList;
+    private String recipient = null;
     private String ref = "";
     private String promoCode = "";
     private String reward = null;
@@ -30,11 +29,6 @@ public class NotificationHandler {
         this.dummyOverride = dummyOverride;
     }
 
-    public NotificationHandler withCap(int max){
-
-        this.cap = max;
-        return this;
-    }
 
     public NotificationHandler withMessage(String message){
 
@@ -66,76 +60,52 @@ public class NotificationHandler {
      * @return  - number of successfully sent messages
      */
 
-    public int send() {
+    public boolean send() throws DeliveryException {
 
         if(message == null){
             System.out.println("No message given");
-            return 0;
+            return false;
 
         }
 
         System.out.println("Preparing to send message \""+ message+"\"");
 
-        if(recipientList == null){
+        if(recipient == null){
             System.out.println("No recipients given");
-            return 0;
-        }
-
-        if(recipientList.length > 1)
-            System.out.println("  -> to " + recipientList.length + " recipients.");
-
-        int count = 0;
-        int successCount = 0;
-
-        for (String recipient : recipientList) {
-
-            if(dummyOverride != null){
-
-                // Use dummy override to send out ONE controlled message for the first
-                recipient = dummyOverride;
-                if(cap != 0)
-                     cap = 1;
-
-            }
-            //recipient = "627716024"; //TODO: Remove this when tested to actually send
-            //recipient = "105390519812878";
-
-            if(count < cap){
-
-                //System.out.println("Sending to: " + recipient);
-                RequestHandler requestHandler = new RequestHandler("https://graph.facebook.com/v2.3/" + recipient + "/notifications");
-
-                String response = requestHandler.executePost("access_token=" + accessToken + "&href=?promoCode="+ this.promoCode+
-                        (reward != null ? "%26reward="+ reward : "")+
-                        (game != null ? "%26game="+ game : "")+
-                        "&template="+ message+"&ref="+this.ref);
-                //String response = requestHandler.executePost("");
-
-                if(response != null){
-                    System.out.println("   -> Got Response: " + response);
-                    successCount++;
-                }
-                else{
-
-                    System.out.println("   -> No Response");
-
-                }
-
-                count++;
-
-            }
-            else{
-
-                System.out.println("Capped at " + cap + " messages. Ignoring " + (recipientList.length - cap) + " recipients");
-                break;
-
-            }
-
+            return false;
         }
 
 
 
-        return successCount;
+        if(dummyOverride != null){
+
+            // Use dummy override to send out ONE controlled message for the first
+            recipient = dummyOverride;
+
+        }
+
+        //recipient = "627716024"; //TODO: Remove this when tested to actually send
+        //recipient = "105390519812878";
+
+
+        RequestHandler requestHandler = new RequestHandler("https://graph.facebook.com/v2.3/" + recipient + "/notifications");
+
+
+        String response = requestHandler.executePost("access_token=" + accessToken + "&href=?promoCode="+ this.promoCode+
+                (reward != null ? "%26reward="+ reward : "")+
+                (game != null ? "%26game="+ game : "")+
+                "&template="+ message+"&ref="+this.ref);
+
+        if(response != null){
+            System.out.println("   -> Got Response: " + response);
+            return true;
+        }
+        else{
+
+            System.out.println("   -> No Response");
+            return false;
+        }
+
     }
 
 
@@ -153,12 +123,7 @@ public class NotificationHandler {
 
     public NotificationHandler withRecipient(String facebookId) {
 
-        return withRecipients(new String[] { facebookId });
-    }
-
-    private NotificationHandler withRecipients(String[] recipientList) {
-
-        this.recipientList = recipientList;
+        this.recipient = facebookId;
         return this;
     }
 

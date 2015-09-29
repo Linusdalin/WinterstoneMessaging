@@ -11,6 +11,8 @@ public enum ActionResponseStatus {
     OK,
     FAILED,
     FAILED_PERMANENTLY,
+    FAILED_REMOTE_ERROR,
+    FAILED_INTERNAL_ERROR,
     ABORTED,
     IGNORED,
     MANUAL;

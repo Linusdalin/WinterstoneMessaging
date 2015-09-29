@@ -2,7 +2,6 @@ package output;
 
 import email.EmailInterface;
 import email.ReleaseEmail;
-import remoteData.dataObjects.User;
 
 import java.net.URLEncoder;
 
@@ -61,7 +60,7 @@ public class EmailHandler {
      * @return  - number of successfully sent messages
      */
 
-    public boolean send() {
+    public boolean send() throws DeliveryException{
 
         if(email == null){
             System.out.println("No email");
@@ -104,26 +103,25 @@ public class EmailHandler {
 
         RequestHandler requestHandler = new RequestHandler(mailService);
 
-        String response = requestHandler.executePost(
-                        "playerId=" + actualUser +
-                        "&templateName=" + email.getTemplate() +
-                        "&subject=" + email.getSubject() +
-                        (title != null ? "&title=" + URLEncoder.encode(title) : "") +
-                        (imageURL != null ? "&imageURL=" + URLEncoder.encode( imageURL ) + "&imageLinkURL="+URLEncoder.encode(link)  : "") +
-                        "&textVersion=" + URLEncoder.encode(email.getPlainText()) +
-                        "&htmlVersion="+ URLEncoder.encode(email.getBody()));
+            String response = requestHandler.executePost(
+                            "playerId=" + actualUser +
+                            "&templateName=" + email.getTemplate() +
+                            "&subject=" + email.getSubject() +
+                            (title != null ? "&title=" + URLEncoder.encode(title) : "") +
+                            (imageURL != null ? "&imageURL=" + URLEncoder.encode( imageURL ) + "&imageLinkURL="+URLEncoder.encode(link)  : "") +
+                            "&textVersion=" + URLEncoder.encode(email.getPlainText()) +
+                            "&htmlVersion="+ URLEncoder.encode(email.getBody()));
 
-        if(response != null){
-            System.out.println("   -> Got Response: " + response);
-            return true;
-        }
-        else{
+            if(response != null){
+                System.out.println("   -> Got Response: " + response);
+                return true;
+            }
+            else{
 
-            System.out.println("   -> No Response");
-            return false;
-        }
+                System.out.println("   -> No Response");
+                return false;
+            }
 
     }
-
 
 }

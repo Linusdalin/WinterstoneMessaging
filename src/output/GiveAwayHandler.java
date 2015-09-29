@@ -1,7 +1,5 @@
 package output;
 
-import remoteData.dataObjects.User;
-
 /**************************************************************
  *
  *          Sending an email
@@ -67,19 +65,29 @@ public class GiveAwayHandler {
         //System.out.println("Sending to: " + recipient);
         RequestHandler requestHandler = new RequestHandler(coinService);
 
-        String response = requestHandler.executePost(
-                        "player=" + recipient +
-                        "&amount=" + amount);
+        try{
 
-        if(response != null){
-            System.out.println("   -> Got Response: " + response);
-            return true;
-        }
-        else{
+            String response = requestHandler.executePost(
+                    "player=" + recipient +
+                            "&amount=" + amount);
 
-            System.out.println("   -> No Response");
+            if(response != null){
+                System.out.println("   -> Got Response: " + response);
+                return true;
+            }
+            else{
+
+                System.out.println("   -> No Response");
+                return false;
+            }
+
+        }catch(DeliveryException e){
+
+            System.out.println("   -> Got response " + e.getHttpCode());
             return false;
         }
+
+
 
     }
 }

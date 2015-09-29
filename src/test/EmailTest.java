@@ -49,13 +49,13 @@ public class EmailTest {
     private static final Payment payment = new Payment("627716024", 30, "", new Timestamp(2015, 1, 1, 1, 1, 1, 1), "promo", new Timestamp(2015, 1, 1, 1, 1, 1, 1));
 
 
-        @Test
+    @Test
     public void sendTest(){
 
 
         EmailHandler handler = new EmailHandler()
                 .withEmail(testMail)
-                .toRecipient(user);
+                .toRecipient(user.facebookId);
 
         boolean success = handler.send();
 
@@ -69,7 +69,7 @@ public class EmailTest {
 
         EmailHandler handler = new EmailHandler()
                 .withEmail(testMail)
-                .toRecipient(wrongUsesr);
+                .toRecipient(wrongUsesr.facebookId);
 
         boolean success = handler.send();
 
@@ -84,7 +84,7 @@ public class EmailTest {
 
         EmailHandler handler = new EmailHandler( user.facebookId )
                 .withEmail(testMail)
-                .toRecipient(wrongUsesr);
+                .toRecipient(wrongUsesr.facebookId);
 
         boolean success = handler.send();
 
@@ -99,7 +99,7 @@ public class EmailTest {
 
         EmailHandler handler = new EmailHandler()
                 .withEmail(testMail2)
-                .toRecipient(user);
+                .toRecipient(user.facebookId);
 
         boolean success = handler.send();
 
@@ -115,7 +115,7 @@ public class EmailTest {
 
         handler = new EmailHandler()
                 .withEmail(FirstPaymentCampaign.firstDepositEmail(user, payment))
-                .toRecipient(user);
+                .toRecipient(user.facebookId);
 
         success = handler.send();
 
@@ -124,7 +124,7 @@ public class EmailTest {
 
         handler = new EmailHandler()
                 .withEmail(GettingStartedCampaign.gettingStartedEmail(user))
-                .toRecipient(user);
+                .toRecipient(user.facebookId);
 
         success = handler.send();
 

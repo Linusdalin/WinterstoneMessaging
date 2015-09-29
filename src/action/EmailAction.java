@@ -4,6 +4,7 @@ import campaigns.CampaignState;
 import email.AbstractEmail;
 import email.EmailInterface;
 import localData.Exposure;
+import output.DeliveryException;
 import output.EmailHandler;import remoteData.dataObjects.User;
 
 import java.sql.Connection;
@@ -86,14 +87,22 @@ public class EmailAction extends Action implements ActionInterface{
 
         if(!dryRun){
 
-            boolean success =  handler.send();
+            try{
 
-            if(success){
-                noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ), executionTime, localConnection );
-                return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
+                if(handler.send()){
+
+                    noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ), executionTime, localConnection );
+                    return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
+                }
+                else
+                    return new ActionResponse(ActionResponseStatus.FAILED,   "Message delivery failed");
+
+
+            }catch(DeliveryException e){
+
+                return new ActionResponse(e.getStatus(),   "Message delivery failed");
+
             }
-            else
-                return new ActionResponse(ActionResponseStatus.FAILED,   "Message delivery failed");
 
         }
         else{

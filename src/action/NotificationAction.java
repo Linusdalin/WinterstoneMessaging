@@ -2,6 +2,7 @@ package action;
 
 import campaigns.CampaignState;
 import localData.Exposure;
+import output.DeliveryException;
 import output.NotificationHandler;
 import remoteData.dataObjects.User;
 import rewards.Reward;
@@ -77,7 +78,6 @@ public class NotificationAction extends Action implements ActionInterface{
         System.out.println("! Executing " + type.name() + " for player " + actionParameter.name);
 
         NotificationHandler handler = new NotificationHandler(testUser)
-                    .withCap(1)
                     .withRecipient(actionParameter.facebookId)
                     .withMessage(message)
                     .withRef(ref)
@@ -91,13 +91,21 @@ public class NotificationAction extends Action implements ActionInterface{
         int successCount;
 
         if(!dryRun){
-            successCount =  handler.send();
-            if(successCount > 0){
-                noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ) , executionTime, localConnection );
-                return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
+
+            try{
+
+                if(handler.send()){
+                    noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ) , executionTime, localConnection );
+                    return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
+                }
+
+            }catch(DeliveryException e){
+
+                return new ActionResponse(e.getStatus(),   "Message delivery failed");
+
             }
-            else
-                return new ActionResponse(ActionResponseStatus.FAILED,   "Message delivery failed");
+
+            return new ActionResponse(ActionResponseStatus.FAILED,   "Message delivery failed");
 
         }
         else{
