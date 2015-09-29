@@ -6,7 +6,7 @@ import action.ActionResponseStatus;
  *
  *              A connection exception is thrown when a connection to a service fails
  *
- *              It translates this to an action
+ *              It translates this to an action code depending on what happens
  */
 
 public class DeliveryException extends Exception {
