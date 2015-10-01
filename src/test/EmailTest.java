@@ -6,6 +6,7 @@ import campaigns.GettingStartedCampaign;
 import email.NotificationEmail;
 import email.ReleaseEmail;
 import org.junit.Test;
+import output.DeliveryException;
 import output.EmailHandler;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
@@ -14,6 +15,7 @@ import java.sql.Timestamp;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /*****************************************************************************''
  *
@@ -52,28 +54,43 @@ public class EmailTest {
     @Test
     public void sendTest(){
 
+        try{
 
-        EmailHandler handler = new EmailHandler()
-                .withEmail(testMail)
-                .toRecipient(user.facebookId);
+            EmailHandler handler = new EmailHandler()
+                    .withEmail(testMail)
+                    .toRecipient(user.facebookId);
 
-        boolean success = handler.send();
+            boolean success = handler.send();
 
-        assertThat("Should work", success, is(true) );
+            assertThat("Should work", success, is(true) );
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
+
 
     }
 
     @Test
     public void failWrongUserTest(){
 
+        try{
 
-        EmailHandler handler = new EmailHandler()
-                .withEmail(testMail)
-                .toRecipient(wrongUsesr.facebookId);
+            EmailHandler handler = new EmailHandler()
+                    .withEmail(testMail)
+                    .toRecipient(wrongUsesr.facebookId);
 
-        boolean success = handler.send();
+            boolean success = handler.send();
 
-        assertThat("Should not work", success, is(false) );
+            assertThat("Should not work", success, is(false) );
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
+
+
 
     }
 
@@ -81,14 +98,20 @@ public class EmailTest {
     @Test
     public void overrideTest(){
 
+        try{
 
-        EmailHandler handler = new EmailHandler( user.facebookId )
-                .withEmail(testMail)
-                .toRecipient(wrongUsesr.facebookId);
+            EmailHandler handler = new EmailHandler( user.facebookId )
+                    .withEmail(testMail)
+                    .toRecipient(wrongUsesr.facebookId);
 
-        boolean success = handler.send();
+            boolean success = handler.send();
 
-        assertThat("Should work", success, is(true) );
+            assertThat("Should work", success, is(true) );
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
 
     }
 
@@ -96,39 +119,54 @@ public class EmailTest {
     @Test
     public void emailStyleTest(){
 
+        try{
 
-        EmailHandler handler = new EmailHandler()
-                .withEmail(testMail2)
-                .toRecipient(user.facebookId);
+            EmailHandler handler = new EmailHandler()
+                    .withEmail(testMail2)
+                    .toRecipient(user.facebookId);
 
-        boolean success = handler.send();
+            boolean success = handler.send();
 
-        assertThat("Should work", success, is(true) );
+            assertThat("Should work", success, is(true) );
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
+
 
     }
 
     @Test
     public void vipMailTest(){
 
-        boolean success;
-        EmailHandler handler;
+        try{
 
-        handler = new EmailHandler()
-                .withEmail(FirstPaymentCampaign.firstDepositEmail(user, payment))
-                .toRecipient(user.facebookId);
+            boolean success;
+            EmailHandler handler;
 
-        success = handler.send();
+            handler = new EmailHandler()
+                    .withEmail(FirstPaymentCampaign.firstDepositEmail(user, payment))
+                    .toRecipient(user.facebookId);
 
-        assertThat("Should work", success, is(true) );
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
 
 
-        handler = new EmailHandler()
-                .withEmail(GettingStartedCampaign.gettingStartedEmail(user))
-                .toRecipient(user.facebookId);
+            handler = new EmailHandler()
+                    .withEmail(GettingStartedCampaign.gettingStartedEmail(user))
+                    .toRecipient(user.facebookId);
 
-        success = handler.send();
+            success = handler.send();
 
-        assertThat("Should work", success, is(true) );
+            assertThat("Should work", success, is(true) );
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
+
 
 
     }

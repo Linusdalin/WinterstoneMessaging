@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 
 public interface ActionInterface {
 
-    ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection);
+    ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection, int count, int size);
 
     int getSignificance(int eligibility);
     int getSignificance();

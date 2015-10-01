@@ -1,7 +1,6 @@
 package action;
 
 import campaigns.CampaignState;
-import email.AbstractEmail;
 import email.EmailInterface;
 import localData.Exposure;
 import output.DeliveryException;
@@ -51,14 +50,16 @@ public class EmailAction extends Action implements ActionInterface{
      *
      *
      *
+     *
      * @param dryRun                - do not send (just testing)
      * @param testUser              - override user with dummy
      * @param executionTime         - time to store for the execution
      * @param localConnection       - connection to the crmDatabase to store xposure and outcomes
-     * @return                      - the response from executing action
+     * @param count
+     *@param size @return                      - the response from executing action
      */
 
-    public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection) {
+    public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection, int count, int size) {
 
         if(!inUse){
 
@@ -75,11 +76,11 @@ public class EmailAction extends Action implements ActionInterface{
         }
 
         System.out.println("--------------------------------------------------------");
-        System.out.println("! Executing " + type.name() + " for player " + actionParameter.name);
+        System.out.println("! Executing " + type.name() + "("+ count+"/"+size+") for player " + actionParameter.name);
 
         EmailHandler handler = new EmailHandler(testUser)
                 .withEmail( email )
-                .toRecipient( actionParameter.name );
+                .toRecipient( actionParameter.facebookId );
 
         // Now check if we are to send off the message or just log it (dry run)
 
@@ -92,10 +93,14 @@ public class EmailAction extends Action implements ActionInterface{
                 if(handler.send()){
 
                     noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ), executionTime, localConnection );
+                    pause(2);
                     return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
                 }
-                else
+                else{
+                    pause(2);
                     return new ActionResponse(ActionResponseStatus.FAILED,   "Message delivery failed");
+
+                }
 
 
             }catch(DeliveryException e){

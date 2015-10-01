@@ -114,7 +114,8 @@ public class EmailHandler {
 
             if(response != null){
                 System.out.println("   -> Got Response: " + response);
-                return true;
+                return evaluateResponse(response);
+
             }
             else{
 
@@ -122,6 +123,21 @@ public class EmailHandler {
                 return false;
             }
 
+    }
+
+    /*
+    Trying to POST: http://mailer.slot-america.com/sendCampaignMailwith playerId=100000551561509&templateName=campaignMailTemplate&subject=we have a recommendation for you&textVersion=Hello+Rick+Nader+Don%27t+miss+out+the+new+game+we+released+here+at+Slot+America.+We+think+you+will+like+it...&htmlVersion=%3Cp%3EDon%27t+miss+out+the+new+game+we+released+here+at+Slot+America.+We+think+you+will+like+it...%3C%2Fp%3E%3Cp%3E+Check+out+%3Ca+href%3D%22https%3A%2F%2Fapps.facebook.com%2FslotAmerica%2F%3Fgame%3Dfire_fruitpromocode%3DEGameActivation-2%22%3Ethe+super+hot+Fire+Fruit+game.+Click+here+to+see+the+secret+in+the+sauce%21%3C%2Fa%3E%3C%2Fp%3E
+       -> Got Response: NO_MAIL_ADDRESS
+
+     */
+
+
+    private boolean evaluateResponse(String response) {
+
+        if(response.equals("NO_MAIL_ADDRESS") || response.equals("UNSUBSCRIBED"))
+            return false;
+
+        return true;
     }
 
 }

@@ -26,11 +26,11 @@ import java.io.IOException;
 public class Execute {
 
     private static final int     Threshold              = 50;
-    private static final int     Send_Cap               = 5000;
+    private static final int     Send_Cap               = 10000;
     private static final int     User_Cap               = 140000;
     private static final boolean DRY_RUN                = false;
     private static final boolean OVERRIDE_TIME_CONSTR   = true;
-    private static final String  UserScrapeStart        = "2015-08-22 12:32:07";               // "2015-01-18";
+    private static final String  UserScrapeStart        = "2015-05-23 16:00:13";               // "2015-01-18";
     private static final String  TEST_USER              = null;                       // "627716024";          // Tina:     "105390519812878";
 
 

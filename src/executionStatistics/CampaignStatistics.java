@@ -1,5 +1,7 @@
 package executionStatistics;
 
+import action.ActionType;
+
 /*******************************************************************************
  *
  *
@@ -9,7 +11,8 @@ package executionStatistics;
 
 public class CampaignStatistics {
 
-    private int timesFired = 0;
+    private int timesFiredNotification = 0;
+    private int timesFiredEmail = 0;
     private int timesOverrun = 0;
     private int timesPotential = 0;
 
@@ -21,15 +24,19 @@ public class CampaignStatistics {
     }
 
 
-    public void countFired(){
+    public void countFired(ActionType type){
 
-        timesFired++;
+        if(type == ActionType.NOTIFICATION)
+            timesFiredNotification++;
+
+        if(type == ActionType.EMAIL)
+            timesFiredEmail++;
     }
 
 
     public String toString(){
 
-        return "Fired: " + timesFired + " Overrun: " + timesOverrun + " Potential (if live): " + timesPotential;
+        return "Fired: ( N:" + timesFiredNotification + " + E:" + timesFiredEmail + " ) Overrun: " + timesOverrun + " Potential (if live): " + timesPotential;
     }
 
     public String getName() {

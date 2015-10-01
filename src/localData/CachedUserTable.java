@@ -148,7 +148,7 @@ public class CachedUserTable extends GenericTable {
 
     public void updateFailNotification(String facebookId, Connection connection) {
 
-        String updateQuery = "UPDATE user SET failNotification=failNotification+1  WHERE facebookId='"+facebookId+"'";
+        String updateQuery = "UPDATE user SET failNotificaton=failNotificaton+1  WHERE facebookId='"+facebookId+"'";
 
         try{
 

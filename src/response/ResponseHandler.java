@@ -145,9 +145,9 @@ public class ResponseHandler {
         switch (type) {
 
             case NOTIFICATION:
-                return cachedUser.failNotification > 2;
+                return cachedUser.failNotification > 0;
             case EMAIL:
-                return cachedUser.failMail > 2;
+                return cachedUser.failMail > 0;
             case IN_GAME:
             case MANUAL_ACTION:
             case COIN_ACTION:

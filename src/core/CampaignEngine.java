@@ -1,7 +1,6 @@
 package core;
 
 import action.ActionInterface;
-import action.ActionResponse;
 import action.ActionType;
 import campaigns.CampaignInterface;
 import campaigns.CampaignRepository;
@@ -12,6 +11,7 @@ import localData.ExposureTable;
 import output.Outbox;
 import remoteData.dataObjects.*;
 import response.ResponseHandler;
+import sound.SoundPlayer;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -113,6 +113,7 @@ public class CampaignEngine {
 
         System.out.println(" -- Starting from " + startDate);
         System.out.println(" -- Retrieving "+(analysis_cap > -1 ? analysis_cap : "all")+" players from connection...");
+
         allPlayers.load(dbConnection, " and users.created > '"+ startDate+"'", "ASC", analysis_cap);      // Restriction for testing
         Calendar calendar = Calendar.getInstance();
         Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
@@ -143,7 +144,15 @@ public class CampaignEngine {
 
         System.out.println(executionStatistics.toString());
 
+        System.out.println("Total notifications: " + notificationOutbox.size());
+        System.out.println("Total emails:        " + emailOutbox.size());
+        System.out.println("Total manual:        " + manualActionOutbox.size());
+
+
         System.out.println("  NOTE! Dry run is " + (dryRun ? "ON" : "OFF"));
+
+        SoundPlayer player = new SoundPlayer();
+        player.playSound(SoundPlayer.ReadyBeep);
 
         System.out.println("\nPress key to enter\n>");
 
@@ -216,7 +225,7 @@ public class CampaignEngine {
             if(action == null)
                 System.out.println(" -- No action for player");
             else
-                action.execute(true, null, executionTime, localConnection);
+                action.execute(true, null, executionTime, localConnection, 1, 1);
 
         }
 
@@ -292,7 +301,7 @@ public class CampaignEngine {
 
                 if(action != null && responseHandler.permanentlyFail(action.getType())){
 
-                    System.out.println("    -- User " + user.facebookId + "permanently failed on sending messages of type" + action.getType() + " ignoring.");
+                    System.out.println("    -- Campaign " + campaign.getName() + " not applicable. Permanently failed on sending messages of type " + action.getType() + " ignoring.");
                     continue;
 
 

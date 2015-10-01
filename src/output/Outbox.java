@@ -53,7 +53,7 @@ public class Outbox {
             if(count >= cap)
                 break;
 
-            ActionResponse response = action.execute(dryRun, testUser, executionTime, connection);
+            ActionResponse response = action.execute(dryRun, testUser, executionTime, connection, count, queue.size());
 
             if(response.isExecuted()){
                 success++;
@@ -91,11 +91,13 @@ public class Outbox {
 
                 case NOTIFICATION:
                     table.updateFailNotification(user, connection);
+                    System.out.println(" --- Updating failed Notification for player " + user);
                     break;
                 case MANUAL_ACTION:
                     break;
                 case EMAIL:
-                    table.updateFailNotification(user, connection);
+                    table.updateFailMail(user, connection);
+                    System.out.println(" --- Updating failed EMAIL for player " + user);
                     break;
                 case IN_GAME:
                     break;
@@ -112,4 +114,8 @@ public class Outbox {
 
     }
 
+    public int size() {
+
+        return queue.size();
+    }
 }

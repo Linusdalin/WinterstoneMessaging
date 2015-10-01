@@ -2,7 +2,6 @@ package action;
 
 import campaigns.CampaignState;
 import output.GiveAwayHandler;
-import output.NotificationHandler;
 import remoteData.dataObjects.User;
 
 import java.sql.Connection;
@@ -34,14 +33,16 @@ public class GiveCoinAction extends Action implements ActionInterface{
      *
      *
      *
+     *
      * @param dryRun                - do not send (just testing)
      * @param testUser              - override user with dummy
      * @param executionTime         - time to store for the execution
      * @param localConnection       - connection to the crmDatabase to store xposure and outcomes
-     * @return                      - the response from executing action
+     * @param count
+     *@param size @return                      - the response from executing action
      */
 
-    public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection) {
+    public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection, int count, int size) {
 
         if(!isLive()){
 

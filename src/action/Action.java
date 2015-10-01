@@ -134,4 +134,21 @@ public abstract class Action implements ActionInterface{
     protected int getMessageId() {
         return messageId;
     }
+
+
+    protected void pause(int sec) {
+
+        try {
+
+            Thread.sleep(1000*sec);
+
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+
 }

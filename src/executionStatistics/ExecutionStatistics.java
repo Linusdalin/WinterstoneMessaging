@@ -32,7 +32,7 @@ public class ExecutionStatistics {
             campaignStatistics[campaignIndex] = new CampaignStatistics(selectedAction.getCampaign());
 
         if(selectedAction.isLive())
-            campaignStatistics[campaignIndex].countFired();
+            campaignStatistics[campaignIndex].countFired(selectedAction.getType());
         else
             campaignStatistics[campaignIndex].countPotential();
 
