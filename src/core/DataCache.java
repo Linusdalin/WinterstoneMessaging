@@ -89,26 +89,6 @@ public class DataCache {
     }
 
 
-
-
-
-    // TODO: This takes too much CPU. Look in local db directly
-
-    public List<Payment> getPaymentsForUserCache(User user) {
-
-        List<Payment> paymentsForUser = new ArrayList<Payment>();
-
-        for (Payment payment : allPayments) {
-            if(payment.facebookId.equals(user.facebookId))
-                paymentsForUser.add(payment);
-        }
-
-        return paymentsForUser;
-
-
-    }
-
-
     public List<Payment> getPaymentsForUser(User user) {
 
         if(user.payments == 0)

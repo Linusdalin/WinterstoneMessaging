@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 
 public abstract class AbstractEvent implements EventInterface {
 
-
     private Timestamp expiry;
 
     protected void setExpiry(String expiry) {
@@ -19,7 +18,8 @@ public abstract class AbstractEvent implements EventInterface {
         this.expiry = Timestamp.valueOf(expiry);
     }
 
-    // TODO: Not Implemented: evaluation of promotable events
+
+        // TODO: Not Implemented: evaluation of promotable events
 
     public boolean isPromotable(Timestamp analysisTime){
 

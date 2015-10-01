@@ -58,8 +58,9 @@ public class NotificationAction extends Action implements ActionInterface{
      * @param testUser              - override user with dummy
      * @param executionTime         - time to store for the execution
      * @param localConnection       - connection to the crmDatabase to store xposure and outcomes
-     * @param count
-     *@param size @return                      - the response from executing action
+     * @param count                 - current count
+     * @param size                  - total actions to execute
+     * @return                      - the response from executing action
      */
 
     public ActionResponse execute(boolean dryRun, String testUser, Timestamp executionTime, Connection localConnection, int count, int size) {
@@ -87,10 +88,6 @@ public class NotificationAction extends Action implements ActionInterface{
                     .withReward(reward)
                     .withGame(game);
 
-
-        // Now check if we are to send off the message or just log it (dry run)
-        // TODO: Handle notifications one by one and acknowledge error message 403 as permanent
-        int successCount;
 
         if(!dryRun){
 

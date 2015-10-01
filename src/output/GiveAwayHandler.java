@@ -2,7 +2,7 @@ package output;
 
 /**************************************************************
  *
- *          Sending an email
+ *          Calling the support service to give awa
  *
  */
 

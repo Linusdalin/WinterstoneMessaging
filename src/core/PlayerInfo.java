@@ -56,7 +56,6 @@ public class PlayerInfo {
     }
 
 
-    //TODO: We could lookup last session directly it there is an index on DESC in the database
 
     public Timestamp getLastSession() {
 

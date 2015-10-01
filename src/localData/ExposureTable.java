@@ -90,7 +90,6 @@ public class ExposureTable extends GenericTable {
      * @return
      *
      *
-     *          //TODO: Optimization. Precalculate 7 days once and for all and don't let MySQL do it once per user.
      */
 
 

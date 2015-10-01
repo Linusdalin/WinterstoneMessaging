@@ -14,9 +14,6 @@ import java.sql.Timestamp;
  *
  *              This is a simple first take, sending a message 3 to all players that have played at lease 10 sessions and then stopped
  *
- *              // TODO: Add a "not exposed to this message" as a criteria to reduce the cooldown
- *
- *
  */
 
 public class LevelUpCampaign extends AbstractCampaign implements CampaignInterface {

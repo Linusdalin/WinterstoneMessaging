@@ -32,11 +32,11 @@ public class CampaignEngine {
     private Connection dbConnection = null;
     private Connection cacheConnection = null;
     private Connection localConnection = null;
-    private UserTable allPlayers = null;
     private int threshold;
     private boolean dryRun;
     private boolean overrideTime;
     private int analysis_cap;
+    private int batchSize;
     private Outbox notificationOutbox;
     private Outbox manualActionOutbox;          // Manual messages
     private Outbox emailOutbox;
@@ -56,16 +56,16 @@ public class CampaignEngine {
      *
      */
 
-    CampaignEngine(ConnectionHandler.Location dataSource, int threshold, boolean dryRun, boolean overrideTime, int send_cap, int analysis_cap, String testUser){
+    CampaignEngine(ConnectionHandler.Location dataSource, int threshold, boolean dryRun, boolean overrideTime, int send_cap, int analysis_cap, String testUser, int batchSize){
 
         this.threshold = threshold;
         this.dryRun = dryRun;
         this.overrideTime = overrideTime;
         this.analysis_cap = analysis_cap;
+        this.batchSize = batchSize;
 
         try{
 
-            allPlayers = new UserTable();
             dbConnection    = ConnectionHandler.getConnection(dataSource);
             cacheConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
             localConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
@@ -114,30 +114,27 @@ public class CampaignEngine {
         System.out.println(" -- Starting from " + startDate);
         System.out.println(" -- Retrieving "+(analysis_cap > -1 ? analysis_cap : "all")+" players from connection...");
 
-        allPlayers.load(dbConnection, " and users.created > '"+ startDate+"'", "ASC", analysis_cap);      // Restriction for testing
         Calendar calendar = Calendar.getInstance();
         Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
         ExposureTable campaignExposures = new ExposureTable(localConnection);
-        User user = allPlayers.getNext();
         int count = 0;
         ExecutionStatistics executionStatistics = new ExecutionStatistics(CampaignRepository.activeCampaigns);
 
-
         System.out.println("******************************************************\n* Passing over all players...");
-
         int userCount = 0;
+        int batch = 1;
 
-        while(user != null && (userCount++ < analysis_cap || analysis_cap == -1)){
 
-            System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
-            PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
+        // Execute batch by batch
 
-            ActionInterface action = evaluateUser(playerInfo, executionTime, campaignExposures, executionStatistics);
-            handleAction(action, playerInfo, campaignExposures, executionStatistics);
+        do{
 
-            user = allPlayers.getNext();
-            count++;
-        }
+            userCount = handleBatch(batch++, startDate, dbCache, executionTime, campaignExposures, executionStatistics, userCount);
+
+        } while(userCount != -1);
+
+
+
 
 
         System.out.println(" ******************************************\n * Evaluated " + count + " users resulting in the following actions:");
@@ -184,6 +181,50 @@ public class CampaignEngine {
         manualActionOutbox.purge(executionTime);
     }
 
+
+    /************************************************************************************************************'
+     *
+     *
+     *          Execute one batch
+     *
+     *
+     * @param batchNo
+     * @param startDate
+     * @param dbCache
+     * @param executionTime
+     * @param campaignExposures
+     * @param executionStatistics
+     * @param userCount
+     * @return                        - the new user count (or -1 if there are no more users to get)
+     */
+
+    private int handleBatch(int batchNo, String startDate, DataCache dbCache, Timestamp executionTime, ExposureTable campaignExposures, ExecutionStatistics executionStatistics, int userCount) {
+
+        System.out.println(" -- Handle Batch #" + batchNo);
+
+        UserTable allPlayers = new UserTable();
+        allPlayers.load(dbConnection, " and users.created >= '"+ startDate+"'", "ASC", batchSize, userCount);      // Restriction for testing
+        User user = allPlayers.getNext();
+
+        if(user == null)
+            return -1;
+
+        while(user != null && (userCount++ < analysis_cap || analysis_cap == -1)){
+
+            System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
+            PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
+
+            ActionInterface action = evaluateUser(playerInfo, executionTime, campaignExposures, executionStatistics);
+            handleAction(action, playerInfo, campaignExposures, executionStatistics);
+
+            user = allPlayers.getNext();
+        }
+
+        if(userCount == analysis_cap)
+            return -1;
+
+        return userCount;
+    }
 
 
     public void playerTest(String[] testPlayers) {

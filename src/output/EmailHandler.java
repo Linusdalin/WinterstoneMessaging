@@ -10,11 +10,6 @@ import java.net.URLEncoder;
  *          Sending an email
  *
  *
- *          TODO: Handle
- *
- *          Trying to POST: http://mailer.slot-america.com/sendCampaignMail?playerId=705698076219835&templateName=campaignMailTemplate&subject=there is more fun awaiting you&textVersion=You+have+199680+coins+left+on+your+account.There+are+some+fabulous+new+games+you+can+try+out+with+it.&htmlVersion=%3Cp%3EHello+there%21+Did+you+have+%3Cb%3E199680%3C%2Fb%3E+coins+left+on+your+account%3F+It+would+be+a+shame+to+let+them+go+to+waste%2C+right%3F%3C%2Fp%3E%3Cp%3E+There+are+some+new+and+fabulous+new+games+you+can+try+out+with+it%21+Like+%3Ca+href%3D%22https%3A%2F%2Fapps.facebook.com%2FslotAmerica%2F%3Fgame%3Dwild_cherries%26promocode%3DcoinsLeftEmail-1%22%3EWild+Cherries%3C%2Fa%3E.+Welcome+back+to+test+it+out+%3A-%29+%3C%2Fp%3E
-    -> Got Response: NO_MAIL_ADDRESS
- Insert with: insert into exposure values ('705698076219835', 'Coins Left', 1, '2015-09-21 20:33:50.757', 'CoinsLeft-1', 'EMAIL')
  *
  */
 
@@ -98,9 +93,6 @@ public class EmailHandler {
 
         }
 
-
-        //recipient = "627716024"; //TODO: Remove this when tested to actually send
-
         RequestHandler requestHandler = new RequestHandler(mailService);
 
             String response = requestHandler.executePost(
@@ -113,8 +105,9 @@ public class EmailHandler {
                             "&htmlVersion="+ URLEncoder.encode(email.getBody()));
 
             if(response != null){
+
                 System.out.println("   -> Got Response: " + response);
-                return evaluateResponse(response);
+                return evaluateOKResponse(response);
 
             }
             else{
@@ -125,14 +118,15 @@ public class EmailHandler {
 
     }
 
-    /*
-    Trying to POST: http://mailer.slot-america.com/sendCampaignMailwith playerId=100000551561509&templateName=campaignMailTemplate&subject=we have a recommendation for you&textVersion=Hello+Rick+Nader+Don%27t+miss+out+the+new+game+we+released+here+at+Slot+America.+We+think+you+will+like+it...&htmlVersion=%3Cp%3EDon%27t+miss+out+the+new+game+we+released+here+at+Slot+America.+We+think+you+will+like+it...%3C%2Fp%3E%3Cp%3E+Check+out+%3Ca+href%3D%22https%3A%2F%2Fapps.facebook.com%2FslotAmerica%2F%3Fgame%3Dfire_fruitpromocode%3DEGameActivation-2%22%3Ethe+super+hot+Fire+Fruit+game.+Click+here+to+see+the+secret+in+the+sauce%21%3C%2Fa%3E%3C%2Fp%3E
-       -> Got Response: NO_MAIL_ADDRESS
-
+    /**************************************************************''
+     *
+     *          Evaluate a response to see if is OK
+     *
+     * @param response         - test from the service
+     * @return
      */
 
-
-    private boolean evaluateResponse(String response) {
+    private boolean evaluateOKResponse(String response) {
 
         if(response.equals("NO_MAIL_ADDRESS") || response.equals("UNSUBSCRIBED"))
             return false;
