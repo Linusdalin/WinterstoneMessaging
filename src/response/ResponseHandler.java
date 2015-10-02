@@ -38,8 +38,6 @@ public class ResponseHandler {
 
     }
 
-    //TODO: Filter on first in the day. All game sessions are tagged with the promoCode
-
     /***********************************************************************************************
      *
      *

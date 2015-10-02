@@ -28,7 +28,8 @@ public class ReceptivityProfile {
     public static final int Not_significant = -1;
 
     int totalSessions;
-    int[][] profile;
+    public int[][] profile;
+    private Timestamp lastUpdate;
     private String userId;
 
     ReceptivityProfile(String userId){
@@ -45,6 +46,15 @@ public class ReceptivityProfile {
         };
     }
 
+
+    public ReceptivityProfile(String userId, int[][] data, Timestamp lastUpdate){
+
+        this.userId = userId;
+        this.profile = data;
+        this.lastUpdate = lastUpdate;
+    }
+
+
     public void registerSession(GameSession session){
 
         totalSessions ++;
@@ -56,6 +66,7 @@ public class ReceptivityProfile {
         int timeOfDay = 0;      // TODO: Not implemented time of day
 
         this.profile[day][timeOfDay]++;
+        this.lastUpdate = session.timeStamp;
 
 
     }
@@ -69,7 +80,7 @@ public class ReceptivityProfile {
 
               output.append(profile[day] + ", ");
         }
-        output.append("] Significance: " + hasSignificance());
+        output.append("] Significance: " + hasSignificance() + "( updated @ " + lastUpdate + ")");
         return output.toString();
     }
 
@@ -155,6 +166,9 @@ public class ReceptivityProfile {
         return userId;
     }
 
+    public Timestamp getLastUpdate() {
+        return lastUpdate;
+    }
 
     private int getDayNumber(Timestamp timeStamp) {
 
