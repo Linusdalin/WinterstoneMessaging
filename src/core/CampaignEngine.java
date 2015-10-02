@@ -133,10 +133,6 @@ public class CampaignEngine {
 
         } while(userCount != -1);
 
-
-
-
-
         System.out.println(" ******************************************\n * Evaluated " + count + " users resulting in the following actions:");
 
         System.out.println(executionStatistics.toString());
@@ -155,15 +151,11 @@ public class CampaignEngine {
 
         try {
 
-            Thread.sleep(5000);
             System.in.read();
 
         } catch (IOException e) {
 
             System.out.println("Error getting input. Aborting");
-            return;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
             return;
         }
 
@@ -188,13 +180,14 @@ public class CampaignEngine {
      *          Execute one batch
      *
      *
-     * @param batchNo
-     * @param startDate
-     * @param dbCache
-     * @param executionTime
-     * @param campaignExposures
-     * @param executionStatistics
-     * @param userCount
+     * @param batchNo                       - the batch ordinal
+     * @param startDate                     - original start date (not for the batch!)
+     * @param dbCache                       - locally cached data
+     * @param executionTime                 - time for execution
+     * @param campaignExposures             - cached data
+     * @param executionStatistics           - cached data
+     * @param userCount                     - count to stop at cap
+     *
      * @return                        - the new user count (or -1 if there are no more users to get)
      */
 

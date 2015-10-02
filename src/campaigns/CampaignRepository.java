@@ -1,7 +1,6 @@
 package campaigns;
 
 import action.ActionInterface;
-import email.AbstractEmail;
 import email.EmailInterface;
 import email.ReleaseEmail;
 
@@ -42,7 +41,7 @@ public class CampaignRepository {
         add(new FirstPaymentCampaign    ( 95, CampaignState.ACTIVE));
 
         //add(new GameNotification        (90, CampaignState.ACTIVE, "os2x3x4x5x", "Try it out!", null, null));
-        //add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
+        add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
 
 
     }};
@@ -112,19 +111,4 @@ public class CampaignRepository {
         return activeCampaigns;
     }
 
-    public int getCampaignIdByName(ActionInterface action) {
-
-        int id = 0;
-
-        for (CampaignInterface campaign : activeCampaigns) {
-
-            if(action.isFiredBy(campaign))
-                return id;
-
-            id++;
-        }
-
-        throw new RuntimeException("Could not find campaign " + action.getCampaign() + " in action.");
-
-    }
 }

@@ -1,7 +1,6 @@
 package campaigns;
 
 import action.ActionInterface;
-import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
@@ -24,21 +23,22 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
     private static final int CoolDown_Days = 5;     // Avoid duplicate runs
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 15;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 60;   // Max days inactivity to get message
-    private static final int ACTIVITY_MIN   = 10;               // Min sessions to be active
+    private static final int INACTIVITY_LIMIT_FREE      = 17;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = 62;   // Max days inactivity to get message
+    private static final int ACTIVITY_MIN   = 19;               // Min sessions to be active
 
 
-    private static final String MessageM = "Our new game has more X’s than Liz Taylor. Click Now!";
-    private static final String MessageF = "Old School Casino Classics 2x3x4x5x is a real trip down ‘Memory Strip’. Click here to go back in time!";
+    private static final String MessageM = "Fly it like a Fighter Pilot. Our new game Sonic Boom breaks the SlotAmerica sound barrier. Click to Play Now!";
+    private static final String MessageF = "Not just a pretty face, show them you’re a Fighter Ace! Play our new barrier-breaking slot Sonic Boom now!";
 
     private String gameCode;
-    private final EmailInterface email = null;
+
+
 
     GameNotificationGenderAB(int priority, CampaignState activation){
 
         super(Name, priority, activation);
-        this.gameCode = "os2x3x4x5x";
+        this.gameCode = "sonic_boom";
         setCoolDown(CoolDown_Days);
     }
 
@@ -96,7 +96,7 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
 
 
         boolean abSelect = abSelect2(user);
-        NotificationAction action = null;
+        NotificationAction action;
 
         if(isMale(user)){
 
