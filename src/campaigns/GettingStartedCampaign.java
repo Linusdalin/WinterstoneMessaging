@@ -86,6 +86,12 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
             }
 
+            if(daysBefore(user.created, executionDay, 16 )){
+
+                System.out.println("    -- Campaign " + Name + " Emailing 16 day getting started message for " + user.name );
+                return new EmailAction(gettingStartedEmail(user), user, getPriority(), getTag(), 16, getState());
+
+            }
 
 
             System.out.println("    -- Campaign " + Name + " not applicable for player" + user.name + ". Timing is not correct" );

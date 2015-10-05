@@ -23,10 +23,11 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
     // Campaign config data
     private static final String Name = "GameActivationPoke";
-    private static final int CoolDown_Days = 9;
+    private static final int CoolDown_Days = 8;
 
     // Trigger specific config data
     private static final int Min_Sessions = 20;
+    private static final int Min_Inactivity = 5;
     private static final int Max_Inactivity = 50;
     private static final int Max_Inactivity_Notification = 30;
 
@@ -69,11 +70,18 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
         }
         int inactivity = getDaysBetween(lastSession, executionDay);
 
+        if(inactivity <  Min_Inactivity){
+
+            System.out.println("    -- Campaign " + Name + " not firing. User inactive too long. (" + inactivity + " >" + Max_Inactivity + ")" );
+            return null;
+        }
+
         if(inactivity >  Max_Inactivity){
 
             System.out.println("    -- Campaign " + Name + " not firing. User inactive too long. (" + inactivity + " >" + Max_Inactivity + ")" );
             return null;
         }
+
 
 
         GameRecommender recommender = new GameRecommender(playerInfo, executionTime);
