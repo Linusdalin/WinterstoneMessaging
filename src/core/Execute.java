@@ -43,7 +43,7 @@ public class Execute {
      *              Main execution
      *
      *
-     * @param args
+     * @param args        -
      */
 
     public static void main(String[] args){
@@ -70,17 +70,7 @@ public class Execute {
 
 
         System.out.print("Start Run?\n>");
-
-        try {
-
-            System.in.read();
-
-        } catch (IOException e) {
-
-            System.out.println("Aborting");
-            return;
-        }
-
+        CampaignEngine.waitReturn();
         engine.executeRun(UserScrapeStart);
 
     }

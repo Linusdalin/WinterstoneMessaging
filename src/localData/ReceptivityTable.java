@@ -120,4 +120,58 @@ public class ReceptivityTable extends GenericTable {
     }
 
 
+    public void update(ReceptivityProfile profile, Connection connection) {
+
+        String insertQuery = "UPDATE user set " +
+
+                "sunDayDay=" + profile.profile[0][0] + ", " +
+                "sundayEvening=" +  profile.profile[0][1] + ", " +
+                "sundayNight=" +  profile.profile[0][2] + ", " +
+
+                "mondayDay=" + profile.profile[1][0] + ", " +
+                "mondayEvening=" + profile.profile[1][1] + ", " +
+                "mondayNight=" + profile.profile[1][2] + ", " +
+
+                "tuesdayDay=" + profile.profile[2][0] + ", " +
+                "tuesdayEvening=" + profile.profile[2][1] + ", " +
+                "tuesdayNight=" + profile.profile[2][2] + ", " +
+
+                "wednesdayDay=" + profile.profile[3][0] + ", " +
+                "wednesdayEvening=" + profile.profile[3][1] + ", " +
+                "wednesdayNight=" + profile.profile[3][2] + ", " +
+
+                "thursdayDay=" + profile.profile[4][0] + ", " +
+                "thursdayEvening=" + profile.profile[4][1] + ", " +
+                "thursdayNight=" + profile.profile[4][2] + ", " +
+
+                "fridayDay=" + profile.profile[5][0] + ", " +
+                "fridayEvening=" + profile.profile[5][1] + ", " +
+                "fridayNight=" + profile.profile[5][2] + ", " +
+
+                "saturdayDay=" + profile.profile[6][0] + ", " +
+                "saturdayEvening=" + profile.profile[6][1] + ", " +
+                "saturdayNight=" + profile.profile[6][2]
+                    +" where facebookId = '"+ profile.getUserId()+"'"
+
+                ;
+
+        try{
+
+            Statement statement = connection.createStatement();
+            //System.out.println(insertQuery);
+
+            // execute insert SQL
+            statement.execute(insertQuery);
+
+        } catch (SQLException e) {
+
+
+            System.out.println(e.getMessage());
+
+        }
+
+    }
+
+
+
 }

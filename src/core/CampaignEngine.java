@@ -147,17 +147,9 @@ public class CampaignEngine {
         SoundPlayer player = new SoundPlayer();
         player.playSound(SoundPlayer.ReadyBeep);
 
-        System.out.println("\nPress key to enter\n>");
+        System.out.println("\nPress Enter to Start\n>");
+        waitReturn();
 
-        try {
-
-            System.in.read();
-
-        } catch (IOException e) {
-
-            System.out.println("Error getting input. Aborting");
-            return;
-        }
 
         System.out.println(" ******************************************\n * Purging Notifications ");
 
@@ -172,6 +164,7 @@ public class CampaignEngine {
 
         manualActionOutbox.purge(executionTime);
     }
+
 
 
     /************************************************************************************************************'
@@ -419,6 +412,21 @@ public class CampaignEngine {
             return true;
 
         return false;
+
+
+
+    }
+
+    public static void waitReturn() {
+        try {
+
+            System.in.read();
+
+        } catch (IOException e) {
+
+            System.out.println("Error getting input. Ignoring");
+        }
+
     }
 
 }

@@ -23,8 +23,6 @@ public class PlayerInfo {
     private final DataCache dbCache;
 
     private List<Payment> userPayments;
-
-    private List<GameSession> userSessions = null;
     private Timestamp lastSession = null;
 
     public PlayerInfo(User user, DataCache dbCache){

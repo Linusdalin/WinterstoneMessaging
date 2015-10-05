@@ -4,8 +4,6 @@ import localData.ReceptivityTable;
 import remoteData.dataObjects.GameSession;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
 
 /************************************************************
  *
@@ -41,14 +39,17 @@ public class SignificanceManager {
 
         ReceptivityProfile profile = getProfileForPlayer(session.facebookId);
         profile.registerSession(session);
-        receptivityTable.store(profile, connection);
+        receptivityTable.update(profile, connection);
 
     }
 
 
     private ReceptivityProfile getProfileForPlayer(String facebookId) {
 
-        return null;
+        ReceptivityTable table = new ReceptivityTable("facebookId = '"  + facebookId + "'", 1);
+        table.load(connection);
+        return table.getNext();
+
     }
 
     public void display() {
