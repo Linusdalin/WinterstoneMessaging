@@ -73,6 +73,43 @@ public class EmailTest {
     }
 
     @Test
+    public void multiSendTest(){
+
+
+
+        try{
+
+            for(int i = 1; i <= 5; i++){
+
+                NotificationEmail testMail = new NotificationEmail(
+                        " this is a message for you!",
+                        "<p> This is mail number "+ i +"</p>",
+                        "Plain text version"
+                );
+
+
+                EmailHandler handler = new EmailHandler()
+                        .withEmail(testMail)
+                        .toRecipient(user.facebookId);
+
+                boolean success = handler.send();
+
+                assertThat("Should work", success, is(true) );
+
+            }
+
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
+
+
+    }
+
+
+
+    @Test
     public void failWrongUserTest(){
 
         try{

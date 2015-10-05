@@ -84,7 +84,7 @@ public class EmailHandler {
 
         if(email instanceof ReleaseEmail){
 
-            // Special configuration for release emails
+            // Special configuration for release emails, This is not really in use, so we may remove it
             ReleaseEmail instance = (ReleaseEmail)email;
 
             title    = instance.getTitle();
@@ -93,28 +93,28 @@ public class EmailHandler {
 
         }
 
-        RequestHandler requestHandler = new RequestHandler(mailService);
+        RequestHandler requestHandler = new RequestHandler(mailService).withBasicAuth("5b09eaa11e4bcd80800200c", "X");
 
-            String response = requestHandler.executePost(
-                            "playerId=" + actualUser +
-                            "&templateName=" + email.getTemplate() +
-                            "&subject=" + email.getSubject() +
-                            (title != null ? "&title=" + URLEncoder.encode(title) : "") +
-                            (imageURL != null ? "&imageURL=" + URLEncoder.encode( imageURL ) + "&imageLinkURL="+URLEncoder.encode(link)  : "") +
-                            "&textVersion=" + URLEncoder.encode(email.getPlainText()) +
-                            "&htmlVersion="+ URLEncoder.encode(email.getBody()));
+        String response = requestHandler.executePost(
+                        "playerId=" + actualUser +
+                        "&templateName=" + email.getTemplate() +
+                        "&subject=" + email.getSubject() +
+                        (title != null ? "&title=" + URLEncoder.encode(title) : "") +
+                        (imageURL != null ? "&imageURL=" + URLEncoder.encode( imageURL ) + "&imageLinkURL="+URLEncoder.encode(link)  : "") +
+                        "&textVersion=" + URLEncoder.encode(email.getPlainText()) +
+                        "&htmlVersion="+ URLEncoder.encode(email.getBody()));
 
-            if(response != null){
+        if(response != null){
 
-                System.out.println("   -> Got Response: " + response);
-                return evaluateOKResponse(response);
+            System.out.println("   -> Got Response: " + response);
+            return evaluateOKResponse(response);
 
-            }
-            else{
+        }
+        else{
 
-                System.out.println("   -> No Response");
-                return false;
-            }
+            System.out.println("   -> No Response");
+            return false;
+        }
 
     }
 
@@ -123,7 +123,10 @@ public class EmailHandler {
      *          Evaluate a response to see if is OK
      *
      * @param response         - test from the service
-     * @return
+     * @return                 - did the response mean ok or fail
+     *
+     *
+     *          NOTE: These messages may not be complete
      */
 
     private boolean evaluateOKResponse(String response) {
@@ -133,5 +136,7 @@ public class EmailHandler {
 
         return true;
     }
+
+
 
 }
