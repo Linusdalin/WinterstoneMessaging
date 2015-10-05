@@ -23,7 +23,6 @@ public class Test {
         try{
 
             ConnectionHandler.Location dataSource = ConnectionHandler.Location.local;
-
             dbConnection = ConnectionHandler.getConnection(dataSource);
 
             PaymentTable payments = new PaymentTable();

@@ -1,5 +1,7 @@
 package output;
 
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -17,6 +19,11 @@ public class RequestHandler {
 
 
     private String targetURL;
+
+
+    // Authentication
+    private String user = null;
+    private String pwd;
 
     public RequestHandler(String targetURL){
 
@@ -96,6 +103,21 @@ public class RequestHandler {
 
             }
 
+            /*
+                String encoded = Base64.encode(username+":"+password);
+                connection.setRequestProperty("Authorization", "Basic "+encoded);
+
+
+
+             */
+
+            if(user != null){
+
+                System.out.println("Setting basic auth for " + user);
+                connection.setRequestProperty("Authorization", "Basic " + getBasicAuthenticationEncoding());
+
+            }
+
 
           connection.setUseCaches (false);
           connection.setDoInput(true);
@@ -143,9 +165,32 @@ public class RequestHandler {
             connection.disconnect();
           }
         }
-      }
+    }
+
+    private String getBasicAuthenticationEncoding() {
+
+            String userPassword = user + ":" + pwd;
+            return new String(Base64.encode(userPassword.getBytes()));
 
 
+    }
+
+    /*********************************************************************'
+     *
+     *          Setting service usage credentials
+     *
+     *
+     * @param user       - service user name
+     * @param pwd        - service user password
+     * @return           -
+     */
 
 
+    public RequestHandler withBasicAuth(String user, String pwd) {
+
+        this.user = user;
+        this.pwd = pwd;
+
+        return this;
+    }
 }

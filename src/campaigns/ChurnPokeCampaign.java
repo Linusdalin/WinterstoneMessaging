@@ -98,12 +98,22 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
 
         }
-        else if(idleDays > 10 && idleDays < 30){
+        else if(idleDays > 10 && idleDays < 27){
 
 
             System.out.println("    -- Sending a churn warning poke mail" );
 
                     return new EmailAction(churnPokeEmail(user), user, getPriority(), getTag(), 30, getState());
+
+        }
+        else if(idleDays >= 27 || idleDays < 31){
+
+
+
+            System.out.println("    -- Sending a final day churn warning poke" );
+            return new NotificationAction("It is party time at SlotAmerica today. Click here to check it out!",
+                    user, getPriority(), getTag(),  Name,  8, getState());
+
 
         }
         else{
@@ -114,7 +124,6 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
         }
 
     }
-
 
 
     private EmailInterface churnPokeEmail(User user) {

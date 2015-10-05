@@ -84,7 +84,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
             System.out.println("    -- Sending a day two activation poke" );
             return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica? Check out the rewards by clicking on the level bar.!",
-                    user, getPriority(), getTag(),  Name, 3, getState());
+                    user, getPriority(), getTag(),  Name, 2, getState());
 
 
         }
@@ -94,7 +94,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
 
             System.out.println("    -- Sending a seven day activation poke" );
-            return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica? Check out the rewards by clicking on the level bar.!",
+            return new NotificationAction("Let's stat climbing the reward stairs at SlotAmerica? Check out the rewards by clicking on the level bar.!",
                     user, getPriority(), getTag(),  Name, 3, getState());
 
 

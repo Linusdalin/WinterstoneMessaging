@@ -26,9 +26,9 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
     // Trigger specific config data
     private static final int Min_Sessions = 3;
-    private static final int Max_Sessions = 25;
+    private static final int Max_Sessions = 30;
     private static final int Min_Age = 12;
-    private static final int Max_Age = 20;
+    private static final int Max_Age = 45;
 
     private static final int IdleDays = 5;
 
