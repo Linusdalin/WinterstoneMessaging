@@ -27,15 +27,15 @@ import java.io.IOException;
 public class Execute {
 
     private static final int     Threshold              = 50;
-    private static final int     Send_Cap               = 0;
-    private static final int     User_Cap               = 300000;
-    private static final boolean DRY_RUN                = true;
+    private static final int     Send_Cap               = 10000;
+    private static final int     User_Cap               = 320000;
+    private static final boolean DRY_RUN                = false;
     private static final boolean OVERRIDE_TIME_CONSTR   = true;
     private static final String  UserScrapeStart        = "0000-00-00";               // "2015-01-18";
     private static final String  TEST_USER              = null;                       // "627716024";          // Tina:     "105390519812878";
 
 
-    private static final int     BatchSize              = 5000;
+    private static final int     BatchSize              = 10000;
 
 
     /********************************************************************

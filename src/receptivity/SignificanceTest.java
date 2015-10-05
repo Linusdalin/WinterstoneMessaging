@@ -21,9 +21,10 @@ public class SignificanceTest {
 
         System.out.println("Testing significance");
 
-        SignificanceManager significanceManager = new SignificanceManager();
-
         Connection connection    = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
+
+        SignificanceManager significanceManager = new SignificanceManager(connection);
+
         GameSessionTable gameSessions = new GameSessionTable();
         gameSessions.load(connection, "and timeStamp > '" + startDate + "'", "ASC", sessionCap);
         GameSession session = gameSessions.getNext();
