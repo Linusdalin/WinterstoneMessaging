@@ -35,10 +35,54 @@ public class OverviewStatistics {
 
 
         OverviewStatistics generator = new OverviewStatistics();
-        generator.generateOverview(DAYS);
+        generator.generateOverviewPivotData(DAYS);
     }
 
-    private void generateOverview(int days){
+
+    /*******************************************************************************************
+     *
+     *              Export exposure and response data as a table
+     *
+     *              date, campaign, message, sent, clicked
+     *
+     *
+     *
+     * @param days          - how many days back do we generate
+     */
+
+
+    private void generateOverviewPivotData(int days){
+
+        Connection localConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
+        Connection remoteConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.remote);
+
+        Calendar calendar = Calendar.getInstance();
+        Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
+        CampaignRepository repository = new CampaignRepository();
+        List<CampaignInterface> campaigns = repository.getActiveCampaigns();
+
+        printHeadline( campaigns );
+
+
+        for(int count = days-1; count >= 0; count--){
+
+            Timestamp day = new Timestamp(executionTime.getTime() - (long)count * 24*3600*1000);
+            System.out.print(day.toString().substring(0, 10) + ": ");
+
+            for (CampaignInterface campaign : campaigns) {
+
+                printCampaignMessageDetail(day, campaign, localConnection, remoteConnection);
+            }
+
+            System.out.println("");
+        }
+
+
+
+    }
+
+
+    private void generateOverviewTable(int days){
 
         Connection localConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
         Connection remoteConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.remote);
@@ -67,6 +111,30 @@ public class OverviewStatistics {
 
     }
 
+
+    private void printCampaignMessageDetail(Timestamp day, CampaignInterface campaign, Connection localConnection, Connection remoteConnection) {
+
+        int[] messgageIds = campaign.getAllMessageIds();
+
+        for(int id : messgageIds){
+
+            int sent        = getSentMessages(day, campaign, id, localConnection);
+            int sessions    = getSessions(day, campaign, id, remoteConnection);
+            int ctr = 0;
+
+            if(sent > 0)
+                ctr = (100*sessions)/sent;
+
+            System.out.print(day.toString() + ", " + campaign.getName()+ ", " + id + ", " + sent + ", " + sessions );
+
+        }
+
+
+
+    }
+
+
+
     /***************************************************************************************
      *
      *              The overview for a campaign is the number of sent messages and the number of sessions tagged with the promo code
@@ -81,8 +149,8 @@ public class OverviewStatistics {
 
     private void printCampaignOverview(Timestamp day, CampaignInterface campaign, Connection localConnection, Connection remoteConnection) {
 
-        int sent        = getSentMessages(day, campaign, localConnection);
-        int sessions    = getSessions(day, campaign, remoteConnection);
+        int sent        = getSentMessages(day, campaign, -1, localConnection);
+        int sessions    = getSessions(day, campaign, -1, remoteConnection);
         int ctr = 0;
 
         if(sent > 0)
@@ -106,9 +174,11 @@ public class OverviewStatistics {
     }
 
 
-    private static int getSentMessages(Timestamp day, CampaignInterface campaign, Connection connection){
+    private static int getSentMessages(Timestamp day, CampaignInterface campaign, int messageId, Connection connection){
 
-        String sql = "select count(*) from exposure where date(exposureTime) = '"+ day.toString().substring(0, 10)+"' and promoCode like ('%"+campaign.getTag()+"%') and type = 'NOTIFICATION'";
+        String sql = "select count(*) from exposure where date(exposureTime) = '"+ day.toString().substring(0, 10)+ "' " +
+                (messageId > 0 ? " and messageId = " + messageId : " ") +
+                "and promoCode like ('%"+campaign.getTag()+"%') and type = 'NOTIFICATION'";
 
         try{
 
@@ -136,10 +206,11 @@ public class OverviewStatistics {
 
     }
 
-    private int getSessions(Timestamp day, CampaignInterface campaign, Connection connection){
+    private int getSessions(Timestamp day, CampaignInterface campaign, int messageId, Connection connection){
 
-        String sql = "select count(*) from sessions where date(sessions.timestamp) = '"+ day.toString().substring(0, 10)+"' and promoCode like ('%"+campaign.getTag()+"%')";
-
+        String sql = "select count(*) from sessions where date(sessions.timestamp) = '"+ day.toString().substring(0, 10)+"'" +
+                (messageId > 0 ?
+                    " and promoCode like ('%"+campaign.getTag()+"%')" : " and promoCode like ('%"+campaign.getTag()+"-'"+messageId+")");
         try{
 
             //System.out.println("Query: " + sql);

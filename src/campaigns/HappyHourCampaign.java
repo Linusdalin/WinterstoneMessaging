@@ -18,6 +18,8 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
     // Campaign config data
     private static final String Name = "Happy Hour";
     private static final int CoolDown_Days = 9;            // A bit more than a week to avoid getting it every day
+    private static final int[] MessageIds = { 3 };
+
 
     // Trigger specific config data
     private static final int MAX_INACTIVITY = 18;
@@ -26,7 +28,7 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
-
+        registerMessageIds( MessageIds );
     }
 
     /********************************************************************

@@ -20,6 +20,8 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
     // Campaign config data
     private static final String Name = "GameNotification";
     private static final int CoolDown_Days = 5;     // Avoid duplicate runs
+    private int[] MessageIds = { 1 };
+
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT_FREE      = 15;   // Max days inactivity to get message
@@ -39,6 +41,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
         this.email = email;
         this.reward = code;
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds );
         this.message = message;
     }
 

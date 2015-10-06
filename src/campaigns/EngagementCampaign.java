@@ -25,6 +25,7 @@ public class EngagementCampaign extends AbstractCampaign implements CampaignInte
     private static final String Name = "Engagement";
     private static final int CoolDown_Days = 0;     // This should be possible to run whenever. It just updates the target list
 
+
     // Trigger specific config data
     private static final int PAYMENT_INACTIVITY_LIMIT   = 180;      // Only players that has paid since
     private static final int PAYMENT_MIN                = 1;        // Minimum number of payments

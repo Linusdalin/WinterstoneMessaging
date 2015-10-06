@@ -21,6 +21,8 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
     // Campaign config data
     private static final String Name = "LevelUp";
     private static final int CoolDown_Days = 11;      // This should really be once per level. Especially when players are not playing too much
+    private static final int[] MessageIds = { 0, 2, 3, 4, 5, 6, 7 };
+
 
     // Trigger specific config data
 
@@ -50,6 +52,7 @@ LevelUpCampaign(int priority, CampaignState activation){
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds);
     }
 
 

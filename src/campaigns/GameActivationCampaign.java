@@ -24,6 +24,8 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
     // Campaign config data
     private static final String Name = "GameActivationPoke";
     private static final int CoolDown_Days = 8;
+    private int[] MessageIds = {1, 2};
+
 
     // Trigger specific config data
     private static final int Min_Sessions = 20;
@@ -35,6 +37,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds );
     }
 
 

@@ -21,6 +21,8 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
     // Campaign config data
     private static final String Name = "GameNotification";
     private static final int CoolDown_Days = 5;     // Avoid duplicate runs
+    private static final int[] MessageIds = { 1, 2, 3, 4 };
+
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT_FREE      = 17;   // Max days inactivity to get message
@@ -40,6 +42,7 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
         super(Name, priority, activation);
         this.gameCode = "sonic_boom";
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds );
     }
 
 

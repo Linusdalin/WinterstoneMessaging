@@ -25,6 +25,8 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
     // Campaign config data
     private static final String Name = "Coins Left";
     private static final int CoolDown_Days = 14;     // Only once per player
+    private int[] MessageIds = {1, 2, 3};
+
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 10;   // 10 days inactivity before kicking in this offer
@@ -41,6 +43,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds );
     }
 
 

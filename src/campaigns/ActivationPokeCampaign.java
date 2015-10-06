@@ -26,11 +26,13 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
     private static final int Min_Sessions = 3;
     private static final int Max_Sessions = 12;
     private static final int Max_Age = 12;
+    private int[] MessageIds = {2, 3};
 
     ActivationPokeCampaign(int priority, CampaignState active){
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
+        registerMessageIds(MessageIds);
     }
 
 

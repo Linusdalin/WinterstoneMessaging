@@ -20,8 +20,10 @@ import java.sql.Timestamp;
 public class FakeCoinsLeftCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "Fake Coins Left";
+    private static final String Name = "FakeCoinsLeft";
     private static final int CoolDown_Days = 36500;     // Only once per player
+    private int[] MessageIds = { 1 };
+
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 13;   // 13 days inactivity before kicking in this offer
@@ -37,6 +39,7 @@ public class FakeCoinsLeftCampaign extends AbstractCampaign implements CampaignI
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds );
     }
 
 
