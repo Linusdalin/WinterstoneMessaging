@@ -174,6 +174,18 @@ public class OverviewStatistics {
     }
 
 
+    /******************************************************************************
+     *
+     *
+     *              Get all messages
+     *
+     * @param day
+     * @param campaign
+     * @param messageId             - optional 0 or -1 will return all messages for the campaign
+     * @param connection
+     * @return
+     */
+
     private static int getSentMessages(Timestamp day, CampaignInterface campaign, int messageId, Connection connection){
 
         String sql = "select count(*) from exposure where date(exposureTime) = '"+ day.toString().substring(0, 10)+ "' " +
@@ -205,6 +217,19 @@ public class OverviewStatistics {
 
 
     }
+
+    /************************************************************************************'
+     *
+     *              Get all sessions
+     *
+     *
+     * @param day
+     * @param campaign
+     * @param messageId             - optional 0 or -1 will return all sessions for the campaign
+     * @param connection
+     * @return
+     */
+
 
     private int getSessions(Timestamp day, CampaignInterface campaign, int messageId, Connection connection){
 
