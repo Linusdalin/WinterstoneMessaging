@@ -37,11 +37,14 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
     private static final int BAD_PAYOUT = 80;
 
     private static final int MAX_REMAINING_BALANCE = 2000 ;
+    private int[] MessageIds = { 1 };
+
 
     BadBeatCampaign(int priority, CampaignState active){
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds );
 
     }
 

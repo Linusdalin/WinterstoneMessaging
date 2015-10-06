@@ -21,16 +21,18 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
     // Campaign config data
     private static final String Name = "Remember Diamond";
     private static final int CoolDown_Days = 9;
+    private static final int[] MessageIds = { 2, 3, 4 };
+
 
     // Trigger specific config data
-    private static final int MIN_DIAMONDS = 6;
-    private static final int MAX_DIAMONDS = 11;
+    private static final int MIN_DIAMONDS = 5;
+    private static final int MAX_DIAMONDS = 12;
 
     RememberDiamondCampaign(int priority, CampaignState activation){
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
-
+        registerMessageIds( MessageIds );
     }
 
     /********************************************************************
@@ -85,11 +87,19 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
         }
 
+        int messageId = 3;
+
+        if(user.nextNumberOfPicks < 7)
+            messageId = 2;
+        if(user.nextNumberOfPicks > 9)
+            messageId = 4;
+
+
         // Last session was Between 24 and 42 hours ago and diamond pick is correct. Send the message
 
         System.out.println("    -- Campaign " + Name + " fire notification" );
         return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
-                user, getPriority(), getTag(), Name, 1, getState());
+                user, getPriority(), getTag(), Name, messageId, getState());
 
 
     }

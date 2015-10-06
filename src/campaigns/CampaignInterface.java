@@ -23,4 +23,6 @@ public interface CampaignInterface {
     int getCoolDown();
 
     boolean failCoolDown(Exposure lastExposure, Timestamp executionTime);
+
+    int[] getAllMessageIds();
 }

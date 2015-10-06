@@ -26,6 +26,8 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
     // Campaign config data
     private static final String Name = "Reactivation";
     private static final int CoolDown_Days = 36500;     // Only once per player
+    private static final int[] MessageIds = { 1, 2, 3 };
+
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 90;     // This set very high to test out potential
@@ -39,6 +41,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds );
     }
 
 

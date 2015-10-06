@@ -21,6 +21,8 @@ public class PersonalBonusCampaign extends AbstractCampaign implements CampaignI
     // Campaign config data
     private static final String Name = "Reactivation";
     private static final int CoolDown_Days = 12;
+    private static final int[] MessageIds = { 1, 2 };
+
 
     // Trigger specific config data
     private static final Timestamp LEVEL_SYSTEM_LANCH = Timestamp.valueOf("2015-08-26 00:00:00");     // The day when the level system was introduced
@@ -35,6 +37,7 @@ public class PersonalBonusCampaign extends AbstractCampaign implements CampaignI
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds );
     }
 
 
@@ -100,7 +103,7 @@ public class PersonalBonusCampaign extends AbstractCampaign implements CampaignI
 
             System.out.println("    -- Campaign " + Name + " firing message 1" );
             return new NotificationAction("A lot has happened here at SlotAmerica. You still have your VIP status with extra diamonds in the bonus click. Check out some of the new fabulous games here!",
-                    user, getPriority(), getTag(), Name, 1, getState())
+                    user, getPriority(), getTag(), Name, 2, getState())
                     .withGame("os2x3x4x5x");
 
         }

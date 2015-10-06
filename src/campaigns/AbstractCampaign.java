@@ -24,6 +24,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
     private int coolDown;
     private final CampaignState state;
     private String shortName;
+    private int[] messageIds = { 0 };  // Default is to not distinguish between any different message ids. All messages are grouped into one
 
 
     AbstractCampaign(String name, int priority, CampaignState state){
@@ -46,6 +47,12 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
         this.coolDown = coolDown;
     }
+
+    protected void registerMessageIds(int[] messageIds) {
+
+        this.messageIds = messageIds;
+    }
+
 
 
     /****************************************************************
@@ -153,6 +160,12 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
         int daysBetween = getDaysBetween(lastExposure.exposureTime, executionTime);
         return(daysBetween < getCoolDown());
+    }
+
+    @Override
+    public int[] getAllMessageIds() {
+
+        return messageIds;
     }
 
 

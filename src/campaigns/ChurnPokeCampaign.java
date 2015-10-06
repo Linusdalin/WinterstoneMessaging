@@ -25,6 +25,8 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
     // Campaign config data
     private static final String Name = "ChurnPoke";
     private static final int CoolDown_Days = 5;
+    private int[] MessageIds = {1, 2, 3, 4};
+
 
     // Trigger specific config data
     private static final int Min_Sessions = 8;
@@ -33,6 +35,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
+        registerMessageIds( MessageIds );
     }
 
 
@@ -75,7 +78,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a three day churn warning poke" );
             return new NotificationAction("Hello, you have new bonuses to collect at Slot America. Click here for more free slot FUN!",
-                    user, getPriority(), getTag(),  Name, 3, getState());
+                    user, getPriority(), getTag(),  Name, 1, getState());
 
 
         }
@@ -85,7 +88,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a NINE day churn warning poke" );
             return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
-                    user, getPriority(), getTag(),  Name,  8, getState());
+                    user, getPriority(), getTag(),  Name,  2, getState());
 
 
         }
@@ -94,7 +97,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a Fifteen day churn warning poke" );
             return new NotificationAction("Hello, there are some new exiting releases at Slot America. Click here to check it out!",
-                    user, getPriority(), getTag(),  Name,  15, getState());
+                    user, getPriority(), getTag(),  Name,  3, getState());
 
 
         }
@@ -103,7 +106,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a churn warning poke mail" );
 
-                    return new EmailAction(churnPokeEmail(user), user, getPriority(), getTag(), 30, getState());
+                    return new EmailAction(churnPokeEmail(user), user, getPriority(), getTag(), 10, getState());
 
         }
         else if(idleDays >= 27 || idleDays < 31){
@@ -112,7 +115,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a final day churn warning poke" );
             return new NotificationAction("It is party time at SlotAmerica today. Click here to check it out!",
-                    user, getPriority(), getTag(),  Name,  8, getState());
+                    user, getPriority(), getTag(),  Name,  4, getState());
 
 
         }

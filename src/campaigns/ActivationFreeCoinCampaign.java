@@ -23,6 +23,7 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
     // Campaign config data
     private static final String Name = "ActivationCoin";
     private static final int CoolDown_Days = 36500;             // Only once
+    private static final int[] MessageIds = {1, 2};
 
     // Trigger specific config data
     private static final int Min_Sessions = 3;
@@ -32,13 +33,17 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
     private static final int IdleDays = 5;
 
+
+
     private static final int DAILY_CAP   = 100;         // Max per day
     private int count = 0;
+
 
     ActivationFreeCoinCampaign(int priority, CampaignState active){
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
+        registerMessageIds(MessageIds);
     }
 
 
@@ -123,7 +128,7 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
             else{
 
                 return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationFree.getCoins()+" free coins for you to play with on your account. Click here to collect and play!",
-                        user, getPriority(), getTag(),  Name, 1, getState())
+                        user, getPriority(), getTag(),  Name, 2, getState())
                         .withReward(RewardRepository.freeCoinAcitivationFree);
 
 
