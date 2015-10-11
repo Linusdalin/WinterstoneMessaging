@@ -14,15 +14,19 @@ import java.util.List;
  */
 public class PaymentTable extends GenericTable {
 
-    private static final String getRemote =
+    private static final String getSQL =
             "select *" +
             "     from payment where 1=1" +
             "      $(RESTRICTION) order by timestamp $(LIMIT)";
 
+    private static final String getRemoteSQL =
+            "select playerid, amount, game, issued " +
+            "     from payments where 1=1" +
+            "      $(RESTRICTION) order by issued $(LIMIT)";
 
     public PaymentTable(String  restriction, int limit){
 
-        super(getRemote, restriction, limit);
+        super(getSQL, restriction, limit);
         maxLimit = limit;
     }
 
@@ -47,7 +51,7 @@ public class PaymentTable extends GenericTable {
             if(!resultSet.next())
                 return null;
 
-            return new Payment(resultSet.getString(1), resultSet.getInt(2),resultSet.getString(3),resultSet.getTimestamp(4),resultSet.getString(5),resultSet.getTimestamp(6));
+            return new Payment(resultSet.getString(1), resultSet.getInt(2),resultSet.getString(3),resultSet.getTimestamp(4));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,6 +86,49 @@ public class PaymentTable extends GenericTable {
         return paymentsForUser;
 
     }
+
+
+    public String getRemoteSQL(Timestamp fromTime, int maxRecords) {
+
+        String queryString = getQueryString(getRemoteSQL, "and issued > '"+fromTime.toString()+"'", maxRecords, -1, order);
+        System.out.println("Query: " + queryString);
+
+        return queryString;
+    }
+
+    public Timestamp getLast(Connection connection){
+
+        String sql = "select timeStamp from payment order by timestamp desc limit 1;";
+
+        try{
+
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+
+            if(!rs.next())
+                return null;  // There are no entries in the database
+
+            return rs.getTimestamp(1);
+
+        }catch(SQLException e){
+
+            System.out.println("Error accessing data in database");
+            e.printStackTrace();
+        }
+
+
+        return null;
+    }
+
+    public void loadRemote(Timestamp from, int records, Connection connection){
+
+        String sql = getRemoteSQL(from, records);
+        System.out.println("Retrieving remote data with " + sql );
+
+        loadFromDB(connection, sql);
+    }
+
+
 
 
 

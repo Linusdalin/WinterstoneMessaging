@@ -1,5 +1,8 @@
 package remoteData.dataObjects;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 
 /**
@@ -40,8 +43,10 @@ public class GameSession {
     public final int totalWin;
     public final int endBalance;
     public final int spins;
+    private int totalSpins;
 
-    GameSession(Timestamp timeStamp, String sessionId, String game, String facebookId, String name, String promocode, String fbSource, Timestamp actionTime, int totalWager, int totalWin, int endBalance, int spins){
+    GameSession(Timestamp timeStamp, String sessionId, String game, String facebookId,
+                String name, String promocode, String fbSource, Timestamp actionTime, int totalWager, int totalWin, int endBalance, int spins, int totalSpins){
         this.timeStamp = timeStamp;
         this.sessionId = sessionId;
         this.game = game;
@@ -54,19 +59,42 @@ public class GameSession {
         this.totalWin = totalWin;
         this.endBalance = endBalance;
         this.spins = spins;
+        this.totalSpins = totalSpins;
     }
 
     public String toString(){
 
         return "(" + timeStamp.toString() +", "+ sessionId + ", " +game + ", " +facebookId + ", " +name + ", " +promocode +", " +fbSource +", " +actionTime.toString() +", " +
-                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +")";
+                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +spins +", "+ totalSpins +")";
 
     }
 
     public String toSQLValues() {
 
-        return "'" + timeStamp.toString() +"', '"+ sessionId + "', '" +game + "', '" +facebookId + "', '" +name + "', '" +promocode +"', '" +fbSource +"', '" +actionTime.toString() +"', " +
-                    totalWager +", " +totalWin +", " +endBalance +", " +spins;
+        return "'" + timeStamp.toString() +"', '"+ sessionId + "', '" +game + "', '" +facebookId + "', '" +name.replaceAll("'", "") + "', '" +promocode +"', '" +fbSource +"', '" +actionTime.toString() +"', " +
+                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +totalSpins;
 
     }
+
+
+    public void store(Connection connection) {
+
+        String insert = "insert into game_session values (" + toSQLValues() + ")";
+
+        System.out.println("Insert with: " + insert);
+
+        try{
+
+            Statement statement = connection.createStatement();
+            statement.execute(insert);
+
+        }catch(SQLException e){
+
+            System.out.println("Error accessing data in database. SQL:" + insert);
+            e.printStackTrace();
+        }
+
+    }
+
+
 }

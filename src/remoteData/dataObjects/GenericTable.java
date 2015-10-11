@@ -17,15 +17,15 @@ import java.sql.Statement;
 public class GenericTable {
 
     protected ResultSet resultSet;
-    private final String getRemoteSQL;
+    private final String getSQL;
     private String restriction = "";
     protected int maxLimit = -1;
     protected String order = "DESC";
     private Statement statement;
 
-    public GenericTable(String getRemote, String restriction, int limit) {
+    public GenericTable(String getSQL, String restriction, int limit) {
 
-        this.getRemoteSQL = getRemote;
+        this.getSQL = getSQL;
         this.restriction = restriction;
 
         this.maxLimit = limit;
@@ -48,10 +48,9 @@ public class GenericTable {
 
     }
 
-
     public void load(Connection connection, String restriction, String order, int limit){
 
-        String queryString = getQueryString(restriction, limit, order);
+        String queryString = getQueryString(restriction, limit, -1, order);
 
         //System.out.println("Query: " + queryString);
 
@@ -62,7 +61,6 @@ public class GenericTable {
     public void load(Connection connection, String restriction, String order, int limit, int offset){
 
         String queryString = getQueryString(restriction, limit, offset, order);
-
         System.out.println("Query: " + queryString);
 
         loadFromDB(connection, queryString);
@@ -70,7 +68,7 @@ public class GenericTable {
 
 
 
-    private void loadFromDB(Connection connection, String queryString) {
+    protected void loadFromDB(Connection connection, String queryString) {
 
         if(connection == null){
 
@@ -92,14 +90,15 @@ public class GenericTable {
 
 
 
-    public String getQueryString(String restriction, int limit, String order){
+    public String getQueryString(String restriction, int limit, int offset, String order){
 
-        return getQueryString(restriction, limit, -1, order);
+        return getQueryString(getSQL, restriction, limit, offset, order);
     }
 
-    public String getQueryString(String restriction, int limit, int offset, String order) {
 
-        String query = getRemoteSQL;
+
+    protected String getQueryString(String query, String restriction, int limit, int offset, String order) {
+
         query = query.replace("$(RESTRICTION)",  restriction);
 
         if(limit != -1)

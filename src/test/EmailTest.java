@@ -48,7 +48,7 @@ public class EmailTest {
 
     );
 
-    private static final Payment payment = new Payment("627716024", 30, "", new Timestamp(2015, 1, 1, 1, 1, 1, 1), "promo", new Timestamp(2015, 1, 1, 1, 1, 1, 1));
+    private static final Payment payment = new Payment("627716024", 30, "", new Timestamp(2015, 1, 1, 1, 1, 1, 1));
 
 
     @Test

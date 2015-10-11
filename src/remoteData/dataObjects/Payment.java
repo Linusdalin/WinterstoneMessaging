@@ -1,6 +1,9 @@
 package remoteData.dataObjects;
 
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 
 /**
@@ -18,38 +21,49 @@ public class Payment {
     public final int amount;
     public final String game;
     public final Timestamp timeStamp;
-    public final String promoCode;
-    public final Timestamp firstLogin;
 
-    public Payment(String facebookId, int amount, String game, Timestamp timeStamp, String promoCode, Timestamp firstLogin){
-
-        if(firstLogin.toString().equals("1970-01-01 00:00:00.0")){
-
-            this.firstLogin = Timestamp.valueOf("2015-01-01 00:00:00");
-        }
-        else
-            this.firstLogin = firstLogin;
-
+    public Payment(String facebookId, int amount, String game, Timestamp timeStamp){
 
         this.facebookId = facebookId;
         this.amount = amount;
         this.game = game;
         this.timeStamp = timeStamp;
-        this.promoCode = promoCode;
 
     }
 
     public String toString(){
 
-        return "(" + timeStamp.toString() +", "+ facebookId + ", " +amount + ", " +promoCode + ", " +game +  ")";
+        return "(" + timeStamp.toString() +", "+ facebookId + ", " +amount + ",  " +game +  ")";
 
     }
 
     public String toSQLValues() {
 
-        return "'" + facebookId + "', " +amount + ", '" + game + "', '" +timeStamp +"', '" +promoCode + "', '" +firstLogin + "'";
+        return "'" + facebookId + "', " +amount + ", '" + game + "', '" +timeStamp +"','', '0000-00-00'";
 
     }
+
+
+    public void store(Connection connection) {
+
+        String insert = "insert into payment values (" + toSQLValues() + ")";
+
+        System.out.println("Insert with: " + insert);
+
+        try{
+
+            Statement statement = connection.createStatement();
+            statement.execute(insert);
+
+        }catch(SQLException e){
+
+            System.out.println("Error accessing data in database. SQL:" + insert);
+            e.printStackTrace();
+        }
+
+    }
+
+
 
     public void wash() {
 
