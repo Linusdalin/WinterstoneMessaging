@@ -25,13 +25,16 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
 
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 17;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 62;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 12;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = -1;   // Max days inactivity to get message
+
+    //private static final int INACTIVITY_LIMIT_FREE      = 17;   // Max days inactivity to get message
+    //private static final int INACTIVITY_LIMIT_PAYING    = 62;   // Max days inactivity to get message
     private static final int ACTIVITY_MIN   = 19;               // Min sessions to be active
 
 
-    private static final String MessageM = "Fly it like a Fighter Pilot. Our new game Sonic Boom breaks the SlotAmerica sound barrier. Click to Play Now!";
-    private static final String MessageF = "Not just a pretty face, show them you’re a Fighter Ace! Play our new barrier-breaking slot Sonic Boom now!";
+    private static final String MessageM = "A wilder play, and a bigger pay! Do you dare to try our Old School Casino Classic \"Six Times Pay\"?";
+    private static final String MessageF = "Our second Old School Casino Classic \"Six Times Pay\" is like a wild love affair. Part danger, part attraction. Click now to try, but try not to blush!";
 
     private String gameCode;
 
@@ -40,7 +43,7 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
     GameNotificationGenderAB(int priority, CampaignState activation){
 
         super(Name, priority, activation);
-        this.gameCode = "sonic_boom";
+        this.gameCode = "os6x";
         setCoolDown(CoolDown_Days);
         registerMessageIds( MessageIds );
     }

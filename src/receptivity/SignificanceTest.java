@@ -13,8 +13,8 @@ import java.sql.Connection;
 public class SignificanceTest {
 
 
-    private static final String startDate = "2015-09-30";
-    private static final int    sessionCap   = 100;
+    private static final String startDate = "0000-00-00";
+    private static final int    sessionCap   = 1000000;
 
 
     public static void main(String[] arg){

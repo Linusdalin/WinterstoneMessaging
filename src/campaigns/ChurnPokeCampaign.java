@@ -25,7 +25,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
     // Campaign config data
     private static final String Name = "ChurnPoke";
     private static final int CoolDown_Days = 5;
-    private int[] MessageIds = {1, 2, 3, 4};
+    private int[] MessageIds = {3, 8, 10, 15, 30};
 
 
     // Trigger specific config data
@@ -78,7 +78,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a three day churn warning poke" );
             return new NotificationAction("Hello, you have new bonuses to collect at Slot America. Click here for more free slot FUN!",
-                    user, getPriority(), getTag(),  Name, 1, getState());
+                    user, getPriority(), getTag(),  Name, 3, getState());
 
 
         }
@@ -88,7 +88,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a NINE day churn warning poke" );
             return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
-                    user, getPriority(), getTag(),  Name,  2, getState());
+                    user, getPriority(), getTag(),  Name,  8, getState());
 
 
         }
@@ -97,11 +97,11 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a Fifteen day churn warning poke" );
             return new NotificationAction("Hello, there are some new exiting releases at Slot America. Click here to check it out!",
-                    user, getPriority(), getTag(),  Name,  3, getState());
+                    user, getPriority(), getTag(),  Name,  15, getState());
 
 
         }
-        else if(idleDays > 10 && idleDays < 27){
+        else if(idleDays > 10 && idleDays < 14){
 
 
             System.out.println("    -- Sending a churn warning poke mail" );
@@ -109,13 +109,13 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
                     return new EmailAction(churnPokeEmail(user), user, getPriority(), getTag(), 10, getState());
 
         }
-        else if(idleDays >= 27 || idleDays < 31){
+        else if(idleDays >= 26 && idleDays < 30){
 
 
 
             System.out.println("    -- Sending a final day churn warning poke" );
-            return new NotificationAction("It is party time at SlotAmerica today. Click here to check it out!",
-                    user, getPriority(), getTag(),  Name,  4, getState());
+            return new NotificationAction("It is party time at SlotAmerica today with the new game releases! Click here to check it out!",
+                    user, getPriority(), getTag(),  Name,  30, getState());
 
 
         }

@@ -35,6 +35,7 @@ public class CampaignEngine {
     private int threshold;
     private boolean dryRun;
     private boolean overrideTime;
+    private boolean sendEmail;
     private int analysis_cap;
     private int batchSize;
     private Outbox notificationOutbox;
@@ -56,11 +57,12 @@ public class CampaignEngine {
      *
      */
 
-    CampaignEngine(ConnectionHandler.Location dataSource, int threshold, boolean dryRun, boolean overrideTime, int send_cap, int analysis_cap, String testUser, int batchSize){
+    CampaignEngine(ConnectionHandler.Location dataSource, int threshold, boolean dryRun, boolean overrideTime, boolean sendEmail, int send_cap, int analysis_cap, String testUser, int batchSize){
 
         this.threshold = threshold;
         this.dryRun = dryRun;
         this.overrideTime = overrideTime;
+        this.sendEmail = sendEmail;
         this.analysis_cap = analysis_cap;
         this.batchSize = batchSize;
 
@@ -75,7 +77,7 @@ public class CampaignEngine {
 
             notificationOutbox  = new Outbox(send_cap, dryRun, testUser, localConnection);
             manualActionOutbox  = new Outbox(send_cap, dryRun, testUser, localConnection);
-            emailOutbox         = new Outbox(send_cap, dryRun, testUser, localConnection);
+            emailOutbox         = new Outbox(send_cap, (dryRun || !sendEmail), testUser, localConnection);
 
         }catch(Exception e){
 
@@ -138,7 +140,7 @@ public class CampaignEngine {
         System.out.println(executionStatistics.toString());
 
         System.out.println("Total notifications: " + notificationOutbox.size());
-        System.out.println("Total emails:        " + emailOutbox.size());
+        System.out.println("Total emails:        " + emailOutbox.size() + ( sendEmail? "": "( but these are suppressed)"));
         System.out.println("Total manual:        " + manualActionOutbox.size());
 
 
@@ -206,7 +208,7 @@ public class CampaignEngine {
             user = allPlayers.getNext();
         }
 
-        if(userCount == analysis_cap)
+        if(userCount >= analysis_cap)
             return -1;
 
         return userCount;

@@ -106,7 +106,7 @@ public class EmailHandler {
 
         if(response != null){
 
-            System.out.println("   -> Got Response: " + response);
+            System.out.println("   -> Got Response: '" + response + "'");
             return evaluateOKResponse(response);
 
         }
@@ -129,11 +129,12 @@ public class EmailHandler {
      *          NOTE: These messages may not be complete
      */
 
-    private boolean evaluateOKResponse(String response) {
+    private boolean evaluateOKResponse(String response) throws DeliveryException {
 
-        if(response.equals("NO_MAIL_ADDRESS") || response.equals("UNSUBSCRIBED"))
-            return false;
+        if(response.startsWith("NO_MAIL_ADDRESS") || response.startsWith("UNSUBSCRIBED") || response.startsWith("INVALID_PLAYER"))
+            throw new DeliveryException(400);
 
+        System.out.println(" --- This is ok!");
         return true;
     }
 

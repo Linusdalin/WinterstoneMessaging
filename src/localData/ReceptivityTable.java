@@ -70,7 +70,7 @@ public class ReceptivityTable extends GenericTable {
 
     public void store(ReceptivityProfile profile, Connection connection) {
 
-        String insertQuery = "INSERT INTO user VALUES ('" + profile.getUserId() + "', '" + profile.getLastUpdate().toString() +"', "+
+        String insertQuery = "INSERT INTO receptivity VALUES ('" + profile.getUserId() + "', '0000-00-00', "+
 
                 profile.profile[0][0] + ", " +
                 profile.profile[0][1] + ", " +
@@ -98,16 +98,14 @@ public class ReceptivityTable extends GenericTable {
 
                 profile.profile[6][0] + ", " +
                 profile.profile[6][1] + ", " +
-                profile.profile[6][2]
+                profile.profile[6][2] + ")"
 
                 ;
 
         try{
 
             Statement statement = connection.createStatement();
-            //System.out.println(insertQuery);
-
-            // execute insert SQL
+            System.out.println("Storing with " + insertQuery);
             statement.execute(insertQuery);
 
         } catch (SQLException e) {
@@ -122,9 +120,10 @@ public class ReceptivityTable extends GenericTable {
 
     public void update(ReceptivityProfile profile, Connection connection) {
 
-        String insertQuery = "UPDATE user set " +
+        String query = "UPDATE receptivity set " +
+                "lastUpdate='"+ profile.getLastUpdate().toString()+"'," +
 
-                "sunDayDay=" + profile.profile[0][0] + ", " +
+                "sundayDay=" + profile.profile[0][0] + ", " +
                 "sundayEvening=" +  profile.profile[0][1] + ", " +
                 "sundayNight=" +  profile.profile[0][2] + ", " +
 
@@ -155,13 +154,12 @@ public class ReceptivityTable extends GenericTable {
 
                 ;
 
+        System.out.println("Updating with " + query );
+
         try{
 
             Statement statement = connection.createStatement();
-            //System.out.println(insertQuery);
-
-            // execute insert SQL
-            statement.execute(insertQuery);
+            statement.execute(query);
 
         } catch (SQLException e) {
 

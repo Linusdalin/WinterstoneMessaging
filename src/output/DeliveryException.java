@@ -31,6 +31,7 @@ public class DeliveryException extends Exception {
             case 200:     // All OK
                 return ActionResponseStatus.OK;
 
+            case 400:       // Bad request
             case 403:     //Forbidden. This means that we cant access the player
                 return ActionResponseStatus.FAILED_PERMANENTLY;
 

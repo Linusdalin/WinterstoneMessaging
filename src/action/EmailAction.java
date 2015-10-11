@@ -93,11 +93,11 @@ public class EmailAction extends Action implements ActionInterface{
                 if(handler.send()){
 
                     noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ), executionTime, localConnection );
-                    pause(2);
+                    pause(1);
                     return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
                 }
                 else{
-                    pause(2);
+                    pause(1);
                     return new ActionResponse(ActionResponseStatus.FAILED,   "Message delivery failed");
 
                 }

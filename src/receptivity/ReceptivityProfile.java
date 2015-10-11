@@ -59,15 +59,65 @@ public class ReceptivityProfile {
 
         totalSessions ++;
 
-        int day = getDayNumber(session.timeStamp);
+        Timestamp timeZoneAdjusted = new Timestamp(session.timeStamp.getTime() - 5*3600*1000);
 
-        System.out.println("Registering a session on day " + day + "( " + session.timeStamp + "). Profile: " + toString());
 
-        int timeOfDay = 0;      // TODO: Not implemented time of day
+        int day = getDayNumber(timeZoneAdjusted) - 1;
+        int timeOfDay = getTimeOfDay(timeZoneAdjusted);
+
+        if(isTooClose(session.timeStamp)){
+
+            System.out.println("Ignoring session too close");
+            return;
+        }
+
+        System.out.println("Registering a session on day " + day + " ( " + session.timeStamp + ") with timeOfDay = "+ timeOfDay +" Profile: " + toString());
+
 
         this.profile[day][timeOfDay]++;
         this.lastUpdate = session.timeStamp;
 
+
+    }
+
+    private boolean isTooClose(Timestamp timeStamp) {
+
+        if(this.lastUpdate == null)
+            return false;
+
+        return timeStamp.getTime() < this.lastUpdate.getTime() + 60*60*1000;
+
+    }
+
+    /***************************************************************
+     *
+     *          Time of day divides the day in three sections according to an average US tiezone.
+     *          As the database is in GMT, this is transposed
+     *
+     *                          US              GMT
+     *          0: day          06:00 - 17:00     11:00 - 23:00
+     *          1: evening      17:00 - 23:00     23:00 - 04:00
+     *          2: night        23:00 - 06:00     04:00 - 11:00
+     *
+     *
+     * @param timeStamp    - session time
+     * @return             - index
+     */
+
+
+    private int getTimeOfDay(Timestamp timeStamp) {
+
+        Calendar cal = GregorianCalendar.getInstance();
+        cal.setTime(timeStamp);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+
+        if(hour >= 6 && hour < 17 )
+            return 0;
+
+        if(hour >= 17 )
+            return 1;
+
+            return 2;
 
     }
 
@@ -78,7 +128,7 @@ public class ReceptivityProfile {
 
         for(int day = 0; day < 7; day++){
 
-              output.append(profile[day] + ", ");
+              output.append(profile[day][0] + ", ");
         }
         output.append("] Significance: " + hasSignificance() + "( updated @ " + lastUpdate + ")");
         return output.toString();
@@ -174,7 +224,7 @@ public class ReceptivityProfile {
 
         Calendar cal = GregorianCalendar.getInstance();
         cal.setTime(timeStamp);
-        return (java.util.Calendar.DAY_OF_WEEK);
+        return cal.get(java.util.Calendar.DAY_OF_WEEK);
     }
 
 }

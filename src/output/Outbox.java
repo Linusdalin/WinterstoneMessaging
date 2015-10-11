@@ -45,15 +45,15 @@ public class Outbox {
 
         System.out.println(" -- Executing "+ queue.size() + " actions in queue with the timestamp " + executionTime.toString());
 
-        int count = 0;
+        int count   = 0;
         int success = 0;
 
         for (ActionInterface action : queue) {
 
-            if(count >= cap)
+            if(count > cap)
                 break;
 
-            ActionResponse response = action.execute(dryRun, testUser, executionTime, connection, count, queue.size());
+            ActionResponse response = action.execute(dryRun, testUser, executionTime, connection, (count + 1), queue.size());
 
             if(response.isExecuted()){
                 success++;

@@ -24,26 +24,31 @@ public class CampaignRepository {
 
     public static final List<CampaignInterface> activeCampaigns = new ArrayList<CampaignInterface>(){{
 
+
+
         add(new GettingStartedCampaign      ( 80, CampaignState.ACTIVE ));
         add(new RememberDiamondCampaign     ( 80, CampaignState.ACTIVE ));
         add(new ChurnPokeCampaign           ( 70, CampaignState.ACTIVE));
-        add(new BadBeatCampaign             ( 95, CampaignState.ACTIVE));
+        //add(new BadBeatCampaign             ( 95, CampaignState.ACTIVE));
         add(new CoinsLeftCampaign           ( 70, CampaignState.ACTIVE));
         add(new LevelUpCampaign             ( 60, CampaignState.ACTIVE ));
         add(new ActivationPokeCampaign      ( 55, CampaignState.ACTIVE));
         add(new GameActivationCampaign      ( 65, CampaignState.ACTIVE));
         add(new ActivationFreeCoinCampaign  ( 62, CampaignState.ACTIVE));
 
-        add(new HappyHourCampaign       ( 95, CampaignState.INACTIVE));
+        //add(new HappyHourCampaign       ( 95, CampaignState.ACTIVE));
 
         //add(new EngagementCampaign      ( 65, CampaignState.TEST_MODE ));
         //add(new FakeCoinsLeftCampaign   ( 90, CampaignState.TEST_MODE));
+
         add(new ReactivationCampaign    ( 60, CampaignState.ACTIVE));
+
+        //add(new GameNotification        (90, CampaignState.ACTIVE, "os2x3x4x5x", "Try it out!", null, null));
+        add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
+
+        //add(new PersonalBonusCampaign( 80, CampaignState.TEST_MODE));
+
         add(new FirstPaymentCampaign    ( 95, CampaignState.ACTIVE));
-
-        add(new GameNotification        (90, CampaignState.ACTIVE, "os2x3x4x5x", "Try it out!", null, null));
-        //add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
-
 
     }};
 
