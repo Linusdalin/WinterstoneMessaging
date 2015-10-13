@@ -26,7 +26,7 @@ public class ConnectionHandler {
             switch (location) {
 
                 case local:
-                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/slotamerica", "", "");
+                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/slotamerica", "root", "12Twatwaommwl!");
                     if(connection == null)
                         throw new RuntimeException("Could not open connection to database");
                     System.out.println(" -- Connected to local database!");

@@ -48,7 +48,7 @@ public class Payment {
 
         String insert = "insert into payment values (" + toSQLValues() + ")";
 
-        System.out.println("Insert with: " + insert);
+        //System.out.println("Insert with: " + insert);
 
         try{
 

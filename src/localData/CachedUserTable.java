@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 public class CachedUserTable extends GenericTable {
 
     private static final String getRemote =
-            "select * from user where 1=1 $(RESTRICTION) order by lastSession $(ORDER) $(LIMIT)";
+            "select * from user where 1=1 -RESTRICTION- order by lastSession -ORDER- -LIMIT-";
 
 
     public CachedUserTable(String restriction, int limit){

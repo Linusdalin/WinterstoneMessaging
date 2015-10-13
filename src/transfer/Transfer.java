@@ -25,7 +25,7 @@ public class Transfer {
 
     public static void main(String[] args){
 
-        System.out.println("Transferring data from the main database to local mirror...");
+        System.out.println("*********************************************************\n* Transferring data from the main database to local mirror...");
 
         Transfer transfer = new Transfer();
         transfer.paymentTransfer();
@@ -66,23 +66,31 @@ public class Transfer {
              System.out.println("failed local Connection");
              return;
          }
-        System.out.println("Local Connection established");
+        //System.out.println("Local Connection established");
 
         remoteConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.remote);
 
         if(remoteConnection == null){
 
             System.out.println("failed remote Connection");
-            return;
+
         }
 
-        System.out.println("Remote Connection established");
 
     }
 
+    /********************************************************************
+     *
+     *
+     *          Read from payments and write locally
+     *
+     *
+     */
+
+
     private void paymentTransfer(){
 
-        System.out.println("Starting transfer of payments");
+        System.out.println("\n ****************************************************\n * Starting transfer of payments");
 
         try{
 
@@ -90,7 +98,7 @@ public class Transfer {
             PaymentTable table = new PaymentTable(  );
 
             Timestamp last = table.getLast(localConnection);
-            System.out.println("Last entry is: " + last.toString());
+            System.out.println(" -- Last entry is: " + last.toString());
 
             table.loadRemote(last, MAX_RECORDS, remoteConnection);
 
@@ -107,12 +115,12 @@ public class Transfer {
                 count++;
 
                 if(count % 100 == 0)
-                    System.out.println("Processed: " + count + "...");
+                    System.out.println(" -- Processed: " + count + "...");
 
 
             }
 
-            System.out.println("Count: " + count);
+            System.out.println(" -- A total of " + count + " payments transferred");
 
         }catch(Exception e){
 
@@ -122,11 +130,17 @@ public class Transfer {
     }
 
 
+    /***********************************************************************'
+     *
+     *          Read sessions and store locally
+     *
+     */
+
 
 
     private void sessionTransfer(){
 
-        System.out.println("Starting transfer of sessions");
+        System.out.println("\n **********************************************\n * Starting transfer of sessions");
 
         try{
 
@@ -134,7 +148,7 @@ public class Transfer {
             GameSessionTable table = new GameSessionTable(  );
 
             Timestamp last = table.getLast(localConnection);
-            System.out.println("Last entry is: " + last.toString());
+            System.out.println(" -- Last entry is: " + last.toString());
 
             table.loadRemote(last, MAX_RECORDS, remoteConnection);
 
@@ -150,13 +164,13 @@ public class Transfer {
                 session = table.getNext();
                 count++;
 
-                if(count % 100 == 0)
-                    System.out.println("Processed: " + count + "...");
+                if(count % 2000 == 0)
+                    System.out.println(" -- Processed: " + count + "...");
 
 
             }
 
-            System.out.println("Count: " + count);
+            System.out.println(" -- A total of " + count + " game sessions transferred");
 
         }catch(Exception e){
 

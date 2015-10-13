@@ -24,7 +24,7 @@ public class ExposureTable extends GenericTable {
     private static final String getRemote =
             "select *" +
             "     from exposure where 1=1" +
-            "      $(RESTRICTION) order by exposureTime $(ORDER) $(LIMIT)";
+            "      -RESTRICTION- order by exposureTime -ORDER- -LIMIT-";
     private Connection connection;
 
 

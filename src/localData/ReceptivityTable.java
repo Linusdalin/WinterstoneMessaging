@@ -3,10 +3,7 @@ package localData;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.GenericTable;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 
 /*******************************************************************************
  *
@@ -18,7 +15,7 @@ import java.sql.Timestamp;
 public class ReceptivityTable extends GenericTable {
 
     private static final String getRemote =
-            "select * from receptivity where 1=1 $(RESTRICTION) order by lastUpdate $(ORDER) $(LIMIT)";
+            "select * from receptivity where 1=1 -RESTRICTION- order by lastUpdate -ORDER- -LIMIT-";
 
 
     public ReceptivityTable(String restriction, int limit){
@@ -171,5 +168,28 @@ public class ReceptivityTable extends GenericTable {
     }
 
 
+    public Timestamp getLast(Connection connection){
+
+        String sql = "select lastUpdate from receptivity order by lastUpdate desc limit 1";
+
+        try{
+
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+
+            if(!rs.next())
+                return null;  // There are no entries in the database
+
+            return rs.getTimestamp(1);
+
+        }catch(SQLException e){
+
+            System.out.println("Error accessing data in database");
+            e.printStackTrace();
+        }
+
+
+        return null;
+    }
 
 }

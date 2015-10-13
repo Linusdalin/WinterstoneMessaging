@@ -4,6 +4,7 @@ import localData.ReceptivityTable;
 import remoteData.dataObjects.GameSession;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 
 /************************************************************
  *
@@ -67,4 +68,9 @@ public class SignificanceManager {
 
     }
 
+    public Timestamp getLastUpdate(Connection connection) {
+
+        ReceptivityTable table = new ReceptivityTable();
+        return table.getLast( connection );
+    }
 }

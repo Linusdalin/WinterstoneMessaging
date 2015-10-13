@@ -61,7 +61,7 @@ public class GenericTable {
     public void load(Connection connection, String restriction, String order, int limit, int offset){
 
         String queryString = getQueryString(restriction, limit, offset, order);
-        System.out.println("Query: " + queryString);
+        //System.out.println("Query: " + queryString);
 
         loadFromDB(connection, queryString);
     }
@@ -99,17 +99,17 @@ public class GenericTable {
 
     protected String getQueryString(String query, String restriction, int limit, int offset, String order) {
 
-        query = query.replace("$(RESTRICTION)",  restriction);
+        query = query.replaceAll("-RESTRICTION-",  restriction);
 
         if(limit != -1)
             if(offset != -1)
-                query = query.replace("$(LIMIT)", "LIMIT " + offset + ", "+limit);
+                query = query.replaceAll("-LIMIT-", "LIMIT " + offset + ", "+limit);
             else
-                query = query.replace("$(LIMIT)", "LIMIT "+limit);
+                query = query.replaceAll("-LIMIT-", "LIMIT "+limit);
         else
-            query = query.replace("$(LIMIT)", "");
+            query = query.replaceAll("-LIMIT-", "");
 
-        query = query.replace("$(ORDER)", order);
+        query = query.replaceAll("-ORDER-", order);
 
         return query;
     }

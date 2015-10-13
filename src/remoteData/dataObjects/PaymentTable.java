@@ -17,12 +17,12 @@ public class PaymentTable extends GenericTable {
     private static final String getSQL =
             "select *" +
             "     from payment where 1=1" +
-            "      $(RESTRICTION) order by timestamp $(LIMIT)";
+            "      -RESTRICTION- order by timestamp -LIMIT-";
 
     private static final String getRemoteSQL =
             "select playerid, amount, game, issued " +
             "     from payments where 1=1" +
-            "      $(RESTRICTION) order by issued $(LIMIT)";
+            "      -RESTRICTION- order by issued -LIMIT-";
 
     public PaymentTable(String  restriction, int limit){
 
@@ -91,7 +91,7 @@ public class PaymentTable extends GenericTable {
     public String getRemoteSQL(Timestamp fromTime, int maxRecords) {
 
         String queryString = getQueryString(getRemoteSQL, "and issued > '"+fromTime.toString()+"'", maxRecords, -1, order);
-        System.out.println("Query: " + queryString);
+        //System.out.println("Query: " + queryString);
 
         return queryString;
     }
@@ -123,7 +123,7 @@ public class PaymentTable extends GenericTable {
     public void loadRemote(Timestamp from, int records, Connection connection){
 
         String sql = getRemoteSQL(from, records);
-        System.out.println("Retrieving remote data with " + sql );
+        System.out.println(" -- Retrieving remote data with " + sql );
 
         loadFromDB(connection, sql);
     }

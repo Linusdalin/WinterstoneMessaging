@@ -20,14 +20,14 @@ public class GameSessionTable extends GenericTable{
                 "select * " +
                 "        from game_session \n"+
                 "        where 1 = 1\n"+
-                "        $(RESTRICTION) order by "+ orderBy+" $(ORDER) $(LIMIT);";
+                "        -RESTRICTION- order by "+ orderBy+" -ORDER- -LIMIT-;";
 
 
     private static final String getRemoteSQL =
                 "select timestamp, sessions.sessionId, game_stats.game, facebookId, name, sessions.promoCode, fbSource, game_stats.firstActionTime as 'action time', game_stats.totalWager, game_stats.totalWin, game_stats.lastBalance as 'end balance', game_stats.actions as spins, session_stats.actions as 'total spins' \n"+
                 "        from sessions, users, session_stats, game_stats \n"+
                 "        where users.facebookId = sessions.playerId and sessions.sessionId = session_stats.sessionId and sessions.sessionId = game_stats.sessionId \n"+
-                "        $(RESTRICTION)  order by timestamp $(LIMIT);";
+                "        -RESTRICTION-  order by timestamp -LIMIT-;";
 
 
     public GameSessionTable(String restriction, int limit){
@@ -130,7 +130,7 @@ public class GameSessionTable extends GenericTable{
     public void loadRemote(Timestamp from, int records, Connection connection){
 
         String sql = getRemoteSQL(from, records);
-        System.out.println("Retrieving remote data with " + sql );
+        System.out.println(" -- Retrieving remote data with " + sql );
 
         loadFromDB(connection, sql);
     }
@@ -138,7 +138,7 @@ public class GameSessionTable extends GenericTable{
     public String getRemoteSQL(Timestamp fromTime, int maxRecords) {
 
         String queryString = getQueryString(getRemoteSQL, "and timeStamp > '"+fromTime.toString()+"'", maxRecords, -1, order);
-        System.out.println("Query: " + queryString);
+        //System.out.println("Query: " + queryString);
 
         return queryString;
     }

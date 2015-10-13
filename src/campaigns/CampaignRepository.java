@@ -44,7 +44,7 @@ public class CampaignRepository {
         add(new ReactivationCampaign    ( 60, CampaignState.ACTIVE));
 
         //add(new GameNotification        (90, CampaignState.ACTIVE, "os2x3x4x5x", "Try it out!", null, null));
-        add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
+        //add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
 
         //add(new PersonalBonusCampaign( 80, CampaignState.TEST_MODE));
 

@@ -24,7 +24,7 @@ public class ResponseTable extends GenericTable {
     private static final String getRemote =
             "select *" +
             "     from response where 1=1" +
-            "      $(RESTRICTION)  $(LIMIT)";
+            "      -RESTRICTION-  -LIMIT-";
     private Connection connection;
 
 

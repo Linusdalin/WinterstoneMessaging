@@ -81,7 +81,7 @@ public class GameSession {
 
         String insert = "insert into game_session values (" + toSQLValues() + ")";
 
-        System.out.println("Insert with: " + insert);
+        //System.out.println("Insert with: " + insert);
 
         try{
 
