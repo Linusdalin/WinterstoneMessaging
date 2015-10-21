@@ -2,6 +2,8 @@ package core;
 
 import localData.CachedUser;
 import localData.CachedUserTable;
+import localData.ReceptivityTable;
+import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.*;
 import response.ResponseHandler;
 
@@ -181,6 +183,13 @@ public class DataCache {
         GameSessionTable gameSessions = new GameSessionTable();
         gameSessions.load(connection, "and facebookId='"+ user.facebookId+"' and date(timeStamp) = date(date_sub('"+ analysisDate+"', interval 1 day))", "ASC", 100);
         return gameSessions.getAll();
+
+    }
+
+    public ReceptivityProfile getReceptivityProfileForPlayer(String facebookId) {
+
+        ReceptivityTable table = new ReceptivityTable();
+        return  table.getReceptivityForPlayer(facebookId, connection);
 
     }
 }

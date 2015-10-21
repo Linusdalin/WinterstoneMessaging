@@ -1,13 +1,10 @@
 package localData;
 
-import core.Execute;
 import remoteData.dataObjects.GenericTable;
-import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +82,7 @@ public class ExposureTable extends GenericTable {
      *              Exposure is calculated as the number of messages the last week.
      *
      *
-     * @param user
+     * @param facebookId
      * @param personal_CoolOff
      * @return
      *
@@ -93,11 +90,11 @@ public class ExposureTable extends GenericTable {
      */
 
 
-    public int getUserExposure(User user, int personal_CoolOff) {
+    public int getUserExposure(String facebookId, int personal_CoolOff) {
 
-        load(connection, "and user= '"+ user.facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)");
+        load(connection, "and user= '"+ facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)");
         List<Exposure> exposuresForUser = getAll();
-        System.out.println("Found " + exposuresForUser.size() + " exposures for user " + user.name);
+        System.out.println("Found " + exposuresForUser.size() + " exposures for user " + facebookId);
         return exposuresForUser.size();
 
     }

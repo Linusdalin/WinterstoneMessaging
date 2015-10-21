@@ -38,9 +38,9 @@ public class NotificationAction extends Action implements ActionInterface{
      */
 
 
-    public NotificationAction(String message, User user, int significance, String ref, String campaignName, int messageId, CampaignState state){
+    public NotificationAction(String message, User user, int significance, String ref, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        super(ActionType.NOTIFICATION, user, message, significance, campaignName, messageId, state );
+        super(ActionType.NOTIFICATION, user, message, significance, campaignName, messageId, state, responseFactor );
         this.ref = ref;
         setPromoCode(createPromoCode(campaignName, messageId));
 

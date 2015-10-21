@@ -1,5 +1,7 @@
 package core;
 
+import localData.ReceptivityTable;
+import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
@@ -24,6 +26,8 @@ public class PlayerInfo {
 
     private List<Payment> userPayments;
     private Timestamp lastSession = null;
+
+    private ReceptivityProfile receptivityProfile = null;
 
     public PlayerInfo(User user, DataCache dbCache){
 
@@ -98,6 +102,19 @@ public class PlayerInfo {
         if(userPayments.size() == 0)
             return null;
         return userPayments.get(userPayments.size() - 1);
+
+    }
+
+    public ReceptivityProfile getReceptivityForPlayer() {
+
+        if(receptivityProfile == null)
+            receptivityProfile = dbCache.getReceptivityProfileForPlayer(user.facebookId);
+
+        if(receptivityProfile == null)
+            receptivityProfile = new ReceptivityProfile(user.facebookId);
+
+        return receptivityProfile;
+
 
     }
 }

@@ -1,8 +1,10 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.GiveCoinAction;
 import action.NotificationAction;
 import core.PlayerInfo;
+import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -20,13 +22,13 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
     // Campaign config data
     private static final String Name = "ActivationPoke";
-    private static final int CoolDown_Days = 8;
+    private static final int CoolDown_Days = 4;
 
     // Trigger specific config data
     private static final int Min_Sessions = 3;
     private static final int Max_Sessions = 12;
-    private static final int Max_Age = 12;
-    private int[] MessageIds = {2, 3};
+    private static final int Max_Age = 20;
+    private int[] MessageIds = {2, 3, 4};
 
     ActivationPokeCampaign(int priority, CampaignState active){
 
@@ -47,7 +49,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
@@ -81,24 +83,49 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
         }
 
-        if(isDaysBefore(lastSession, executionDay, 2)){
+        int idleDays = getDaysBetween(lastSession, executionDay);
+
+
+        if(idleDays == 2){
 
 
             System.out.println("    -- Sending a day two activation poke" );
-            return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica? Check out the rewards by clicking on the level bar.!",
-                    user, getPriority(), getTag(),  Name, 2, getState());
+            return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica, have you? Check out the rewards by clicking on the level bar.!",
+                    user, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
+
+
+        }
+
+        if(idleDays == 6 && isRightDay(playerInfo, executionTime, ReceptivityProfile.SignificanceLevel.GENERAL)){
+
+
+            System.out.println("    -- Sending a six  day activation poke on the correct day" );
+            return new NotificationAction("Let's start climbing the reward stairs at SlotAmerica! Click here to get started with your daily bonus!",
+                    user, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
 
 
         }
 
 
-        if(isDaysBefore(lastSession, executionDay, 7)){
+        if(idleDays == 7){
 
 
             System.out.println("    -- Sending a seven day activation poke" );
-            return new NotificationAction("Let's stat climbing the reward stairs at SlotAmerica? Check out the rewards by clicking on the level bar.!",
-                    user, getPriority(), getTag(),  Name, 3, getState());
+            return new NotificationAction("Let's start climbing the reward stairs at SlotAmerica! Click here to get started with your daily bonus!",
+                    user, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
 
+
+        }
+
+        // Added a desperation notification here to get players back
+
+        if(idleDays > 12 && isRightDay(playerInfo, executionTime, ReceptivityProfile.SignificanceLevel.GENERAL)){
+
+
+            System.out.println("    -- Sending a twelve day activation poke" );
+            return new NotificationAction("You have got 2000 coins extra to check out the cool level bonus system. Check out the rewards by clicking on the level bar.!",
+                    user, getPriority(), getTag(),  Name, 5, getState(), responseFactor)
+                    .attach(new GiveCoinAction(2000, user, getPriority(), Name, 5, getState(), responseFactor));
 
         }
 

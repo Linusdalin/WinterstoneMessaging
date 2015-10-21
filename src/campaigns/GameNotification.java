@@ -6,6 +6,7 @@ import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
 import remoteData.dataObjects.User;
+import rewards.Reward;
 
 import java.sql.Timestamp;
 
@@ -24,22 +25,22 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 15;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 60;   // Max days inactivity to get message
-    private static final int ACTIVITY_MIN   = 10;               // Min sessions to be active
+    private static final int INACTIVITY_LIMIT_FREE      = 8;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = 50;   // Max days inactivity to get message
+    private static final int ACTIVITY_MIN   = 12;               // Min sessions to be active
 
 
     private final String message;
     private String gameCode;
     private final EmailInterface email;
-    private String reward;
+    private Reward reward;
 
-    GameNotification(int priority, CampaignState activation, String gameCode, String message, EmailInterface email, String code){
+    GameNotification(int priority, CampaignState activation, String gameCode, String message, EmailInterface email, Reward reward){
 
         super(Name, priority, activation);
         this.gameCode = gameCode;
         this.email = email;
-        this.reward = code;
+        this.reward = reward;
         setCoolDown(CoolDown_Days);
         registerMessageIds( MessageIds );
         this.message = message;
@@ -58,7 +59,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
 
         //System.out.println("Registration Date: " + getDay(user.created).toString());
@@ -70,7 +71,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
         ActionInterface emailAction = null;
 
         if(email != null)
-            emailAction = new EmailAction(email, user, getPriority(), Name,  1, getState());
+            emailAction = new EmailAction(email, user, getPriority(), Name,  1, getState(), responseFactor);
 
 
         if(user.sessions < ACTIVITY_MIN){
@@ -106,7 +107,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
         System.out.println("    -- Campaign " + Name + " firing. ");
 
-        NotificationAction action =  new NotificationAction(message, user, getPriority(), getTag(), Name,  1, getState())
+        NotificationAction action =  new NotificationAction(message, user, getPriority(), getTag(), Name,  1, getState(), responseFactor)
                 .withGame(gameCode);
 
         if(reward != null)

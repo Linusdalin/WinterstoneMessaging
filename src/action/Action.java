@@ -18,6 +18,7 @@ public abstract class Action implements ActionInterface{
     protected final String message;
     private ActionInterface next = null;             // Associated actions in a chain
 
+    private double responseFactor = 1;
     private int significance;
     private String campaignName;
     private int messageId;
@@ -41,9 +42,10 @@ public abstract class Action implements ActionInterface{
      * @param state                  - The state of the campaign triggering the action (for dry runs and tests)
      */
 
-    public Action(ActionType type, User user, String message, int significance, String campaignName, int messageId, CampaignState state){
+    public Action(ActionType type, User user, String message, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
         this.type = type;
+        this.responseFactor = responseFactor;
         this.actionParameter = new ActionParameter(user.name, user.facebookId, user.email);
         this.message = message;
         this.significance = significance;
@@ -79,6 +81,16 @@ public abstract class Action implements ActionInterface{
     public boolean isLive() {
         return state.isLive();
     }
+
+
+    public double getResponseFactor() {
+        return responseFactor;
+    }
+
+    public void setResponseFactor(double responseFactor) {
+        this.responseFactor = responseFactor;
+    }
+
 
     public boolean isTestMode() {
         return state.isTestMode();

@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class OverviewStatistics {
 
-    private static final int DAYS = 20;
+    private static final int DAYS = 25;
 
     /***********************************************************
      *
@@ -61,13 +61,13 @@ public class OverviewStatistics {
         CampaignRepository repository = new CampaignRepository();
         List<CampaignInterface> campaigns = repository.getActiveCampaigns();
 
-        printHeadline( campaigns );
+        //printHeadline( campaigns );
+        printPivotHeadlines();
 
 
         for(int count = days-1; count >= 0; count--){
 
             Timestamp day = new Timestamp(executionTime.getTime() - (long)count * 24*3600*1000);
-            System.out.print(day.toString().substring(0, 10) + ": ");
 
             for (CampaignInterface campaign : campaigns) {
 
@@ -79,6 +79,11 @@ public class OverviewStatistics {
 
 
 
+    }
+
+    private void printPivotHeadlines() {
+
+        System.out.println("Date, Campaign, id, exposure, sessions");
     }
 
 
@@ -120,12 +125,8 @@ public class OverviewStatistics {
 
             int sent        = getSentMessages(day, campaign, id, localConnection);
             int sessions    = getSessions(day, campaign, id, remoteConnection);
-            int ctr = 0;
 
-            if(sent > 0)
-                ctr = (100*sessions)/sent;
-
-            System.out.print(day.toString() + ", " + campaign.getName()+ ", " + id + ", " + sent + ", " + sessions );
+            System.out.println(day.toString().substring(0, 10) + ", " + campaign.getName() + ", " + id + ", " + sent + ", " + sessions);
 
         }
 
@@ -143,7 +144,7 @@ public class OverviewStatistics {
      * @param day                   - the day
      * @param campaign              - the campaign
      * @param localConnection       - the connection to the local database (for exposure)
-     * @param remoteConnection      - the connection to teh remote database (for tagged sessions)
+     * @param remoteConnection      - the connection to the remote database (for tagged sessions)
      */
 
 
@@ -179,18 +180,18 @@ public class OverviewStatistics {
      *
      *              Get all messages
      *
-     * @param day
-     * @param campaign
+     * @param day                   - day to get statistics for
+     * @param campaign              - the campaign
      * @param messageId             - optional 0 or -1 will return all messages for the campaign
-     * @param connection
-     * @return
+     * @param connection            - database connection
+     * @return                      - number of sent messages
      */
 
     private static int getSentMessages(Timestamp day, CampaignInterface campaign, int messageId, Connection connection){
 
         String sql = "select count(*) from exposure where date(exposureTime) = '"+ day.toString().substring(0, 10)+ "' " +
                 (messageId > 0 ? " and messageId = " + messageId : " ") +
-                "and promoCode like ('%"+campaign.getTag()+"%') and type = 'NOTIFICATION'";
+                " and promoCode like ('%"+campaign.getTag()+"%') and type = 'NOTIFICATION'";
 
         try{
 
@@ -223,19 +224,19 @@ public class OverviewStatistics {
      *              Get all sessions
      *
      *
-     * @param day
-     * @param campaign
+     * @param day                   - day to get statistics for
+     * @param campaign              - the campaign
      * @param messageId             - optional 0 or -1 will return all sessions for the campaign
-     * @param connection
-     * @return
+     * @param connection            - database connection
+     * @return                      - number of sessions found
      */
 
 
     private int getSessions(Timestamp day, CampaignInterface campaign, int messageId, Connection connection){
 
         String sql = "select count(*) from sessions where date(sessions.timestamp) = '"+ day.toString().substring(0, 10)+"'" +
-                (messageId > 0 ?
-                    " and promoCode like ('%"+campaign.getTag()+"%')" : " and promoCode like ('%"+campaign.getTag()+"-'"+messageId+")");
+                (messageId > 0 ? " and promoCode like ('%"+campaign.getTag()+"-"+messageId+"%')" :
+                    " and promoCode like ('%"+campaign.getTag()+"%')");
         try{
 
             //System.out.println("Query: " + sql);

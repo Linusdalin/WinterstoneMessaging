@@ -4,10 +4,7 @@ import action.ActionType;
 import campaigns.AbstractCampaign;
 import campaigns.CampaignInterface;
 import campaigns.CampaignRepository;
-import localData.CachedUser;
-import localData.CachedUserTable;
-import localData.Response;
-import localData.ResponseTable;
+import localData.*;
 import remoteData.dataObjects.GameSession;
 
 import java.sql.*;
@@ -31,12 +28,6 @@ public class ResponseHandler {
         this.connection = connection;
     }
 
-    public ResponseStat getOverallResponseRate(Connection localConnection, Connection remoteConnection) {
-
-
-        return new ResponseStat(0, 0);
-
-    }
 
     /***********************************************************************************************
      *
@@ -65,7 +56,7 @@ public class ResponseHandler {
 
         int messageId = getMessageId(session.promocode);
 
-        ResponseTable responseTable = new ResponseTable("and user = '"+ user+"' and campaign = '"+ campaign+"' and messageId = " + messageId, 1);
+        ResponseTable responseTable = new ResponseTable("and user = '"+ user+"' and campaign = '"+ campaign+"' and messageId = " + messageId, 1, connection);
         responseTable.load(connection);
         Response response = responseTable.getNext();
 
@@ -152,6 +143,51 @@ public class ResponseHandler {
         }
 
         return false;
+
+    }
+
+    /********************************************************************
+     *
+     *          This is a simplification.
+     *          //TODO: Look for exposures AFTER the last response
+     *
+     *
+     * @return
+     */
+
+
+    public ResponseStat getOverallResponse() {
+
+        int responses = getResponses(connection);
+        int exposures = getExposures(connection);
+        return new ResponseStat(exposures, responses);
+
+    }
+
+    /*********************************************************************************
+     *
+     *          Looking at exposures 150 days back. After that they "expire" and
+     *          we will start trying to send messages one by one to them.
+     *
+     *
+     * @param connection             -
+     * @return
+     */
+
+
+    private int getExposures(Connection connection) {
+
+        ExposureTable table = new ExposureTable(connection);
+        int responses = table.getUserExposure(userId, 150);  // Look 150 days back for exposures
+        return responses;
+
+    }
+
+    private int getResponses(Connection connection) {
+
+        ResponseTable table = new ResponseTable(connection);
+        int responses = table.getResponses(userId);
+        return responses;
 
     }
 }

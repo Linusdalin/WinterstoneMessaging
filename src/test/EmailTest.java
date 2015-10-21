@@ -192,7 +192,7 @@ public class EmailTest {
 
 
             handler = new EmailHandler()
-                    .withEmail(GettingStartedCampaign.gettingStartedEmail(user))
+                    .withEmail(GettingStartedCampaign.gettingStartedEmail1(user))
                     .toRecipient(user.facebookId);
 
             success = handler.send();

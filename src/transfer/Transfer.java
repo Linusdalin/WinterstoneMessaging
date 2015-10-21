@@ -165,7 +165,7 @@ public class Transfer {
                 count++;
 
                 if(count % 2000 == 0)
-                    System.out.println(" -- Processed: " + count + "...");
+                    System.out.println(" -- Processed: " + count + "... (" + session.timeStamp.toString() + ")");
 
 
             }

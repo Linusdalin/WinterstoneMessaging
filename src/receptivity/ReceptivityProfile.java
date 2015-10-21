@@ -27,12 +27,15 @@ public class ReceptivityProfile {
     public static final int Significant = 1;
     public static final int Not_significant = -1;
 
+    // Level of significance requested
+    public enum SignificanceLevel { SPECIFIC, GENERAL}
+
     int totalSessions;
     public int[][] profile;
     private Timestamp lastUpdate;
     private String userId;
 
-    ReceptivityProfile(String userId){
+    public ReceptivityProfile(String userId){
 
         this.userId = userId;
         this.profile = new int[][] {
@@ -130,18 +133,27 @@ public class ReceptivityProfile {
 
               output.append(profile[day][0] + ", ");
         }
-        output.append("] Significance: " + hasSignificance() + "( updated @ " + lastUpdate + ")");
+        output.append("] Significance: " + hasSignificance(SignificanceLevel.SPECIFIC) + "( updated @ " + lastUpdate + ")");
         return output.toString();
     }
 
 
+    /************************************************************************
+     *
+     *          Test if a user has significance according to a given level
+     *
+     *
+     * @param significanceLevel
+     * @return
+     */
 
-    public int hasSignificance(){
+
+    public int hasSignificance(SignificanceLevel significanceLevel){
 
         if(totalSessions < 10)
             return Inconclusive;
 
-        int day = getFavouriteDay();
+        int day = getFavouriteDay(significanceLevel);
 
         if(day != -1){
 
@@ -169,7 +181,7 @@ public class ReceptivityProfile {
      * @return   - significant or not
      */
 
-    private int getFavouriteDay() {
+    public int getFavouriteDay(SignificanceLevel significanceLevel) {
 
         int bestDay = -1;
         int bestDaySessions = 0;
@@ -187,10 +199,22 @@ public class ReceptivityProfile {
 
         }
 
+        double factor;
+
+        // The factor will define how big the significant day is compared to the average
+
+        if(significanceLevel == SignificanceLevel.GENERAL)
+            factor = 1.1;
+        else
+            factor = 1.6;
+
         // Now check if the day with the most hits is significant
         // We use a simple formula saying that the number of sessions should be twice the average
 
-        int threshold = (2 * totalSessions) / 7;
+
+
+
+        int threshold = (int)((factor * totalSessions) / 7);
 
         if(bestDaySessions > threshold){
 
@@ -226,5 +250,7 @@ public class ReceptivityProfile {
         cal.setTime(timeStamp);
         return cal.get(java.util.Calendar.DAY_OF_WEEK);
     }
+
+
 
 }

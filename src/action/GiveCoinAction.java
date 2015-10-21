@@ -1,6 +1,7 @@
 package action;
 
 import campaigns.CampaignState;
+import output.DeliveryException;
 import output.GiveAwayHandler;
 import remoteData.dataObjects.User;
 
@@ -20,9 +21,9 @@ public class GiveCoinAction extends Action implements ActionInterface{
     private static final String message = "Coins for player";
     private int amount;
 
-    public GiveCoinAction(int amount, User user, int significance, String campaignName, int messageId, CampaignState state){
+    public GiveCoinAction(int amount, User user, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        super(ActionType.COIN_ACTION, user, message, significance, campaignName, messageId, state );
+        super(ActionType.COIN_ACTION, user, message, significance, campaignName, messageId, state, responseFactor );
         this.amount = amount;
     }
 
@@ -56,26 +57,30 @@ public class GiveCoinAction extends Action implements ActionInterface{
         System.out.println("! Perform " + type.name() + " for player " + actionParameter.facebookId);
 
         GiveAwayHandler handler = new GiveAwayHandler(testUser)
-                .withRecipient(actionParameter.facebookId)
+                .toRecipient(actionParameter.facebookId)
                 .withAmount(amount);
 
-        handler.send();
+        try {
 
+            if(!dryRun){
 
+                if(handler.send()){
+                    return new ActionResponse(ActionResponseStatus.OK,   "Coins given sent");
+                }
+                else
+                    return new ActionResponse(ActionResponseStatus.FAILED,   "Coin delivery failed");
 
-        if(!dryRun){
-            if(handler.send()){
-                return new ActionResponse(ActionResponseStatus.OK,   "Coins given sent");
             }
-            else
-                return new ActionResponse(ActionResponseStatus.FAILED,   "Coin delivery failed");
+            else{
+                System.out.println("  %%%Dryrun: Ignoring giving "+ amount + "coins to user "+ actionParameter.name );
+                return new ActionResponse(ActionResponseStatus.IGNORED,   "No Coins given - dry run");
+            }
 
-        }
-        else{
-            System.out.println("  %%%Dryrun: Ignoring giving "+ amount + "coins to user "+ actionParameter.name );
-            return new ActionResponse(ActionResponseStatus.IGNORED,   "No Coins given - dry run");
-        }
+        } catch (DeliveryException e) {
 
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return new ActionResponse(ActionResponseStatus.FAILED,   "Coin delivery failed");
+        }
 
 
     }

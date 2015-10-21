@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.GiveCoinAction;
 import action.ManualAction;
 import action.NotificationAction;
 import core.PlayerInfo;
@@ -16,7 +17,6 @@ import java.sql.Timestamp;
  *              Bad beat will give players some extra coins if
  *              they have had an significantly unlucky session
  *
- *              //TODO: Automatically credit coins
  *
  */
 
@@ -24,15 +24,15 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
 
     // Campaign config data
     private static final String Name = "Bad Beat";
-    private static final int CoolDown_Days = 10;
+    private static final int CoolDown_Days = 5;
 
     // Trigger specific config data
-    private static final int MIN_AVERAGE_BET = 490;
+    private static final int MIN_AVERAGE_BET = 290;
     private static final int MIN_ACTIONS = 130;
-    private static final int LONG_SESSION = 350;
-    private static final int VERY_LONG_SESSION = 700;
+    private static final int LONG_SESSION = 300;
+    private static final int VERY_LONG_SESSION = 600;
 
-    private static final int VERY_UNLUCKY_PAYOUT = 60;
+    private static final int VERY_UNLUCKY_PAYOUT = 65;
     private static final int UNLUCKY_PAYOUT = 75;
     private static final int BAD_PAYOUT = 80;
 
@@ -58,7 +58,7 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
         User user = playerInfo.getUser();
 
@@ -111,10 +111,9 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
 
                         System.out.println("    -- Campaign " + Name + " Firing. payout = " + yesterdayStats.toString());
 
-
                         return new NotificationAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!",
-                                user, getPriority(), getTag(), Name, 1, getState())
-                                .attach(new ManualAction("Credit user with " + compensation + " coins.", user, getPriority(), Name, 1, getState()));
+                                user, getPriority(), getTag(), Name, 1, getState(), responseFactor)
+                                .attach(new GiveCoinAction(compensation, user, getPriority(), Name, 1, getState(), responseFactor));
 
                     }
                     else

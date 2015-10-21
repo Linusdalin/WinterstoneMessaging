@@ -70,7 +70,7 @@ LevelUpCampaign(int priority, CampaignState activation){
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
 
         User user = playerInfo.getUser();
@@ -120,7 +120,7 @@ LevelUpCampaign(int priority, CampaignState activation){
 
 
                 System.out.println("    -- Campaign " + Name + " firing message for level " + user.level );
-                NotificationAction action =  new NotificationAction(messages[message], user, getPriority(), getTag(),  Name, (message + 1), getState());
+                NotificationAction action =  new NotificationAction(messages[message], user, getPriority(), getTag(),  Name, (message + 1), getState(), responseFactor);
 
             if(message == 7){
 

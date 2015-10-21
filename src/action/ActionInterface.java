@@ -30,4 +30,7 @@ public interface ActionInterface {
     ActionInterface getAssociated();
 
     boolean isLive();
+
+    double getResponseFactor();
+    void setResponseFactor(double i);
 }

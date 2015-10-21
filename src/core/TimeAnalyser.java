@@ -1,16 +1,14 @@
 package core;
 
+import action.ActionInterface;
 import campaigns.CampaignInterface;
 import localData.ExposureTable;
 import localData.ResponseTable;
 import remoteData.dataObjects.User;
-import response.ResponseStat;
 import response.ResponseHandler;
+import response.ResponseStat;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
 
 /**************************************************************************
  *
@@ -22,19 +20,34 @@ public class TimeAnalyser {
 
 
     private PlayerInfo playerInfo;
-    private final int Personal_CoolOff = 7;
+    private Connection connection;
+    private static final int Personal_CoolOff = 7;
+    //private static final double RESPONSE_FACTOR = 2.0;      // This will make a 60 x 65 above 100
+    private static final double RESPONSE_FACTOR = 1.0;        // TODO: Remove this. Only for initial test
 
-    public TimeAnalyser(PlayerInfo playerInfo) {
+    public TimeAnalyser(PlayerInfo playerInfo, Connection connection) {
 
         this.playerInfo = playerInfo;
+        this.connection = connection;
     }
 
-    public int eligibilityForCommunication(ExposureTable campaignExposures, ResponseHandler handler, Connection localConnection, Connection remoteConnection){
+    /**************************************************************************
+     *
+     *          Calculate eligibility for receiving a message
+     *
+     *
+     * @param campaignExposures     - campaign exposures
+     * @param handler               - handler for all responses to lookup response frequency
+     * @return                      - percentage value as threshold
+     */
 
-        ResponseStat response = handler.getOverallResponseRate(localConnection, remoteConnection);
+
+    public int eligibilityForCommunication(ExposureTable campaignExposures, ResponseHandler handler){
+
+        ResponseStat response = handler.getOverallResponse();
         System.out.println("      Got response " + response.toString() + " for user.");
 
-        int exposures = campaignExposures.getUserExposure(playerInfo.getUser(), Personal_CoolOff);
+        int exposures = campaignExposures.getUserExposure(playerInfo.getUser().facebookId, Personal_CoolOff);
 
         int limit = 1;
 
@@ -62,12 +75,32 @@ public class TimeAnalyser {
     }
 
 
-    public boolean hasResponded(Connection connection, User user, CampaignInterface campaign){
+    public boolean hasResponded(Connection connection, User user, String campaign){
 
         ResponseTable responseTable = new ResponseTable(connection);
-        int responses = responseTable.getResponses(user, campaign);
+        int responses = responseTable.getResponses(user.facebookId, campaign);
 
         return (responses > 0);
     }
 
+
+    public double getResponseAdjustment(User user, CampaignInterface campaign) {
+
+        if(hasResponded(connection, user, campaign.getTag())){
+
+            System.out.println(" !! Setting response factor for user " + user.name);
+
+            return RESPONSE_FACTOR;
+        }
+
+        return 1.0;
+    }
+
+
+
+    public int adjustForResponse(int eligibility, ActionInterface action) {
+
+        return (int)(eligibility * action.getResponseFactor());
+
+    }
 }

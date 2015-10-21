@@ -31,9 +31,9 @@ public class ManualAction extends Action implements ActionInterface{
      */
 
 
-    public ManualAction(String message, User user, int significance, String campaignName, int messageId, CampaignState state){
+    public ManualAction(String message, User user, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        super(ActionType.MANUAL_ACTION, user, message, significance, campaignName, messageId, state );
+        super(ActionType.MANUAL_ACTION, user, message, significance, campaignName, messageId, state, responseFactor );
 
     }
 

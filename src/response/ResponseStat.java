@@ -9,6 +9,8 @@ public class ResponseStat {
     private final int exposures;
     private final int sessions;
 
+    private static final int STRIKE_OUT_LEVEL = 100;     //number of exposures to still get messages
+
 
     ResponseStat(int exposures, int sessions){
 
@@ -21,4 +23,11 @@ public class ResponseStat {
         return  sessions +" / " + exposures + (exposures > 0 ? " (" + (100*sessions)/exposures + ")" : "");
     }
 
+    public int getExposures() {
+        return exposures;
+    }
+
+    public boolean isStrikeout() {
+        return sessions == 0 && exposures > STRIKE_OUT_LEVEL;
+    }
 }

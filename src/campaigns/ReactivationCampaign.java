@@ -57,7 +57,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
         if(count > DAILY_CAP){
 
@@ -89,12 +89,21 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
         if(inactivity > INACTIVITY_LIMIT){
 
+            if(!isOkDay(playerInfo, executionTime)){
+
+                System.out.println("    -- Campaign " + Name + " not firing. waiting for the right day..." );
+                return null;
+
+
+            }
+
+
             if(isHighSpender(user)){
 
                 System.out.println("    -- Campaign " + Name + " firing message1. Creating bonus for player" );
                 count++;
                 return new NotificationAction("You have 20,000 free coins to play for! We haven't seen you in a while. There are some fabulous new games to try out. ",
-                        user, getPriority(), getTag(), Name, 1, getState())
+                        user, getPriority(), getTag(), Name, 1, getState(), responseFactor)
                         .withGame("wild_cherries")
                         .withReward("cac6b086-189f-4ee6-bb30-7bcfb2a0ecfa");
 
@@ -104,7 +113,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
                 System.out.println("    -- Campaign " + Name + " firing message2. Creating bonus for player" );
                 count++;
                 return new NotificationAction("You have 10,000 free coins to play for. We haven't seen you in a while. There are some fabulous new games to try out. ",
-                        user, getPriority(), getTag(),  Name, 2, getState())
+                        user, getPriority(), getTag(),  Name, 2, getState(), responseFactor)
                         .withGame("wild_cherries")
                         .withReward("93f00dac-26cf-46e4-8bde-1eb59dd13032");
 
@@ -113,7 +122,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
                 System.out.println("    -- Campaign " + Name + " firing message3. Creating bonus for player" );
                 count++;
                 return new NotificationAction("You have got 3,000 extra free coins! We haven't seen you in a while and there are some fabulous new games to try out. Click here to claim ",
-                        user, getPriority(), getTag(),  Name, 3, getState())
+                        user, getPriority(), getTag(),  Name, 3, getState(), responseFactor)
                         .withGame("wild_cherries")
                         .withReward("363526a3-1fb1-499d-bb33-66dd9dcb9259");
 

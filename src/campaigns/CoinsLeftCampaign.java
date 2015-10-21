@@ -24,14 +24,13 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
     // Campaign config data
     private static final String Name = "Coins Left";
-    private static final int CoolDown_Days = 14;     // Only once per player
+    private static final int CoolDown_Days = 6;     // Only once per player
     private int[] MessageIds = {1, 2, 3};
 
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 10;   // 10 days inactivity before kicking in this offer
-    private static final int INACTIVITY_LIMIT2   = 16;   // 16 days inactivity before trying again
-    private static final int INACTIVITY_LIMIT3   = 22;   // 22 days inactivity before trying again
+    private static final int INACTIVITY_LIMIT2   = 25;   // 25 days inactivity before stopping
 
 
     private static final int COINS_FOR_FREE_PLAYER           = 4500;
@@ -59,7 +58,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
 
         Timestamp executionDay = getDay(executionTime);
@@ -81,19 +80,24 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
         }
         int inactivity = getDaysBetween(lastSession, executionDay);
 
-        if(inactivity == INACTIVITY_LIMIT || inactivity == INACTIVITY_LIMIT2 || inactivity == INACTIVITY_LIMIT3){
+        if(inactivity >= INACTIVITY_LIMIT && inactivity < INACTIVITY_LIMIT2){
 
-            // Get the players on the day
+            if(!isOkDay(playerInfo, executionTime)){
+
+                System.out.println("    -- Campaign " + Name + " not firing. Waiting for the right day");
+                return null;
+
+            }
 
             if(isHighSpender( user )){
 
                 if(user.balance > COINS_FOR_HIGH_SPENDER){
 
                     System.out.println("    -- Campaign " + Name + " firing for high spender with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                            user, getPriority(), getTag(), Name, 1, getState())
+                    return new NotificationAction("SlotAmerica is open for business. You have "+ user.balance+" coins left on your account. Click here to enjoy them in the Casino ",
+                            user, getPriority(), getTag(), Name, 1, getState(), responseFactor)
                     .attach(new EmailAction(coinLeftEmail(user),
-                            user, getPriority(), Name, 1, getState()));
+                            user, getPriority(), Name, 1, getState(), responseFactor));
 
                 }
                 else
@@ -106,10 +110,10 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                 if(user.balance > COINS_FOR_LOW_SPENDER){
 
                     System.out.println("    -- Campaign " + Name + " firing for low spender with balance " + user.balance );
-                    return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                            user, getPriority(), getTag(), Name, 2, getState())
+                    return new NotificationAction("SlotAmerica is open for business. You have "+ user.balance+" coins left on your account. Click here to enjoy them in the Casino ",
+                            user, getPriority(), getTag(), Name, 2, getState(), responseFactor)
                             .attach(new EmailAction(coinLeftEmail(user),
-                                    user, getPriority(), Name, 1, getState()));
+                                    user, getPriority(), Name, 1, getState(), responseFactor));
 
                 }
                 else
@@ -121,7 +125,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
                     System.out.println("    -- Campaign " + Name + " firing for free player with balance " + user.balance );
                     return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                            user, getPriority(), getTag(), Name, 3, getState());
+                            user, getPriority(), getTag(), Name, 3, getState(), responseFactor);
 
                 }
                 else

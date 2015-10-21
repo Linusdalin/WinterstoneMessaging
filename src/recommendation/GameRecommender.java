@@ -19,6 +19,7 @@ public class GameRecommender {
 
     GameRecommendation[] games = {
 
+            new GameRecommendation("the real deal Old School vegas game. Click here to try it out!", "os2x3x4x5x", "2015-09-24 12:00:00"),
             new GameRecommendation("the super hot Fire Fruit game. Click here to see the secret in the sauce!", "fire_fruit", "2015-09-17 12:00:00"),
             new GameRecommendation("the new Wild Cherries game. Click here to experience the cherry blossom!", "wild_cherries", "2015-09-03 12:00:00"),
     };

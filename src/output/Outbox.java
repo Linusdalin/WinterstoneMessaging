@@ -50,8 +50,6 @@ public class Outbox {
 
         for (ActionInterface action : queue) {
 
-            if(count > cap)
-                break;
 
             ActionResponse response = action.execute(dryRun, testUser, executionTime, connection, (count + 1), queue.size());
 
@@ -61,6 +59,9 @@ public class Outbox {
             else
                 noteFailedMessageDelivery(action.getParameters().facebookId, action.getType(), response.getStatus());
             count++;
+
+            if(count >= cap)
+                break;
 
 
         }

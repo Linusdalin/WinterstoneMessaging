@@ -52,7 +52,7 @@ public class EngagementCampaign extends AbstractCampaign implements CampaignInte
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
 
         Timestamp executionDay = getDay(executionTime);
@@ -111,7 +111,7 @@ public class EngagementCampaign extends AbstractCampaign implements CampaignInte
 
         System.out.println("    -- Campaign " + Name + " firing message1. Creating bonus for player" );
         return new ManualAction("Send player id " + user.facebookId + " to facebook reactivation campaign",
-                user, getPriority(),  Name, 1, getState());
+                user, getPriority(),  Name, 1, getState(), responseFactor);
 
 
     }

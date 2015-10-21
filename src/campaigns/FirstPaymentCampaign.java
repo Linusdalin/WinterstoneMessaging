@@ -51,7 +51,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
         User user = playerInfo.getUser();
 
@@ -83,7 +83,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
             // Sending a mail instead
 
             System.out.println("    -- Sending an nice VIP welcome EMAIL to new paying players\n" );
-            return new EmailAction(firstDepositEmail(user, payment), user, getPriority(), getTag(), 2, getState());
+            return new EmailAction(firstDepositEmail(user, payment), user, getPriority(), getTag(), 2, getState(), responseFactor);
 
 
 

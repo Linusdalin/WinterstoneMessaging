@@ -46,8 +46,37 @@ public class RequestHandler {
             url += "?" + urlParameters;
 
         System.out.println("Trying to GET: " + url);
-        return execute(url, "", "GET");
 
+        try{
+
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            con.setRequestMethod("GET");
+
+            int httpCode = con.getResponseCode();
+
+            if(httpCode != 200){
+
+                System.out.println("Got: " + httpCode);
+                throw new DeliveryException(httpCode);
+            }
+
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            return response.toString();
+
+        } catch (IOException e) {
+
+            e.printStackTrace(System.out);
+            return null;
+        }
     }
 
     public String executePost(String urlParameters) throws DeliveryException {

@@ -14,15 +14,48 @@ import java.util.List;
 
 public class ExecutionStatistics {
 
-    CampaignStatistics[] campaignStatistics;
+    CampaignStatistics[] campaignStatistics;              // statistics per campaign
     private List<CampaignInterface> activeCampaigns;
 
-    public ExecutionStatistics(List<CampaignInterface> activeCampaigns) {
-        this.activeCampaigns = activeCampaigns;
+    private int[] totalPlayerOutcome = {0, 0, 0, 0, 0};
 
+    private int[] strikeCount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+
+    // Index for the different outcomes for messaging (indexing the totalPlayerOutcome)
+
+    public static final int REACHED     = 0;      // # players we send a message
+    public static final int EXPOSED     = 1;      // # players we don't send because they are fully exposed
+    public static final int GIVEUP      = 2;      // # players for which we have given up
+    public static final int COOLDOWN    = 3;      // # players we cant reach only because the campaigns are cooling down
+    public static final int MISSED      = 4;      // # players there is no message to send to
+    private int overLooked;
+
+    /****************************************************************
+     *
+     *
+     *              Create
+     *
+     * @param activeCampaigns  - campaigns in use
+     *
+     */
+
+
+    public ExecutionStatistics(List<CampaignInterface> activeCampaigns) {
+
+        this.activeCampaigns = activeCampaigns;
         campaignStatistics = new CampaignStatistics[activeCampaigns.size()];
 
     }
+
+    /*****************************************************'
+     *
+     *          Register that an action is selected and will be used to target a player
+     *
+     * @param selectedAction            - the action
+     */
+
+
 
     public void registerSelected(ActionInterface selectedAction) {
 
@@ -38,6 +71,15 @@ public class ExecutionStatistics {
 
     }
 
+
+    /*************************************************************************
+     *
+     *          Register that an action is overrun by another action (otherwise would have been used)
+     *
+     *
+     * @param action          - the action
+     */
+
     public void registerOverrun(ActionInterface action) {
 
         int campaignIndex = getCampaignIndex(action);
@@ -49,6 +91,15 @@ public class ExecutionStatistics {
 
     }
 
+
+    public void registerOutcome(int reason){
+
+
+        System.out.println("Adding a total to reason " + reason);
+
+        totalPlayerOutcome[ reason ]++;
+
+    }
 
     private int getCampaignIndex(ActionInterface action) {
 
@@ -64,9 +115,19 @@ public class ExecutionStatistics {
 
     }
 
+
+    /******************************************************************
+     *
+     *          Display both campaign and outbox message statistics
+     *
+     *
+     * @return         - text
+     */
+
+
     public String toString(){
 
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         for (CampaignStatistics statisticsForCampaign : campaignStatistics) {
 
             if(statisticsForCampaign != null)
@@ -74,8 +135,33 @@ public class ExecutionStatistics {
 
         }
 
+        out.append("Reached:   " + totalPlayerOutcome[ REACHED ] + "\n");
+        out.append("Exposed:   " + totalPlayerOutcome[ EXPOSED ] + "\n");
+        out.append("GivenUp:   " + totalPlayerOutcome[ GIVEUP ] + "\n");
+        out.append("Cool down: " + totalPlayerOutcome[ COOLDOWN ] + "\n");
+        out.append("Missed:    " + totalPlayerOutcome[ MISSED ] + "\n");
+
+        for (int i = 6; i < strikeCount.length; i++) {
+            out.append(" - Strikeout: " + i + ": " +strikeCount[i] );
+        }
+
+        out.append("Completely overlooked pretty active players: " + overLooked);
+
+
         return out.toString();
 
     }
 
+    public void registerStrikeOut(int attempts) {
+
+        if(attempts > 12)
+            attempts = 12;
+
+        strikeCount[ attempts ] ++;
+
+    }
+
+    public void registerOverlooked() {
+        overLooked++;
+    }
 }

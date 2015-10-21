@@ -9,8 +9,10 @@ import executionStatistics.ExecutionStatistics;
 import localData.Exposure;
 import localData.ExposureTable;
 import output.Outbox;
-import remoteData.dataObjects.*;
+import remoteData.dataObjects.User;
+import remoteData.dataObjects.UserTable;
 import response.ResponseHandler;
+import response.ResponseStat;
 import sound.SoundPlayer;
 
 import java.io.IOException;
@@ -40,6 +42,7 @@ public class CampaignEngine {
     private int batchSize;
     private Outbox notificationOutbox;
     private Outbox manualActionOutbox;          // Manual messages
+    private Outbox coinActionOutbox;          // Manual messages
     private Outbox emailOutbox;
 
 
@@ -75,9 +78,10 @@ public class CampaignEngine {
 
             // Create an outbox for all messages
 
-            notificationOutbox  = new Outbox(send_cap, dryRun, testUser, localConnection);
-            manualActionOutbox  = new Outbox(send_cap, dryRun, testUser, localConnection);
-            emailOutbox         = new Outbox(send_cap, (dryRun || !sendEmail), testUser, localConnection);
+            notificationOutbox  = new Outbox(send_cap, dryRun,                  testUser, localConnection);
+            manualActionOutbox  = new Outbox(send_cap, dryRun,                  testUser, localConnection);
+            coinActionOutbox    = new Outbox(send_cap, dryRun,                  testUser, localConnection);
+            emailOutbox         = new Outbox(send_cap, (dryRun || !sendEmail),  testUser, localConnection);
 
         }catch(Exception e){
 
@@ -142,6 +146,7 @@ public class CampaignEngine {
         System.out.println("Total notifications: " + notificationOutbox.size());
         System.out.println("Total emails:        " + emailOutbox.size() + ( sendEmail? "": "( but these are suppressed)"));
         System.out.println("Total manual:        " + manualActionOutbox.size());
+        System.out.println("Total coins:         " + coinActionOutbox.size());
 
 
         System.out.println("  NOTE! Dry run is " + (dryRun ? "ON" : "OFF"));
@@ -161,6 +166,10 @@ public class CampaignEngine {
         System.out.println(" ******************************************\n * Purging Email ");
 
         emailOutbox.purge(executionTime);
+
+        System.out.println(" ******************************************\n * Coin Actions ");
+
+        coinActionOutbox.purge(executionTime);
 
         System.out.println(" ******************************************\n * Manual Actions ");
 
@@ -250,41 +259,50 @@ public class CampaignEngine {
             ActionInterface action = evaluateUser(playerInfo, executionTime, campaignExposures, executionStatistics);
 
 
-            // Dummy execution ( dry-run hard coded to true) to see the outcome
             if(action == null)
                 System.out.println(" -- No action for player");
-            else
-                action.execute(true, null, executionTime, localConnection, 1, 1);
 
         }
 
     }
 
 
-        /************************************************************************''
-        *
-        *          Evaluate if and what to send to the player
-        *
-        *
-        *
-        *
-        * @param playerInfo                  - the user in question
-        * @param executionTime         - time of execution (for time dependent rules
-        * @param campaignExposures     - Exposure for campaigns
-        * @param executionStatistics   - collection of all statistics
-        */
+    /************************************************************************''
+    *
+    *          Evaluate if and what to send to the player
+    *
+    *
+    *
+    *
+    * @param playerInfo                  - the user in question
+    * @param executionTime         - time of execution (for time dependent rules
+    * @param campaignExposures     - Exposure for campaigns
+    * @param executionStatistics   - collection of all statistics
+    */
 
 
     private ActionInterface evaluateUser(PlayerInfo playerInfo, Timestamp executionTime, ExposureTable campaignExposures, ExecutionStatistics executionStatistics) {
 
-
-
         // Package and pre calculate the playerInfo
         // This is used for all the analysis and defines the API to the information in the database
 
-        TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo);
+        TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo, localConnection);
         User user = playerInfo.getUser();
         ResponseHandler responseHandler = new ResponseHandler(user.facebookId, localConnection);
+        int outcome = ExecutionStatistics.MISSED; // Keep track of the outcome for the user
+
+        // Check for "dead" players that we should not even try to send a message to
+
+        ResponseStat responseStat = responseHandler.getOverallResponse();
+        boolean giveUp = false;
+
+        if(responseStat.isStrikeout()){
+
+            System.out.println("  !! Three strike out for player -" + responseStat.getExposures() + " attempts");
+            executionStatistics.registerStrikeOut( responseStat.getExposures() );
+            giveUp = true;
+        }
+
 
         ActionInterface selectedAction = null;
         System.out.println("    (found " + playerInfo.getUser().sessions + " sessions and "+ playerInfo.getPaymentsForUser().size()+" payments for the user)");
@@ -292,33 +310,27 @@ public class CampaignEngine {
         // Go through all campaigns and see if any of them fire.
         // We store the most significant for this user this time
 
+
         for (CampaignInterface campaign : repository.getActiveCampaigns()) {
 
-            if(timeAnalyser.hasResponded(localConnection, user, campaign)){
+            // Get a response factor for the campaign. This is used to boost significance and to decide eligibility (stored in the action)
+            double responseFactor = timeAnalyser.getResponseAdjustment(user, campaign);
 
-                System.out.println("   NOTE: The user has previously responded to the campaign. (Not implemented adjusting for this...)");
-            }
-
-            String failCalendarReason = campaign.testFailCalendarRestriction(executionTime, overrideTime);
             Exposure lastExposure = campaignExposures.getLastExposure(campaign.getName(), user);
 
             if(lastExposure != null){
 
-
                 if(campaign.failCoolDown(lastExposure, executionTime)){
 
                     System.out.println("    -- Last exposure for campaign "+ campaign.getName()+" is " + lastExposure.exposureTime.toString() + ", less than "+ campaign.getCoolDown()+" days ago. Avoiding over exposure");
+                    outcome = ExecutionStatistics.COOLDOWN;
                     continue;
                 }
 
-
-            }
-            else{
-
-                //System.out.println("    -- Last exposure for campaign "+ campaign.getName()+" is  null");
-
             }
 
+            // Check calender restriction
+            String failCalendarReason = campaign.testFailCalendarRestriction(executionTime, overrideTime);
             if(failCalendarReason != null){
 
                 System.out.println("    -- Campaign " + campaign.getName() + " not applicable. " + failCalendarReason);
@@ -326,17 +338,25 @@ public class CampaignEngine {
             }
             else{
 
-                ActionInterface action = campaign.evaluate(playerInfo, executionTime);
+                ActionInterface action;
+                try{
+
+                    action = campaign.evaluate(playerInfo, executionTime, responseFactor);
+
+                }catch(FailActionException e){
+
+                    action = null;
+                    outcome = adjustOutcome(outcome, e.getOutcome());
+
+                }
+
 
                 if(action != null && responseHandler.permanentlyFail(action.getType())){
 
                     System.out.println("    -- Campaign " + campaign.getName() + " not applicable. Permanently failed on sending messages of type " + action.getType() + " ignoring.");
                     continue;
 
-
                 }
-
-
 
                 if(isPrefered(action, selectedAction)){
 
@@ -352,15 +372,56 @@ public class CampaignEngine {
             }
         }
 
+        if(selectedAction == null){
+
+            executionStatistics.registerOutcome(outcome);
+
+            if(responseStat.getExposures() == 0 && playerInfo.getUser().sessions > 10)
+                executionStatistics.registerOverlooked();
+
+
+        }
+        else if(selectedAction.getType() == ActionType.NOTIFICATION && giveUp){
+
+            System.out.println(" Removing action " + selectedAction.getCampaign() + " as we have given up on the player");
+            executionStatistics.registerOutcome(ExecutionStatistics.GIVEUP);
+            return null;
+        }
+
+
+
         return selectedAction;
     }
 
+    private int adjustOutcome(int existingOutcome, int newOutcome) {
+
+        if(newOutcome < existingOutcome)
+            return newOutcome;
+
+        return existingOutcome;
+    }
+
+    /***********************************************************************
+     *
+     *              Actually handle the action that is selected for the user. This includes:
+     *
+     *               - See if we actually should send actions to the user
+     *               - Queue it
+     *               - Register
+     *
+     * @param selectedAction
+     * @param playerInfo
+     * @param campaignExposures
+     * @param executionStatistics
+     */
+
+
     private void handleAction(ActionInterface selectedAction, PlayerInfo playerInfo, ExposureTable campaignExposures, ExecutionStatistics executionStatistics){
 
-        TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo);
+        TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo, localConnection);
         User user = playerInfo.getUser();
         ResponseHandler handler = new ResponseHandler( user.facebookId, localConnection );
-        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler, localConnection, dbConnection);
+        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler);
 
         if(selectedAction == null){
 
@@ -368,28 +429,43 @@ public class CampaignEngine {
             return;
         }
 
+        eligibility = timeAnalyser.adjustForResponse(eligibility, selectedAction );
+
         if(selectedAction.getSignificance( eligibility ) < threshold){
 
             System.out.println("    -- Selected action significance "+ selectedAction.getSignificance(eligibility) + "not above threshold " + threshold);
+            executionStatistics.registerOutcome(ExecutionStatistics.EXPOSED);
             return;
         }
 
+        executionStatistics.registerOutcome(ExecutionStatistics.REACHED);
         queueAction(selectedAction);
         executionStatistics.registerSelected(selectedAction);
 
     }
 
-
+    /**************************************************************************
+     *
+     *          Put the actions in the correct outbox (depending on type)
+     *
+     *
+     * @param action             - the action
+     */
 
 
     private void queueAction(ActionInterface action) {
 
         if(action.getType() == ActionType.NOTIFICATION )
             notificationOutbox.queue(action);
+
         if(action.getType() == ActionType.EMAIL )
             emailOutbox.queue(action);
+
         if(action.getType() == ActionType.MANUAL_ACTION )
             manualActionOutbox.queue(action);
+
+        if(action.getType() == ActionType.COIN_ACTION )
+            coinActionOutbox.queue(action);
 
         ActionInterface next = action.getAssociated();
 

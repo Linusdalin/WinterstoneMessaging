@@ -41,7 +41,7 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
@@ -73,7 +73,7 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
 
         System.out.println("    -- Sending a happy hour reminder" );
         return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all coin purchases. A perfect time to increase the fun. Click here to get going!!",
-                user, getPriority(), getTag(),  Name, 3, getState());
+                user, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
 
 
     }

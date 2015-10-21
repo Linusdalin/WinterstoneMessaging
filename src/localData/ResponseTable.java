@@ -1,13 +1,10 @@
 package localData;
 
-import campaigns.CampaignInterface;
 import remoteData.dataObjects.GenericTable;
-import remoteData.dataObjects.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,19 +22,20 @@ public class ResponseTable extends GenericTable {
             "select *" +
             "     from response where 1=1" +
             "      -RESTRICTION-  -LIMIT-";
+
     private Connection connection;
 
 
-    public ResponseTable(String restriction, int limit){
+    public ResponseTable(String restriction, int limit, Connection connection){
 
         super(getRemote, restriction, limit);
         maxLimit = limit;
+        this.connection = connection;
     }
 
     public ResponseTable(Connection connection){
 
-        this( "", -1);
-        this.connection = connection;
+        this( "", -1, connection);
     }
 
     public Response getNext(){
@@ -74,19 +72,25 @@ public class ResponseTable extends GenericTable {
      *
      *              Get the number of responses for a user for a specific campaign
      *
-     * @param user              - the user
+     * @param userId              - the user
      * @param campaign          - the campaign
      * @return                  - The count of responses
      */
 
-    public int getResponses(User user, CampaignInterface campaign){
 
-        return getResponses(user, campaign, -1);
+    public int getResponses(String userId, String campaign){
+
+        return getResponses(userId, campaign, -1);
     }
 
-    public int getResponses(User user, CampaignInterface campaign, int messageId){
+    public int getResponses(String userId){
 
-        String query = "select sum(count) from response where user = '"+ user.facebookId+"' and campaign = '"+ campaign.getTag()+"'";
+        return getResponses(userId, null, -1);
+    }
+
+    public int getResponses(String userId, String campaign, int messageId){
+
+        String query = "select sum(count) from response where user = '"+ userId+"'"+(campaign != null ? " and campaign = '"+ campaign+"'" : "");
 
         if(messageId != -1){
             query += " and messageId = " + messageId;

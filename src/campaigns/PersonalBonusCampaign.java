@@ -52,7 +52,7 @@ public class PersonalBonusCampaign extends AbstractCampaign implements CampaignI
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
         count++;
 
@@ -94,7 +94,7 @@ public class PersonalBonusCampaign extends AbstractCampaign implements CampaignI
 
             System.out.println("    -- Campaign " + Name + " firing message 1" );
             return new NotificationAction("A lot has happened here at SlotAmerica. You still have your VIP status with a personal discount on all purchases. Check out some of the new fabulous games here! ",
-                    user, getPriority(), getTag(), Name, 1, getState())
+                    user, getPriority(), getTag(), Name, 1, getState(), responseFactor)
                     .withGame("os2x3x4x5x");
 
         }
@@ -103,7 +103,7 @@ public class PersonalBonusCampaign extends AbstractCampaign implements CampaignI
 
             System.out.println("    -- Campaign " + Name + " firing message 1" );
             return new NotificationAction("A lot has happened here at SlotAmerica. You still have your VIP status with extra diamonds in the bonus click. Check out some of the new fabulous games here!",
-                    user, getPriority(), getTag(), Name, 2, getState())
+                    user, getPriority(), getTag(), Name, 2, getState(), responseFactor)
                     .withGame("os2x3x4x5x");
 
         }

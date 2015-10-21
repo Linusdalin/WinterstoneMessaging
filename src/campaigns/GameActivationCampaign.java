@@ -23,14 +23,14 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
     // Campaign config data
     private static final String Name = "GameActivationPoke";
-    private static final int CoolDown_Days = 8;
+    private static final int CoolDown_Days = 9;
     private int[] MessageIds = {1, 2};
 
 
     // Trigger specific config data
-    private static final int Min_Sessions = 20;
+    private static final int Min_Sessions = 12;
     private static final int Min_Inactivity = 5;
-    private static final int Max_Inactivity = 50;
+    private static final int Max_Inactivity = 100;
     private static final int Max_Inactivity_Notification = 30;
 
     GameActivationCampaign(int priority, CampaignState active){
@@ -52,7 +52,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
@@ -101,7 +101,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
             System.out.println("    -- Sending a game recommendation \"" + gameRecommendation.getRecommendation() + "\n" );
             return new NotificationAction("We have a new game for you! Check out " + gameRecommendation.getRecommendation(),
-                    user, getPriority(), getTag(),  Name, 1, getState())
+                    user, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
                     .withGame(gameRecommendation.getCode());
 
         }
@@ -110,7 +110,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
             // Sending a mail instead
 
             System.out.println("    -- Sending an EMAIL  game recommendation \"" + gameRecommendation.getRecommendation() + "\n" );
-            return new EmailAction(gameActivationEmail(user, gameRecommendation), user, getEmailPriority(), getTag(), 2, getState());
+            return new EmailAction(gameActivationEmail(user, gameRecommendation), user, getEmailPriority(), getTag(), 2, getState(), responseFactor);
 
 
 

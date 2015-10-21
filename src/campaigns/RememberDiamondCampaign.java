@@ -26,7 +26,11 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
     // Trigger specific config data
     private static final int MIN_DIAMONDS = 5;
-    private static final int MAX_DIAMONDS = 12;
+    private static final int MAX_DIAMONDS = 13;
+
+    private static final int MIN_SESSIONS = 5;
+
+
 
     RememberDiamondCampaign(int priority, CampaignState activation){
 
@@ -45,11 +49,11 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
      */
 
 
-    public ActionInterface evaluate(PlayerInfo info, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo info, Timestamp executionTime, double responseFactor) {
 
         User user = info.getUser();
 
-        if(user.sessions <5){
+        if(user.sessions < MIN_SESSIONS){
 
             System.out.println("    -- Campaign " + Name + " not checking. The user has not played enough" );
             return null;
@@ -79,7 +83,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
         }
 
 
-        if(!hoursBefore(lastSession, executionTime, 24) || hoursBefore(lastSession, executionTime, 42)) {
+        if(!hoursBefore(lastSession, executionTime, 24) || hoursBefore(lastSession, executionTime, 44)) {
 
             System.out.println("    -- Campaign " + Name + " not firing. Not in time range." );
             return null;
@@ -99,7 +103,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
         System.out.println("    -- Campaign " + Name + " fire notification" );
         return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
-                user, getPriority(), getTag(), Name, messageId, getState());
+                user, getPriority(), getTag(), Name, messageId, getState(), responseFactor);
 
 
     }

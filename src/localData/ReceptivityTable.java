@@ -192,4 +192,10 @@ public class ReceptivityTable extends GenericTable {
         return null;
     }
 
+    public ReceptivityProfile getReceptivityForPlayer(String facebookId, Connection connection) {
+
+
+        load(connection, "and facebookId = '"+facebookId+"'");
+        return getNext();
+    }
 }

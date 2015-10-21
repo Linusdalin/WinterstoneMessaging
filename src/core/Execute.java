@@ -2,8 +2,6 @@ package core;
 
 import dbManager.ConnectionHandler;
 
-import java.io.IOException;
-
 /************************************************************************************
  *
  *              Execute is the main class for running campaigns
@@ -14,30 +12,30 @@ import java.io.IOException;
  *
  *              *  - Get statistics per campaign+message per day
  *              *  - Test a specific player
- *               - Separate notification and email in the summary report before executing actions
- *               - Handle fail delivery of notifications and email
- *               - Analyse time of day for sessions with notification promoCode
- *               - Add exposure for message as a block
+ *              *  - Separate notification and email in the summary report before executing actions
+ *              *  - Handle fail delivery of notifications and email
+ *              *  - Analyse time of day for sessions with notification promoCode
+ *               - Test Thursday players click through
+ *               - Test night players click through
+ *               - Store all actions in database - not in memory
+ *               - Add time release for messages in three batches over 24 hours
+ *               - Add exposure for message type as a block
  *               - Get campaign acceptance as feedback
- *               - Check recent click to add allowed messages
- *               - Check the overrun functionality for game message over churn poke and teh 45 limit
- *               - connect Happy Hour event with Happy Hour Campaign (check that it is on)
+ *               - Check resent click to add allowed messages
  */
 
-public class Execute {
+    public class Execute {
 
-    private static final int     Threshold              = 50;
-    private static final int     Send_Cap               = 5000;
-    private static final int     User_Cap               = 130000;
-    private static final boolean DRY_RUN                = false;
-    private static final boolean OVERRIDE_TIME_CONSTR   = true;
-    private static final String  UserScrapeStart        = "2015-08-02 03:15:21";               // "2015-01-18";
-    private static final String  TEST_USER              = null;                       // "627716024";          // Tina:     "105390519812878";
+        private static final int     Threshold              = 50;
+        private static final int     Send_Cap               = 10000;
+        private static final int     User_Cap               = 50000;
+        private static final boolean DRY_RUN                = true;
+        private static final boolean OVERRIDE_TIME_CONSTR   = true;
+        private static final String  UserScrapeStart        = "2015-03-10";               // "2015-01-18";
+        private static final String  TEST_USER              = null;                       // "627716024";          // Tina:     "105390519812878";
 
-    private static final boolean SEND_EMAIL             = true;
-
-
-    private static final int     BatchSize              = 20000;
+        private static final boolean SEND_EMAIL             = true;
+        private static final int     BatchSize              = 25000;
 
 
     /********************************************************************

@@ -9,7 +9,7 @@ package output;
 
 public class GiveAwayHandler {
 
-    private static final String coinService = "https://dev.null";   //TODO: Add correct message here
+    private static final String coinService = "https://sa-cluster-prod.slot-america.com/addCoins";
 
 
     private String overrideUserId = null;
@@ -27,7 +27,7 @@ public class GiveAwayHandler {
         return this;
     }
 
-    public GiveAwayHandler withRecipient(String userId) {
+    public GiveAwayHandler toRecipient(String userId) {
 
         this.recipient = userId;
         return this;
@@ -43,7 +43,7 @@ public class GiveAwayHandler {
      * @return  - success or not
      */
 
-    public boolean send() {
+    public boolean send() throws DeliveryException{
 
         if(amount == 0){
             System.out.println("No amount given");
@@ -58,22 +58,27 @@ public class GiveAwayHandler {
             return false;
         }
 
-        //recipient = "627716024"; //TODO: Remove this when tested to actually send
-        //recipient = "105390519812878";
+        if(overrideUserId != null){
 
+            // Use dummy override to send out ONE controlled message for the first
+            recipient = overrideUserId;
+
+        }
 
         //System.out.println("Sending to: " + recipient);
         RequestHandler requestHandler = new RequestHandler(coinService);
 
         try{
 
-            String response = requestHandler.executePost(
-                    "player=" + recipient +
-                            "&amount=" + amount);
+            String response = requestHandler.executeGet(
+                    "auth=c7849722a97707d96ceb356d2417a4bf" +
+                    "&coins=" + amount+
+                    "&playerId=" + recipient);
 
             if(response != null){
                 System.out.println("   -> Got Response: " + response);
-                return true;
+                return  (response.contains("ok"));
+
             }
             else{
 

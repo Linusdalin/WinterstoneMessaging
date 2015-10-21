@@ -35,9 +35,9 @@ public class EmailAction extends Action implements ActionInterface{
      */
 
 
-    public EmailAction(EmailInterface email, User user, int significance, String campaignName, int messageId, CampaignState state){
+    public EmailAction(EmailInterface email, User user, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        super(ActionType.EMAIL, user, email.getPlainText(), significance, campaignName, messageId, state );
+        super(ActionType.EMAIL, user, email.getPlainText(), significance, campaignName, messageId, state, responseFactor );
         this.email = email;
         setPromoCode(createPromoCode(campaignName, messageId));
 

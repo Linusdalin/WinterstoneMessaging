@@ -26,10 +26,10 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
     private static final int[] MessageIds = {1, 2};
 
     // Trigger specific config data
-    private static final int Min_Sessions = 3;
+    private static final int Min_Sessions = 4;
     private static final int Max_Sessions = 30;
     private static final int Min_Age = 12;
-    private static final int Max_Age = 45;
+    private static final int Max_Age = 60;
 
     private static final int IdleDays = 5;
 
@@ -58,7 +58,7 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
 
         if(count > DAILY_CAP){
@@ -113,13 +113,22 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
         if(getDaysBetween(lastSession, executionDay) > IdleDays){
 
+            if(!isOkDay(playerInfo, executionTime)){
+
+                System.out.println("    -- Campaign " + Name + " not firing. Waiting for the correct day for the user" );
+                return null;
+
+            }
+
+
             System.out.println("    -- Sending a day "+ IdleDays+" activation poke with coins" );
             count++;
 
             if(isPaying(user)){
 
+
                 return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationPaying.getCoins()+" coins extra on top of the bonus for you to play with on your account. Click here to collect and play!",
-                        user, getPriority(), getTag(),  Name, 1, getState())
+                        user, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
                         .withReward(RewardRepository.freeCoinAcitivationPaying);
 
 
@@ -128,10 +137,8 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
             else{
 
                 return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationFree.getCoins()+" free coins for you to play with on your account. Click here to collect and play!",
-                        user, getPriority(), getTag(),  Name, 2, getState())
+                        user, getPriority(), getTag(),  Name, 2, getState(), responseFactor)
                         .withReward(RewardRepository.freeCoinAcitivationFree);
-
-
 
             }
 
@@ -147,6 +154,7 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
 
     }
+
 
     /*********************************************************************
      *

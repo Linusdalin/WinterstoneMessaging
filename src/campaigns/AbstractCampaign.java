@@ -1,7 +1,9 @@
 package campaigns;
 
 import core.PlayerInfo;
+import javafx.util.converter.TimeStringConverter;
 import localData.Exposure;
+import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -267,5 +269,82 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     }
 
+
+    protected boolean randomize3(User user, int expected) {
+
+        if((user.facebookId.endsWith("1") || user.facebookId.endsWith("2") || user.facebookId.endsWith("3")) && expected == 0)
+            return true;
+        if((user.facebookId.endsWith("4") || user.facebookId.endsWith("5") || user.facebookId.endsWith("6")) && expected == 1)
+            return true;
+        if((user.facebookId.endsWith("7") || user.facebookId.endsWith("8") || user.facebookId.endsWith("9") || user.facebookId.endsWith("0")) && expected == 2)
+            return true;
+
+        return false;
+
+    }
+
+    /**************************************************************************
+     *
+     *          Check if this is the right day for the player
+     *
+     *
+     * @param playerInfo            - the player
+     * @param executionTime         - now
+     * @param significanceLevel     - how significant do we want it
+     * @return
+     */
+
+
+    protected boolean isRightDay(PlayerInfo playerInfo, Timestamp executionTime, ReceptivityProfile.SignificanceLevel significanceLevel) {
+
+        ReceptivityProfile profileForPlayer =  playerInfo.getReceptivityForPlayer();
+        int favouriteDay = profileForPlayer.getFavouriteDay(significanceLevel);
+        int currentDay = getDayOfWeek( executionTime );
+
+        if(favouriteDay != currentDay)
+            return false;
+
+        System.out.println("This is the right day for the player " + favouriteDay);
+        return true;
+
+    }
+
+    protected boolean isOkDay(PlayerInfo playerInfo, Timestamp executionTime) {
+
+        ReceptivityProfile profileForPlayer =  playerInfo.getReceptivityForPlayer();
+        int favouriteDay = profileForPlayer.getFavouriteDay(ReceptivityProfile.SignificanceLevel.GENERAL);
+        int currentDay = getDayOfWeek( executionTime );
+
+        if(favouriteDay != currentDay && favouriteDay != -1)
+            return false;
+
+        System.out.println("This is an ok day for the player " + favouriteDay + ( favouriteDay == -1 ? "(No favourite day anyway)" : "general"));
+        return true;
+
+    }
+
+    protected boolean betterTomorrow(PlayerInfo playerInfo, Timestamp executionTime) {
+
+        ReceptivityProfile profileForPlayer =  playerInfo.getReceptivityForPlayer();
+        int favouriteDay = profileForPlayer.getFavouriteDay(ReceptivityProfile.SignificanceLevel.GENERAL);
+        int tomorrow = getDayOfWeek( executionTime );
+
+        if(favouriteDay !=tomorrow)
+            return false;
+
+        System.out.println("Tomorrow ( " + favouriteDay + ") would be a better day for the player");
+        return true;
+
+
+    }
+
+
+
+    protected int getDayOfWeek(Timestamp ts){
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(ts);
+        return cal.get(java.util.Calendar.DAY_OF_WEEK);
+    }
 
 }

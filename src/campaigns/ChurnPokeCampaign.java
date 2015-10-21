@@ -6,6 +6,7 @@ import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
 import email.NotificationEmail;
+import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 
@@ -25,11 +26,11 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
     // Campaign config data
     private static final String Name = "ChurnPoke";
     private static final int CoolDown_Days = 5;
-    private int[] MessageIds = {3, 8, 10, 15, 30};
+    private int[] MessageIds = {3, 8, 9, 15, 14, 30};
 
 
     // Trigger specific config data
-    private static final int Min_Sessions = 8;
+    private static final int Min_Sessions = 9;
 
     ChurnPokeCampaign(int priority, CampaignState active){
 
@@ -51,7 +52,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
@@ -78,17 +79,32 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a three day churn warning poke" );
             return new NotificationAction("Hello, you have new bonuses to collect at Slot America. Click here for more free slot FUN!",
-                    user, getPriority(), getTag(),  Name, 3, getState());
+                    user, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
+
+
+        }
+        else if(idleDays == 9 && !betterTomorrow(playerInfo, executionTime)){
+
+            System.out.println("    -- Sending a NINE day churn warning poke" );
+            return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
+                    user, getPriority(), getTag(),  Name,  9, getState(), responseFactor);
 
 
         }
         else if(idleDays == 9 || idleDays == 10){
 
-
-
             System.out.println("    -- Sending a NINE day churn warning poke" );
             return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
-                    user, getPriority(), getTag(),  Name,  8, getState());
+                    user, getPriority(), getTag(),  Name,  8, getState(), responseFactor);
+
+
+        }
+        else if(idleDays == 14 && !betterTomorrow(playerInfo, executionTime)){
+
+
+            System.out.println("    -- Sending a 14 day churn warning poke" );
+            return new NotificationAction("Hello, there are some new exiting releases at Slot America. Click here to check it out!",
+                    user, getPriority(), getTag(),  Name,  14, getState(), responseFactor);
 
 
         }
@@ -97,7 +113,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a Fifteen day churn warning poke" );
             return new NotificationAction("Hello, there are some new exiting releases at Slot America. Click here to check it out!",
-                    user, getPriority(), getTag(),  Name,  15, getState());
+                    user, getPriority(), getTag(),  Name,  15, getState(), responseFactor);
 
 
         }
@@ -106,16 +122,32 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a churn warning poke mail" );
 
-                    return new EmailAction(churnPokeEmail(user), user, getPriority(), getTag(), 10, getState());
+                    return new EmailAction(churnPokeEmail(user), user, getPriority(), getTag(), 10, getState(), responseFactor);
 
         }
         else if(idleDays >= 26 && idleDays < 30){
 
+            if(isRightDay(playerInfo, executionTime, ReceptivityProfile.SignificanceLevel.GENERAL)){
 
+                System.out.println("    -- Sending a final day churn warning poke" );
+                return new NotificationAction("It is party time at SlotAmerica today with the new game releases! Click here to check it out!",
+                        user, getPriority(), getTag(),  Name,  29, getState(), responseFactor);
 
-            System.out.println("    -- Sending a final day churn warning poke" );
-            return new NotificationAction("It is party time at SlotAmerica today with the new game releases! Click here to check it out!",
-                    user, getPriority(), getTag(),  Name,  30, getState());
+            }
+            else if(idleDays == 30){
+
+                System.out.println("    -- Sending a final day churn warning poke" );
+                return new NotificationAction("It is party time at SlotAmerica today with the new game releases! Click here to check it out!",
+                        user, getPriority(), getTag(),  Name,  30, getState(), responseFactor);
+
+            }
+
+            else{
+
+                System.out.println("    -- Campaign " + Name + " not firing. Waiting for an Ok day for player between 26 and 32 (last:" + lastSession.toString() );
+                return null;
+
+            }
 
 
         }
@@ -127,6 +159,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
         }
 
     }
+
 
 
     private EmailInterface churnPokeEmail(User user) {

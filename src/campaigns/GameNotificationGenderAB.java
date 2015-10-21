@@ -24,12 +24,9 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
     private static final int[] MessageIds = { 1, 2, 3, 4 };
 
 
-    // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 12;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = -1;   // Max days inactivity to get message
 
-    //private static final int INACTIVITY_LIMIT_FREE      = 17;   // Max days inactivity to get message
-    //private static final int INACTIVITY_LIMIT_PAYING    = 62;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 17;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = 62;   // Max days inactivity to get message
     private static final int ACTIVITY_MIN   = 19;               // Min sessions to be active
 
 
@@ -61,7 +58,7 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime) {
+    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
 
         //System.out.println("Registration Date: " + getDay(user.created).toString());
@@ -107,14 +104,14 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
         if(isMale(user)){
 
             if(abSelect){
-                 action =  new NotificationAction(MessageF, user, getPriority(), getTag(), Name,  1, getState())
+                 action =  new NotificationAction(MessageF, user, getPriority(), getTag(), Name,  1, getState(), responseFactor)
                         .withGame(gameCode);
                 System.out.println("    -- Campaign " + Name + " firing. (Testing Female message to Male audience) ");
 
             }
             else{
 
-                action =  new NotificationAction(MessageM, user, getPriority(), getTag(), Name,  2, getState())
+                action =  new NotificationAction(MessageM, user, getPriority(), getTag(), Name,  2, getState(), responseFactor)
                         .withGame(gameCode);
                 System.out.println("    -- Campaign " + Name + " firing. (Testing Male message to Male audience) ");
 
@@ -124,14 +121,14 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
 
             if(abSelect){
 
-                action =  new NotificationAction(MessageM, user, getPriority(), getTag(), Name,  3, getState())
+                action =  new NotificationAction(MessageM, user, getPriority(), getTag(), Name,  3, getState(), responseFactor)
                         .withGame(gameCode);
                 System.out.println("    -- Campaign " + Name + " firing. (Testing Male message to Female audience) ");
 
             }
             else{
 
-                action =  new NotificationAction(MessageF, user, getPriority(), getTag(), Name,  4, getState())
+                action =  new NotificationAction(MessageF, user, getPriority(), getTag(), Name,  4, getState(), responseFactor)
                         .withGame(gameCode);
                 System.out.println("    -- Campaign " + Name + " firing. (Testing Female message to Female audience) ");
 
