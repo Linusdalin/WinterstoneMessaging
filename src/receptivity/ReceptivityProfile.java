@@ -55,6 +55,8 @@ public class ReceptivityProfile {
         this.userId = userId;
         this.profile = data;
         this.lastUpdate = lastUpdate;
+
+        this.totalSessions = sum(data);
     }
 
 
@@ -83,12 +85,18 @@ public class ReceptivityProfile {
 
     }
 
+    /**********************************************************************
+     *
+     *          If two observations are too close, we count them as just one
+     *
+     *
+     * @param timeStamp     - time of this session
+     * @return              - are they within one hour
+     */
+
     private boolean isTooClose(Timestamp timeStamp) {
 
-        if(this.lastUpdate == null)
-            return false;
-
-        return timeStamp.getTime() < this.lastUpdate.getTime() + 60*60*1000;
+        return this.lastUpdate != null && timeStamp.getTime() < this.lastUpdate.getTime() + 60 * 60 * 1000;
 
     }
 
@@ -143,8 +151,8 @@ public class ReceptivityProfile {
      *          Test if a user has significance according to a given level
      *
      *
-     * @param significanceLevel
-     * @return
+     * @param significanceLevel            - GENERAL or SPECIFIC
+     * @return                             - is there a significance for the player
      */
 
 
@@ -186,8 +194,6 @@ public class ReceptivityProfile {
         int bestDay = -1;
         int bestDaySessions = 0;
 
-
-
         for(int day = 0; day < 7; day++){
 
             int sessionsForDay = sum(profile[day]);
@@ -204,15 +210,12 @@ public class ReceptivityProfile {
         // The factor will define how big the significant day is compared to the average
 
         if(significanceLevel == SignificanceLevel.GENERAL)
-            factor = 1.1;
+            factor = 1.2;
         else
             factor = 1.6;
 
         // Now check if the day with the most hits is significant
         // We use a simple formula saying that the number of sessions should be twice the average
-
-
-
 
         int threshold = (int)((factor * totalSessions) / 7);
 
@@ -230,6 +233,16 @@ public class ReceptivityProfile {
         int total = 0;
         for (int i : intArray) {
             total += i;
+        }
+
+        return total;
+    }
+
+    private int sum(int[][] intArray) {
+
+        int total = 0;
+        for (int[] i : intArray) {
+            total += sum(i);
         }
 
         return total;

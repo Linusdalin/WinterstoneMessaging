@@ -3,6 +3,7 @@ package executionStatistics;
 import action.ActionInterface;
 import campaigns.CampaignInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /***********************************************************************
@@ -30,6 +31,7 @@ public class ExecutionStatistics {
     public static final int COOLDOWN    = 3;      // # players we cant reach only because the campaigns are cooling down
     public static final int MISSED      = 4;      // # players there is no message to send to
     private int overLooked;
+    private List<String> overLookedPlayers = new ArrayList<>(200);
 
     /****************************************************************
      *
@@ -142,12 +144,20 @@ public class ExecutionStatistics {
         out.append("Missed:    " + totalPlayerOutcome[ MISSED ] + "\n");
 
         for (int i = 6; i < strikeCount.length; i++) {
-            out.append(" - Strikeout: " + i + ": " +strikeCount[i] );
+            out.append(" - Strikeout: " + i + ": " + strikeCount[i] + "\n");
         }
 
-        out.append("Completely overlooked pretty active players: " + overLooked);
+        out.append("\nCompletely overlooked pretty active players: " + overLooked + "\n");
 
 
+        /*
+        for (String overLookedPlayer : overLookedPlayers) {
+
+           out.append("\"" + overLookedPlayer + "\", ");
+        }
+
+        */
+        out.append("\n");
         return out.toString();
 
     }
@@ -161,7 +171,14 @@ public class ExecutionStatistics {
 
     }
 
-    public void registerOverlooked() {
+    public void registerOverlooked(String userId) {
+
+        // Only store some of them for review
+        if(overLooked < 20)
+            overLookedPlayers.add(userId);
+
         overLooked++;
+
+
     }
 }

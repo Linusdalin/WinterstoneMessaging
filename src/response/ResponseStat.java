@@ -9,7 +9,7 @@ public class ResponseStat {
     private final int exposures;
     private final int sessions;
 
-    private static final int STRIKE_OUT_LEVEL = 100;     //number of exposures to still get messages
+    private static final int STRIKE_OUT_LEVEL = 9;     //number of exposures to still get messages (Should be 10)
 
 
     ResponseStat(int exposures, int sessions){

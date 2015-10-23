@@ -1,7 +1,6 @@
 package campaigns;
 
 import core.PlayerInfo;
-import javafx.util.converter.TimeStringConverter;
 import localData.Exposure;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.User;
@@ -272,11 +271,14 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     protected boolean randomize3(User user, int expected) {
 
-        if((user.facebookId.endsWith("1") || user.facebookId.endsWith("2") || user.facebookId.endsWith("3")) && expected == 0)
+        if((user.facebookId.endsWith("1") || user.facebookId.endsWith("2") || user.facebookId.endsWith("3") ||
+                user.facebookId.endsWith("10")|| user.facebookId.endsWith("20")|| user.facebookId.endsWith("30") ) && expected == 0)
             return true;
-        if((user.facebookId.endsWith("4") || user.facebookId.endsWith("5") || user.facebookId.endsWith("6")) && expected == 1)
+        if((user.facebookId.endsWith("4") || user.facebookId.endsWith("5") || user.facebookId.endsWith("6") ||
+                user.facebookId.endsWith("40")|| user.facebookId.endsWith("50")|| user.facebookId.endsWith("60")) && expected == 1)
             return true;
-        if((user.facebookId.endsWith("7") || user.facebookId.endsWith("8") || user.facebookId.endsWith("9") || user.facebookId.endsWith("0")) && expected == 2)
+        if((user.facebookId.endsWith("7") || user.facebookId.endsWith("8") || user.facebookId.endsWith("9") ||
+                user.facebookId.endsWith("70")|| user.facebookId.endsWith("80")|| user.facebookId.endsWith("90") ||user.facebookId.endsWith("00")) && expected == 2)
             return true;
 
         return false;

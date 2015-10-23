@@ -55,7 +55,7 @@ public class EmailAction extends Action implements ActionInterface{
      * @param testUser              - override user with dummy
      * @param executionTime         - time to store for the execution
      * @param localConnection       - connection to the crmDatabase to store xposure and outcomes
-     * @param count
+     * @param count                 - the number
      *@param size @return                      - the response from executing action
      */
 

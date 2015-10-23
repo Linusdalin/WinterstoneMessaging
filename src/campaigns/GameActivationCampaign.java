@@ -75,7 +75,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
         if(inactivity <  Min_Inactivity){
 
-            System.out.println("    -- Campaign " + Name + " not firing. User inactive too long. (" + inactivity + " >" + Max_Inactivity + ")" );
+            System.out.println("    -- Campaign " + Name + " not firing. User is active (" + inactivity + " >" + Min_Inactivity + ")" );
             return null;
         }
 

@@ -296,7 +296,7 @@ public class CampaignEngine {
         ResponseStat responseStat = responseHandler.getOverallResponse();
         boolean giveUp = false;
 
-        if(responseStat.isStrikeout()){
+        if(responseStat.isStrikeout() && user.payments == 0){
 
             System.out.println("  !! Three strike out for player -" + responseStat.getExposures() + " attempts");
             executionStatistics.registerStrikeOut( responseStat.getExposures() );
@@ -376,8 +376,8 @@ public class CampaignEngine {
 
             executionStatistics.registerOutcome(outcome);
 
-            if(responseStat.getExposures() == 0 && playerInfo.getUser().sessions > 10)
-                executionStatistics.registerOverlooked();
+            if(responseStat.getExposures() == 0 && playerInfo.getUser().sessions > 10 && !playerInfo.getUser().email.equals(""))
+                executionStatistics.registerOverlooked(playerInfo.getUser().facebookId);
 
 
         }
@@ -409,10 +409,10 @@ public class CampaignEngine {
      *               - Queue it
      *               - Register
      *
-     * @param selectedAction
-     * @param playerInfo
-     * @param campaignExposures
-     * @param executionStatistics
+     * @param selectedAction             - the action to execute (or null when there are no action
+     * @param playerInfo                 - information about the player
+     * @param campaignExposures          - information about the exposures
+     * @param executionStatistics        - execution
      */
 
 
@@ -420,14 +420,15 @@ public class CampaignEngine {
 
         TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo, localConnection);
         User user = playerInfo.getUser();
-        ResponseHandler handler = new ResponseHandler( user.facebookId, localConnection );
-        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler);
 
         if(selectedAction == null){
 
             System.out.println("    -- No action found for the user.");
             return;
         }
+
+        ResponseHandler handler = new ResponseHandler( user.facebookId, localConnection );
+        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler, selectedAction.getResponseFactor());
 
         eligibility = timeAnalyser.adjustForResponse(eligibility, selectedAction );
 

@@ -15,9 +15,11 @@ import dbManager.ConnectionHandler;
  *              *  - Separate notification and email in the summary report before executing actions
  *              *  - Handle fail delivery of notifications and email
  *              *  - Analyse time of day for sessions with notification promoCode
- *               - Test Thursday players click through
+ *              *  - Test Thursday players click through
+ *               - Big weekend test
+ *               - Store all actions in database - not in memory to allow for one pass
  *               - Test night players click through
- *               - Store all actions in database - not in memory
+ *               - Complete scheduling of multiple runs, multiple sending
  *               - Add time release for messages in three batches over 24 hours
  *               - Add exposure for message type as a block
  *               - Get campaign acceptance as feedback
@@ -27,11 +29,11 @@ import dbManager.ConnectionHandler;
     public class Execute {
 
         private static final int     Threshold              = 50;
-        private static final int     Send_Cap               = 10000;
-        private static final int     User_Cap               = 50000;
-        private static final boolean DRY_RUN                = true;
+        private static final int     Send_Cap               = 15000;
+        private static final int     User_Cap               = 120000;
+        private static final boolean DRY_RUN                = false;
         private static final boolean OVERRIDE_TIME_CONSTR   = true;
-        private static final String  UserScrapeStart        = "2015-03-10";               // "2015-01-18";
+        private static final String  UserScrapeStart        = "2015-07-20 23:15:30";               // "2015-01-18";
         private static final String  TEST_USER              = null;                       // "627716024";          // Tina:     "105390519812878";
 
         private static final boolean SEND_EMAIL             = true;

@@ -1,10 +1,8 @@
 package campaigns;
 
 import action.ActionInterface;
-import email.AbstractEmail;
 import email.EmailInterface;
 import email.ReleaseEmail;
-import rewards.RewardRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +22,11 @@ public class CampaignRepository {
     public static final List<CampaignInterface> activeCampaigns = new ArrayList<CampaignInterface>(){{
 
 
-        add(new RememberDiamondCampaign     ( 80, CampaignState.ACTIVE ));
+        //add(new RememberDiamondCampaign     ( 80, CampaignState.ACTIVE ));
         add(new LevelUpCampaign             ( 60, CampaignState.ACTIVE ));
         add(new GameActivationCampaign      ( 65, CampaignState.ACTIVE));
         add(new ActivationPokeCampaign      ( 55, CampaignState.ACTIVE));
         add(new ActivationFreeCoinCampaign  ( 62, CampaignState.ACTIVE));
-
 
         add(new GettingStartedCampaign      ( 80, CampaignState.ACTIVE ));
         add(new ChurnPokeCampaign           ( 70, CampaignState.ACTIVE));
@@ -37,13 +34,14 @@ public class CampaignRepository {
         add(new CoinsLeftCampaign           ( 70, CampaignState.ACTIVE));
         add(new ReactivationCampaign        ( 60, CampaignState.ACTIVE));
 
-        add(new HappyHourCampaign       ( 95, CampaignState.ACTIVE));
+
+        //add(new HappyHourCampaign       ( 95, CampaignState.ACTIVE));
 
         //add(new EngagementCampaign      ( 65, CampaignState.TEST_MODE ));
         //add(new FakeCoinsLeftCampaign   ( 90, CampaignState.TEST_MODE));
 
-        //add(new GameNotificationWeekendAB  (95, CampaignState.ACTIVE, "home_run", "Refuse to Lose! Hit a Homerun in SlotAmerica with our new game. 3,000 free credits are yours to try it out! Just click here",
-        //        RewardRepository.homeRun));
+        add(new GameNotificationWeekendAB  (95, CampaignState.ACTIVE, "os4x", "Do you know your Gettysburg address? \"Four’s score but sevens are also go!\" Aww… stop nagging us about our history knowledge and come play this week’s game instead!",
+                null));
 
         //add(new GameNotification (95, CampaignState.ACTIVE, "home_run", "Refuse to Lose! Hit a Homerun in SlotAmerica with our new game. 3,000 free credits are yours to try it out! Just click here",
         //        null, RewardRepository.homeRun));

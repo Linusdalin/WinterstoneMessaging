@@ -36,7 +36,7 @@ public class CampaignStatistics {
 
     public String toString(){
 
-        return "Fired: ( N:" + timesFiredNotification + " + E:" + timesFiredEmail + " ) Overrun: " + timesOverrun + " Potential (if live): " + timesPotential;
+        return "Fired: ( N:" + timesFiredNotification + " + E:" + timesFiredEmail + " ) Overrun: " + timesOverrun + (timesPotential > 0 ? " Potential (if live): " + timesPotential : "");
     }
 
     public String getName() {

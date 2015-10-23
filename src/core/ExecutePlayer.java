@@ -2,8 +2,6 @@ package core;
 
 import dbManager.ConnectionHandler;
 
-import java.io.IOException;
-
 /************************************************************************
  * Created with IntelliJ IDEA.
  * User: Linus
@@ -20,6 +18,8 @@ public class ExecutePlayer {
             "627716024",               // Linus
             "105390519812878",         // Tina
             "10153396329897575",       // Nissen
+
+            "887259918048870", "10205184784962494", "100005888500817", "480143572153783", "100002174778999", "951590681565242", "1132395193456821",
 
     };
 

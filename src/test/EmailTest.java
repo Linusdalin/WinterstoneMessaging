@@ -190,7 +190,6 @@ public class EmailTest {
 
             assertThat("Should work", success, is(true) );
 
-
             handler = new EmailHandler()
                     .withEmail(GettingStartedCampaign.gettingStartedEmail1(user))
                     .toRecipient(user.facebookId);

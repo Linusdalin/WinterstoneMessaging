@@ -40,6 +40,7 @@ public abstract class Action implements ActionInterface{
      * @param campaignName           - the name of the campaign (for tracking)
      * @param messageId              - message id (within the campaign) for tracking
      * @param state                  - The state of the campaign triggering the action (for dry runs and tests)
+     * @param responseFactor         - Responsefactor for this specific campaign
      */
 
     public Action(ActionType type, User user, String message, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
