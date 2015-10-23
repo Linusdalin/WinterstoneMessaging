@@ -3,6 +3,7 @@ package action;
 import campaigns.CampaignState;
 import email.EmailInterface;
 import localData.Exposure;
+import net.sf.json.JSONObject;
 import output.DeliveryException;
 import output.EmailHandler;import remoteData.dataObjects.User;
 
@@ -27,11 +28,13 @@ public class EmailAction extends Action implements ActionInterface{
      *
      *
      * @param email                 - the message (html)
-     * @param user                    - recipient
-     * @param significance
-     * @param campaignName            - campaign for followup in exposure tracking
-     * @param messageId               - the id of the message (within the campaign)
-     * @param state                   - state of campaign (to send or ignore)
+     * @param user                      - recepient
+     * @param significance              - action significance
+     * @param campaignName              - name(tag) of campaign for tracking
+     * @param messageId                 - id for tracking
+     * @param state                     - state of the campaign (to decide the final action)
+     * @param responseFactor            - the modification to eligibility given the players history with this campaign
+
      */
 
 
@@ -123,6 +126,23 @@ public class EmailAction extends Action implements ActionInterface{
 
         Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.EMAIL.name());
         exposure.store(localConnection);
+    }
+
+
+    /*************************************************************'
+     *
+     *      Appending specific data and storing
+     *
+     * @param connection    - database
+     */
+
+    public void store(Connection connection){
+
+        JSONObject data = actionAsJSON()
+                .put("email", email.toJSON());
+
+        super.store(connection, data);
+
     }
 
 

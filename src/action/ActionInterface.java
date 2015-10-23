@@ -1,7 +1,6 @@
 package action;
 
 import campaigns.CampaignInterface;
-import remoteData.dataObjects.User;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -33,4 +32,7 @@ public interface ActionInterface {
 
     double getResponseFactor();
     void setResponseFactor(double i);
+
+    void store(Connection connection);
+
 }

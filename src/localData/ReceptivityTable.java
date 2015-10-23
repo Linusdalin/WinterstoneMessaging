@@ -151,7 +151,7 @@ public class ReceptivityTable extends GenericTable {
 
                 ;
 
-        System.out.println("Updating with " + query );
+        //System.out.println("Updating with " + query );
 
         try{
 

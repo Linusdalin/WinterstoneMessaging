@@ -72,11 +72,11 @@ public class ReceptivityProfile {
 
         if(isTooClose(session.timeStamp)){
 
-            System.out.println("Ignoring session too close");
+            //System.out.println("Ignoring session too close");
             return;
         }
 
-        System.out.println("Registering a session on day " + day + " ( " + session.timeStamp + ") with timeOfDay = "+ timeOfDay +" Profile: " + toString());
+        System.out.println(" - Registering a session on day " + day + " ( " + session.timeStamp + ") with timeOfDay = "+ timeOfDay +" Profile: " + toString());
 
 
         this.profile[day][timeOfDay]++;

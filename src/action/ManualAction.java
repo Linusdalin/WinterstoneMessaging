@@ -22,12 +22,13 @@ public class ManualAction extends Action implements ActionInterface{
      *
      *              Create a manual action
      *
-     * @param message
-     * @param user
-     * @param significance
-     * @param campaignName
-     * @param messageId
-     * @param state
+     * @param message                   - message for the operator
+     * @param user                      - recepient
+     * @param significance              - action significance
+     * @param campaignName              - name(tag) of campaign for tracking
+     * @param messageId                 - id for tracking
+     * @param state                     - state of the campaign (to decide the final action)
+     * @param responseFactor            - the modification to eligibility given the players history with this campaign
      */
 
 

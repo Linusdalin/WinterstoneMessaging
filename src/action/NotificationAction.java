@@ -2,6 +2,7 @@ package action;
 
 import campaigns.CampaignState;
 import localData.Exposure;
+import net.sf.json.JSONObject;
 import output.DeliveryException;
 import output.NotificationHandler;
 import remoteData.dataObjects.User;
@@ -146,6 +147,24 @@ public class NotificationAction extends Action implements ActionInterface{
         return tag + "-" + messageType;
 
     }
+
+    /*************************************************************'
+     *
+     *      Appending specific data and storing
+     *
+     * @param connection
+     */
+
+    public void store(Connection connection){
+
+        JSONObject data = actionAsJSON()
+                .put("reward", reward)
+                .put("game", game);
+
+        super.store(connection, data);
+
+    }
+
 
 
 }

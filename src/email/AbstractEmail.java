@@ -1,5 +1,7 @@
 package email;
 
+import net.sf.json.JSONObject;
+
 /***********************************************************************
  *
  *              The representation of an email
@@ -28,6 +30,13 @@ public abstract class AbstractEmail implements EmailInterface{
 
     public String getTemplate() {
         return template;
+    }
+
+    //TODO: Implement serialization of email
+
+    @Override
+    public JSONObject toJSON() {
+        return new JSONObject();
     }
 
     public String getBody() {

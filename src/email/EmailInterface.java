@@ -1,5 +1,7 @@
 package email;
 
+import net.sf.json.JSONObject;
+
 /*************************************************************
  * Created with IntelliJ IDEA.
  * User: Linus
@@ -15,4 +17,6 @@ public interface EmailInterface {
     String getBody();
 
     String getTemplate();
+
+    JSONObject toJSON();
 }

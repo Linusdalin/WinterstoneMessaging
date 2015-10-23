@@ -440,7 +440,7 @@ public class CampaignEngine {
         }
 
         executionStatistics.registerOutcome(ExecutionStatistics.REACHED);
-        queueAction(selectedAction);
+        queueAction(selectedAction, localConnection);
         executionStatistics.registerSelected(selectedAction);
 
     }
@@ -451,10 +451,14 @@ public class CampaignEngine {
      *
      *
      * @param action             - the action
+     *
+     *
+     *        // TODO: Use the action stored in the database and remove the outboxes
+     *        // TODO: Implement replace here if there already is an action for the user queued
      */
 
 
-    private void queueAction(ActionInterface action) {
+    private void queueAction(ActionInterface action, Connection connection) {
 
         if(action.getType() == ActionType.NOTIFICATION )
             notificationOutbox.queue(action);
@@ -468,12 +472,16 @@ public class CampaignEngine {
         if(action.getType() == ActionType.COIN_ACTION )
             coinActionOutbox.queue(action);
 
+        // Store in the database for
+        action.store(connection);
+
         ActionInterface next = action.getAssociated();
 
         if(next != null)
-            queueAction( next );
+            queueAction( next, connection );
 
     }
+
 
     private boolean isPrefered(ActionInterface action, ActionInterface selectedAction) {
 

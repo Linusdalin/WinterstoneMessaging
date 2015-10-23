@@ -1,6 +1,7 @@
 package action;
 
 import campaigns.CampaignState;
+import net.sf.json.JSONObject;
 import output.DeliveryException;
 import output.GiveAwayHandler;
 import remoteData.dataObjects.User;
@@ -82,6 +83,22 @@ public class GiveCoinAction extends Action implements ActionInterface{
             return new ActionResponse(ActionResponseStatus.FAILED,   "Coin delivery failed");
         }
 
+
+    }
+
+    /*************************************************************'
+     *
+     *      Appending specific data and storing
+     *
+     * @param connection    - database
+     */
+
+    public void store(Connection connection){
+
+        JSONObject data = actionAsJSON()
+                .put("amount", amount);
+
+        super.store(connection, data);
 
     }
 

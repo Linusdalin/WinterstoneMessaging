@@ -2,7 +2,10 @@ package action;
 
 import campaigns.CampaignInterface;
 import campaigns.CampaignState;
+import net.sf.json.JSONObject;
 import remoteData.dataObjects.User;
+
+import java.sql.Connection;
 
 /*************************************************************************
  *
@@ -162,6 +165,50 @@ public abstract class Action implements ActionInterface{
         }
 
     }
+
+    /*****************************************************
+     *
+     *       serialize  all common attributes
+     *
+     *
+     * @return       - the common attributes as a JSON object
+     */
+
+    protected JSONObject actionAsJSON() {
+
+        return new JSONObject()
+                .put("type", type.toString())
+                .put("actionParameter", actionParameter.toJSON())
+                .put("message", message)
+                .put("significance", significance)
+                .put("campaign", campaignName)
+                .put("messageId", messageId)
+                .put("state", state.name());
+    }
+
+
+    /********************************************************************
+     *
+     *          Store an action to the database for later execution
+     *
+     * @param connection     - database connection
+     * @param data           - action specific data
+     */
+
+    public void store(Connection connection, JSONObject data){
+
+        System.out.println("    ( Not implemented storing action... " + data.toString());
+    }
+
+
+    public void store(Connection connection){
+
+        JSONObject data = actionAsJSON();
+        store(connection, data);
+
+    }
+
+
 
 
 }

@@ -1,5 +1,7 @@
 package action;
 
+import net.sf.json.JSONObject;
+
 /********************************************************************'
  *
  *              User parameters for an action
@@ -19,4 +21,10 @@ public class ActionParameter {
         this.email = email;
     }
 
+    public JSONObject toJSON() {
+        return new JSONObject()
+                .put("name", name)
+                .put("facebookId", facebookId)
+                .put("email", email);
+    }
 }
