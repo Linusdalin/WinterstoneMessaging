@@ -19,21 +19,23 @@ import dbManager.ConnectionHandler;
  *              *  - Test Thursday players click through
  *              *  - Check resent click to add allowed messages
  *               - Big weekend test
+ *               - Unclaimed reward reminder
  *               - Store all actions in database - not in memory to allow for one pass
  *               - Test night players click through
- *               - Complete scheduling of multiple runs, multiple sending with replace action
- *               - Add time release for messages in three batches over 24 hours
- *               - Add exposure for message type as a blocker
+ *               - Complete scheduling of multiple runs, multiple sending with replace action and three batches over 24 hours
+ *               - Handle sessions separately to count acceptance of rewards
+ *
+ *              coin error 500 for player 675417622563573
  */
 
-    public class Execute {
+public class Execute {
 
         private static final int     Threshold              = 50;
-        private static final int     Send_Cap               = 15000;
-        private static final int     User_Cap               = 20000;
-        private static final boolean DRY_RUN                = true;
+        private static final int     Send_Cap               = 10000;
+        private static final int     User_Cap               = 125000;
+        private static final boolean DRY_RUN                = false;
         private static final boolean OVERRIDE_TIME_CONSTR   = true;
-        private static final String  UserScrapeStart        = "0000-00-00";               // "2015-01-18";
+        private static final String  UserScrapeStart        = "2015-08-01 07:11:07";      // "2015-01-18";
         private static final String  TEST_USER              = null;                       // "627716024";          // Tina:     "105390519812878";
 
         private static final boolean SEND_EMAIL             = true;

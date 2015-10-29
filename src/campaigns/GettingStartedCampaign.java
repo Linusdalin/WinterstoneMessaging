@@ -52,7 +52,7 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
-        if( user.amount == 0 && user.lastgamePlayed.equals("")){
+        if( user.amount == 0 && (user.lastgamePlayed== null || user.lastgamePlayed.equals(""))){
 
             if(daysBefore(user.created, executionDay, 1 )){
 

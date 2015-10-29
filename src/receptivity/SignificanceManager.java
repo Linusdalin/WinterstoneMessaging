@@ -63,7 +63,7 @@ public class SignificanceManager {
 
     public void display() {
 
-        System.out.println("**************************************\nSignificance: ");
+        System.out.println("**************************************\nDone!");
 
 
     }

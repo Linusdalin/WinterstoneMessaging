@@ -269,7 +269,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
     }
 
 
-    protected boolean randomize3(User user, int expected) {
+    public static boolean randomize3(User user, int expected) {
 
         if((user.facebookId.endsWith("1") || user.facebookId.endsWith("2") || user.facebookId.endsWith("3") ||
                 user.facebookId.endsWith("10")|| user.facebookId.endsWith("20")|| user.facebookId.endsWith("30") ) && expected == 0)
@@ -284,6 +284,34 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return false;
 
     }
+
+    public static boolean randomize4(User user, int expected) {
+
+        if((user.facebookId.endsWith("0") || user.facebookId.endsWith("1")  ||
+                user.facebookId.endsWith("02")|| user.facebookId.endsWith("12")|| user.facebookId.endsWith("22") || user.facebookId.endsWith("32")|| user.facebookId.endsWith("42") )
+                && expected == 0)
+            return true;
+
+        if((user.facebookId.endsWith("3") || user.facebookId.endsWith("4")  ||
+                user.facebookId.endsWith("52")|| user.facebookId.endsWith("62")|| user.facebookId.endsWith("72") || user.facebookId.endsWith("82")|| user.facebookId.endsWith("92") )
+                && expected == 1)
+            return true;
+
+        if((user.facebookId.endsWith("5") || user.facebookId.endsWith("6") ||
+                user.facebookId.endsWith("07")|| user.facebookId.endsWith("17")|| user.facebookId.endsWith("27") || user.facebookId.endsWith("37")|| user.facebookId.endsWith("47") )
+                && expected == 2)
+            return true;
+
+        if((user.facebookId.endsWith("8") || user.facebookId.endsWith("9")  ||
+                user.facebookId.endsWith("57")|| user.facebookId.endsWith("67")|| user.facebookId.endsWith("77") || user.facebookId.endsWith("87")|| user.facebookId.endsWith("97") )
+                && expected == 3)
+            return true;
+
+
+        return false;
+
+    }
+
 
     /**************************************************************************
      *

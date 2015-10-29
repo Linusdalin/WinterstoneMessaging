@@ -69,7 +69,6 @@ public class EmailTest {
             assertTrue(false);
         }
 
-
     }
 
     @Test

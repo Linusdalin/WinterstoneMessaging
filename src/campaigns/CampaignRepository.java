@@ -22,7 +22,7 @@ public class CampaignRepository {
     public static final List<CampaignInterface> activeCampaigns = new ArrayList<CampaignInterface>(){{
 
 
-        //add(new RememberDiamondCampaign     ( 80, CampaignState.ACTIVE ));
+        add(new RememberDiamondCampaign     ( 80, CampaignState.ACTIVE ));
         add(new LevelUpCampaign             ( 60, CampaignState.ACTIVE ));
         add(new GameActivationCampaign      ( 65, CampaignState.ACTIVE));
         add(new ActivationPokeCampaign      ( 55, CampaignState.ACTIVE));
@@ -40,8 +40,8 @@ public class CampaignRepository {
         //add(new EngagementCampaign      ( 65, CampaignState.TEST_MODE ));
         //add(new FakeCoinsLeftCampaign   ( 90, CampaignState.TEST_MODE));
 
-        add(new GameNotificationWeekendAB  (95, CampaignState.ACTIVE, "os4x", "Do you know your Gettysburg address? \"Four’s score but sevens are also go!\" Aww… stop nagging us about our history knowledge and come play this week’s game instead!",
-                null));
+        //add(new GameNotificationWeekendAB  (95, CampaignState.ACTIVE, "os4x", "Do you know your Gettysburg address? \"Four’s score but sevens are also go!\" Aww… stop nagging us about our history knowledge and come play this week’s game instead!",
+        //        null));
 
         //add(new GameNotification (95, CampaignState.ACTIVE, "home_run", "Refuse to Lose! Hit a Homerun in SlotAmerica with our new game. 3,000 free credits are yours to try it out! Just click here",
         //        null, RewardRepository.homeRun));
@@ -49,6 +49,7 @@ public class CampaignRepository {
         //add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
 
         add(new FirstPaymentCampaign    ( 95, CampaignState.ACTIVE));
+        //add(new RewardReminderCampaign  ( 94, CampaignState.TEST_MODE, RewardRepository.witchesWild, "witches_wild", "Don't forget your "+RewardRepository.witchesWild.getCoins()+" free coins to try out the ned Whiches Wild release"));
 
     }};
 

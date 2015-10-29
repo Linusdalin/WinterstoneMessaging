@@ -2,11 +2,9 @@ package campaigns;
 
 import action.ActionInterface;
 import action.GiveCoinAction;
-import action.ManualAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import core.Yesterday;
-import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -28,7 +26,7 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
 
     // Trigger specific config data
     private static final int MIN_AVERAGE_BET = 290;
-    private static final int MIN_ACTIONS = 130;
+    private static final int MIN_ACTIONS = 120;
     private static final int LONG_SESSION = 300;
     private static final int VERY_LONG_SESSION = 600;
 

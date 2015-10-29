@@ -1,7 +1,6 @@
 package campaigns;
 
 import action.ActionInterface;
-import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
@@ -110,8 +109,8 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
             // Sending a mail instead
 
             System.out.println("    -- Sending an EMAIL  game recommendation \"" + gameRecommendation.getRecommendation() + "\n" );
-            return new EmailAction(gameActivationEmail(user, gameRecommendation), user, getEmailPriority(), getTag(), 2, getState(), responseFactor);
-
+            //return new EmailAction(gameActivationEmail(user, gameRecommendation), user, getEmailPriority(), getTag(), 2, getState(), responseFactor);
+            return null; //TODO: Put this back. But it is too many as it is here
 
 
         }

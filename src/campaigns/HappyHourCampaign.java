@@ -18,11 +18,11 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
     // Campaign config data
     private static final String Name = "Happy Hour";
     private static final int CoolDown_Days = 9;            // A bit more than a week to avoid getting it every day
-    private static final int[] MessageIds = { 3 };
+    private static final int[] MessageIds = { 1, 2, 3, 4, 5 };
 
 
     // Trigger specific config data
-    private static final int MAX_INACTIVITY = 18;
+    private static final int MAX_INACTIVITY = 15;
 
     HappyHourCampaign(int priority, CampaignState activation){
 
@@ -46,12 +46,6 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
-        if(user.payments == 0){
-
-            System.out.println("    -- Campaign " + Name + " not firing. Only real money players" );
-            return null;
-        }
-
 
         Timestamp lastSession = playerInfo.getLastSession();
         if(lastSession == null){
@@ -60,20 +54,61 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
             return null;
 
         }
-
         int inactivity = getDaysBetween(lastSession, executionDay);
+
 
         if(inactivity > MAX_INACTIVITY){
 
-            System.out.println("    -- Campaign " + Name + " not firing. Yser has been inactive too long. (" + inactivity + " days )" );
+            if(user.payments > 0 && user.sessions > 50 && inactivity < MAX_INACTIVITY + 6 ){
+
+                // Previously active player
+
+                System.out.println("    -- Sending a happy hour reminder to previously highly active player" );
+                return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all purchases. A perfect time to try the real Vegas feeling. Click here to get going!!",
+                        user, getPriority(), getTag(),  Name, 1, getState(), responseFactor);
+
+
+            }
+
+
+
+            System.out.println("    -- Campaign " + Name + " not firing. User has been inactive too long. (" + inactivity + " days )" );
             return null;
 
         }
 
+        if(user.payments == 0){
+
+            if(user.sessions > 40 && inactivity <= 1 ){
+
+                // Very active player - entice to buy...   TEST
+
+                System.out.println("    -- Sending a happy hour reminder to active free player" );
+                return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all purchases. A perfect time to try the real Vegas feeling. Click here to get going!!",
+                        user, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
+
+
+            }
+
+
+
+            System.out.println("    -- Campaign " + Name + " not firing. Only real money players (or very active)" );
+            return null;
+        }
+
+        if(user.payments > 2){
+
+            // Frequent payer
+
+            System.out.println("    -- Sending a happy hour reminder to repeat payer" );
+            return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all coin purchases for a limited time. A perfect time to level up. Click here to get going!!",
+                    user, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
+        }
+
 
         System.out.println("    -- Sending a happy hour reminder" );
-        return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all coin purchases. A perfect time to increase the fun. Click here to get going!!",
-                user, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
+        return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all coin purchases for a limited time. A perfect time to level up. Click here to get going!!",
+                user, getPriority(), getTag(),  Name, 5, getState(), responseFactor);
 
 
     }
