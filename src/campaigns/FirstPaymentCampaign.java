@@ -2,12 +2,9 @@ package campaigns;
 
 import action.ActionInterface;
 import action.EmailAction;
-import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
 import email.NotificationEmail;
-import recommendation.GameRecommendation;
-import recommendation.GameRecommender;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
 
@@ -83,7 +80,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
             // Sending a mail instead
 
             System.out.println("    -- Sending an nice VIP welcome EMAIL to new paying players\n" );
-            return new EmailAction(firstDepositEmail(user, payment), user, getPriority(), getTag(), 2, getState(), responseFactor);
+            return new EmailAction(firstDepositEmail(user, payment), user, executionTime, getPriority(), getTag(), 2, getState(), responseFactor);
 
 
 
@@ -99,7 +96,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
 
         return new NotificationEmail("welcome to the SlotAmerica family!", "<p> Thank you for your coin purchase. " +
 
-                "This is what keeps us working long days and nights bringing you the best slot games on facebook. You are now part of supporting this!</p>" +
+                "This is what keeps us working long days and nights bringing you the best slot games on facebook. You are part of supporting this!</p>" +
                 "<p> We always strive to give you the best and most genuine slot experience possible. That's why we do not offend our " +
                     "slots loving players with the kind of fake machines that are too common on facebook. With SlotAmerica you know you get the real deal!</p>" +
 

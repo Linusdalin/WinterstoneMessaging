@@ -24,7 +24,7 @@ public class GameSessionTable extends GenericTable{
 
 
     private static final String getRemoteSQL =
-                "select timestamp, sessions.sessionId, game_stats.game, facebookId, name, sessions.promoCode, fbSource, game_stats.firstActionTime as 'action time', game_stats.totalWager, game_stats.totalWin, game_stats.lastBalance as 'end balance', game_stats.actions as spins, session_stats.actions as 'total spins' \n"+
+                "select timestamp, sessions.sessionId, game_stats.game, facebookId, name, sessions.promoCode, fbSource, game_stats.firstActionTime as 'action time', game_stats.totalWager, game_stats.totalWin, game_stats.lastBalance as 'end balance', game_stats.actions as spins, session_stats.actions as 'total spins', sessions.clientType \n"+
                 "        from sessions, users, session_stats, game_stats \n"+
                 "        where users.facebookId = sessions.playerId and sessions.sessionId = session_stats.sessionId and sessions.sessionId = game_stats.sessionId \n"+
                 "        -RESTRICTION-  order by timestamp -LIMIT-;";
@@ -66,7 +66,7 @@ public class GameSessionTable extends GenericTable{
 
             return new GameSession(resultSet.getTimestamp(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5),resultSet.getString(6), resultSet.getString(7),
                     resultSet.getTimestamp(8),
-                    resultSet.getInt(9),resultSet.getInt(10),resultSet.getInt(11),resultSet.getInt(12),resultSet.getInt(13));
+                    resultSet.getInt(9),resultSet.getInt(10),resultSet.getInt(11),resultSet.getInt(12),resultSet.getInt(13), resultSet.getString(14));
 
         } catch (SQLException e) {
             e.printStackTrace();

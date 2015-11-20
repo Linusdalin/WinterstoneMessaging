@@ -1,6 +1,5 @@
 package core;
 
-import localData.ReceptivityTable;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.Payment;
@@ -117,4 +116,21 @@ public class PlayerInfo {
 
 
     }
+
+    /********************************************************************************
+     *
+     *              get the profile for usage across mobile and desktop
+     *
+     * @return     - profile classification
+     *
+     *          //TODO: Not implemented classification of profile
+     *
+     */
+
+    public UsageProfileClassification getUsageProfile(){
+
+        return UsageProfileClassification.UNKNOWN;
+
+    }
+
 }

@@ -124,7 +124,7 @@ public class GameNotificationThursdayAB extends AbstractCampaign implements Camp
                 if(abSelect1(user)){
 
                     System.out.println("    -- Campaign (Thursday)" + Name + " firing. (Sending a notification on Thursday to a Thursday player");
-                    action = new NotificationAction(message, user, getPriority(), getTag(), Name,  5, getState(), responseFactor)
+                    action = new NotificationAction(message, user, executionTime, getPriority(), getTag(), Name,  5, getState(), responseFactor)
                             .withGame(gameCode);
 
                 }
@@ -159,7 +159,7 @@ public class GameNotificationThursdayAB extends AbstractCampaign implements Camp
                 if(!abSelect1(user)){
 
                     System.out.println("    -- Campaign (Thursday)" + Name + " firing. (Sending a notification on another day to the rest of the Thursday players");
-                    action = new NotificationAction(message, user, getPriority(), getTag(), Name,  6, getState(), responseFactor)
+                    action = new NotificationAction(message, user, executionTime, getPriority(), getTag(), Name,  6, getState(), responseFactor)
                             .withGame(gameCode);
 
                 }

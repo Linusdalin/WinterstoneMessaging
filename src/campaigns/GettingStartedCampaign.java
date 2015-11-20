@@ -58,7 +58,7 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
                 System.out.println("    -- Campaign " + Name + " Running message 1 for " + user.name );
                 return new NotificationAction("Remember you get an extra diamond pick for every day in a row you are playing. The games are waiting. Click here for your free bonus!",
-                        user, getPriority(), getTag() , Name, 1, getState(), responseFactor);
+                        user, executionTime, getPriority(), getTag() , Name, 1, getState(), responseFactor);
 
             }
 
@@ -77,7 +77,7 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
                 System.out.println("    -- Campaign " + Name + " Running message 3 for " + user.name );
                 return new NotificationAction("We here at SlotAmerica are missing you! The thrilling slot machines are awaiting and you can use the FREE bonus to find your favorite game! Click here to get started",
-                        user, getPriority(), getTag(), Name, 3, getState(), responseFactor);
+                        user, executionTime, getPriority(), getTag(), Name, 3, getState(), responseFactor);
 
             }
 
@@ -85,21 +85,21 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
             if(daysBefore(user.created, executionDay, 8 )){
 
                 System.out.println("    -- Campaign " + Name + " Emailing 8 day getting started message for " + user.name );
-                return new EmailAction(gettingStartedEmail1(user), user, getPriority(), getTag(), 8, getState(), responseFactor);
+                return new EmailAction(gettingStartedEmail1(user), user, executionTime, getPriority(), getTag(), 8, getState(), responseFactor);
 
             }
 
             if(daysBefore(user.created, executionDay, 12 )){
 
                 System.out.println("    -- Campaign " + Name + " Emailing 12 day getting started message for " + user.name );
-                return new EmailAction(gettingStartedEmail1(user), user, getPriority(), getTag(), 12, getState(), responseFactor);
+                return new EmailAction(gettingStartedEmail1(user), user, executionTime, getPriority(), getTag(), 12, getState(), responseFactor);
 
             }
 
             if(daysBefore(user.created, executionDay, 16 )){
 
                 System.out.println("    -- Campaign " + Name + " Emailing 16 day getting started message for " + user.name );
-                return new EmailAction(gettingStartedEmail2(user), user, getPriority(), getTag(), 16, getState(), responseFactor);
+                return new EmailAction(gettingStartedEmail2(user), user, executionTime, getPriority(), getTag(), 16, getState(), responseFactor);
 
             }
 

@@ -65,9 +65,9 @@ public class Response {
     }
 
 
-    public void update(Connection connection) {
+    public void updateCount(Connection connection) {
 
-        String update = "update response set values (" + toSQLValues() + ") where user = '"+ facebookId+"'";
+        String update = "update response set count = count + 1 where user = '"+ facebookId+"' and messageId = " + messageId + " and campaign = '" + campaignName + "'" ;
 
         System.out.println("Update with: " + update);
 

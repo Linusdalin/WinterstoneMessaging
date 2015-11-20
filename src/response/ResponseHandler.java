@@ -80,10 +80,8 @@ public class ResponseHandler {
             }
             else{
 
-                // Increate the count with 1 and update the last update timestamp
-
-                Response updatedResponse = new Response(session.facebookId, campaign, messageId, response.count + 1, session.timeStamp);
-                updatedResponse.update(connection);
+                // Increase the count with 1 and update the last update timestamp
+                response.updateCount(connection);
 
             }
 

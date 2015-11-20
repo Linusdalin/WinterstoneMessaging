@@ -29,13 +29,13 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
     private static final int Min_Sessions = 4;
     private static final int Max_Sessions = 30;
     private static final int Min_Age = 12;
-    private static final int Max_Age = 60;
+    private static final int Max_Age = 100;
 
     private static final int IdleDays = 5;
 
 
 
-    private static final int DAILY_CAP   = 100;         // Max per day
+    private static final int DAILY_CAP   = 200;         // Max per execution
     private int count = 0;
 
 
@@ -128,7 +128,7 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
 
 
                 return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationPaying.getCoins()+" coins extra on top of the bonus for you to play with on your account. Click here to collect and play!",
-                        user, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
+                        user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
                         .withReward(RewardRepository.freeCoinAcitivationPaying);
 
 
@@ -137,7 +137,7 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
             else{
 
                 return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationFree.getCoins()+" free coins for you to play with on your account. Click here to collect and play!",
-                        user, getPriority(), getTag(),  Name, 2, getState(), responseFactor)
+                        user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor)
                         .withReward(RewardRepository.freeCoinAcitivationFree);
 
             }

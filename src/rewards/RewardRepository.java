@@ -19,6 +19,16 @@ public class RewardRepository {
 
     public static final Reward homeRun      = new Reward("Home Run", "3670d282-34a0-4337-a4f8-3a3da70a9378", 3000, true);
     public static final Reward witchesWild  = new Reward("Witches Wild", "faea4b9c-5c87-4433-89c9-a8c24ceb0968", 3000, true);
+    public static final Reward veteransWarmup   = new Reward("Veterans Warmup", "d7eeb526-8527-4606-888c-c10fd31f0081", 2000, true);
+    public static final Reward veterans         = new Reward("Veterans day",    "3addaa32-8cbf-4e60-b7cd-ae2d9c87c8ab", 2000, true);
+    public static final Reward clockwork         = new Reward("Clockwork",    "aa4f3a90-8383-4800-b745-883761344b1e", 2000, true);
+
+    public static final Reward mobileTest         = new Reward("Mobile T",    "ce48dc8c-4bc3-4835-8e41-27510285f857", 7777, true);
+    public static final Reward mobile1            = new Reward("Mobile 1",    "ac805f4b-630f-41a2-b73d-addd750b1c11", 5000, true);
+
+
+
+
 
     /****************************
      *
@@ -49,9 +59,13 @@ public class RewardRepository {
 
         try {
 
-            RequestHandler requestHandler = new RequestHandler("http://www.aftonbladet.se/nyheter/krim/article21492347.ab");
+            RequestHandler requestHandler = new RequestHandler("https://data-warehouse.slot-america.com/api/players/"+user.facebookId+"/claimed-rewards/")
+                    .withBasicAuth("5b09eaa11e4bcd80800200c", "X");
             String response = requestHandler.executeGet();
-            return(response.contains(reward.getCode()));
+
+            System.out.println(" - Checking: " + reward.getCode());
+            System.out.println(" - Got: " + response);
+            return(response.indexOf(reward.getCode()) >= 0);
 
         } catch (DeliveryException e) {
 

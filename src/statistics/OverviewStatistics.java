@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class OverviewStatistics {
 
-    private static final int DAYS = 8;
+    private static final int DAYS = 2;
 
     /***********************************************************
      *

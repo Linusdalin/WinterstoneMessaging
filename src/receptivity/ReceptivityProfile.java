@@ -49,6 +49,26 @@ public class ReceptivityProfile {
         };
     }
 
+    public ReceptivityProfile(String userId, int[] sessionsPerDay){
+
+        this.userId = userId;
+
+        this.profile = new int[][] {
+                {sessionsPerDay[0], 0, 0},
+                {sessionsPerDay[1],0,0},
+                {sessionsPerDay[2],0,0},
+                {sessionsPerDay[3],0,0},
+                {sessionsPerDay[4],0,0},
+                {sessionsPerDay[5],0,0},
+                {sessionsPerDay[6],0,0},
+
+
+        };
+
+        this.totalSessions = sum(sessionsPerDay);
+
+    }
+
 
     public ReceptivityProfile(String userId, int[][] data, Timestamp lastUpdate){
 
@@ -132,6 +152,16 @@ public class ReceptivityProfile {
 
     }
 
+    /*********************************************************************************
+     *
+     *              Display the profile for a player
+     *
+     *
+     *
+     * @return      - description as text
+     */
+
+
     public String toString(){
 
         StringBuilder output = new StringBuilder();
@@ -139,7 +169,9 @@ public class ReceptivityProfile {
 
         for(int day = 0; day < 7; day++){
 
-              output.append(profile[day][0] + ", ");
+            int dayTotal = sum(profile[day]);
+
+              output.append(dayTotal + ", ");
         }
         output.append("] Significance: " + hasSignificance(SignificanceLevel.SPECIFIC) + "( updated @ " + lastUpdate + ")");
         return output.toString();
@@ -183,8 +215,6 @@ public class ReceptivityProfile {
      *
      *          Calculate if there is a favourite day.
      *
-     *          //TODO: Use the day with the lowest significance here too
-     *
      *
      * @return   - significant or not
      */
@@ -193,6 +223,7 @@ public class ReceptivityProfile {
 
         int bestDay = -1;
         int bestDaySessions = 0;
+        int worstDaySessions = 999999999;
 
         for(int day = 0; day < 7; day++){
 
@@ -203,6 +234,11 @@ public class ReceptivityProfile {
                 bestDaySessions = sessionsForDay;
             }
 
+            if(sessionsForDay < worstDaySessions){
+
+                worstDaySessions = sessionsForDay;
+            }
+
         }
 
         double factor;
@@ -210,14 +246,14 @@ public class ReceptivityProfile {
         // The factor will define how big the significant day is compared to the average
 
         if(significanceLevel == SignificanceLevel.GENERAL)
-            factor = 1.2;
+            factor = 1.3;
         else
-            factor = 1.6;
+            factor = 1.7;
 
         // Now check if the day with the most hits is significant
         // We use a simple formula saying that the number of sessions should be twice the average
 
-        int threshold = (int)((factor * totalSessions) / 7);
+        int threshold = (int)((factor * (totalSessions - worstDaySessions)) / 6);
 
         if(bestDaySessions > threshold){
 

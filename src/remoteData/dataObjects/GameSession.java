@@ -44,9 +44,11 @@ public class GameSession {
     public final int endBalance;
     public final int spins;
     private int totalSpins;
+    public String clientType;
 
     GameSession(Timestamp timeStamp, String sessionId, String game, String facebookId,
-                String name, String promocode, String fbSource, Timestamp actionTime, int totalWager, int totalWin, int endBalance, int spins, int totalSpins){
+                String name, String promocode, String fbSource, Timestamp actionTime, int totalWager, int totalWin, int endBalance, int spins, int totalSpins,
+                String clientType){
         this.timeStamp = timeStamp;
         this.sessionId = sessionId;
         this.game = game;
@@ -60,19 +62,32 @@ public class GameSession {
         this.endBalance = endBalance;
         this.spins = spins;
         this.totalSpins = totalSpins;
+        this.clientType = clientType;
     }
 
     public String toString(){
 
         return "(" + timeStamp.toString() +", "+ sessionId + ", " +game + ", " +facebookId + ", " +name + ", " +promocode +", " +fbSource +", " +actionTime.toString() +", " +
-                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +spins +", "+ totalSpins +")";
+                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +spins +", "+ totalSpins +", "+ clientType +")";
 
     }
 
     public String toSQLValues() {
 
-        return "'" + timeStamp.toString() +"', '"+ sessionId + "', '" +game + "', '" +facebookId + "', '" +name.replaceAll("'", "") + "', '" +promocode +"', '" +fbSource +"', '" +actionTime.toString() +"', " +
-                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +totalSpins;
+
+        // NOTE: Not storing mobile here:
+
+        return "'" + timeStamp.toString() +"', '"+ sessionId + "', '" +game + "', '" +facebookId + "', '" +name.replaceAll("'", "") + "', '" +truncate(promocode, 20) +"', '" +fbSource +"', '" +actionTime.toString() +"', " +
+                    totalWager +", " +totalWin +", " +endBalance +", " +spins +", " +totalSpins + ", '" + clientType + "'";
+
+    }
+
+    private String truncate(String promoCode, int length) {
+
+        if(promocode.length() <= length)
+            return promoCode;
+
+        return promoCode.substring(0, length-1);
 
     }
 

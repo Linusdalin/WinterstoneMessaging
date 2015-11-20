@@ -4,7 +4,7 @@ import campaigns.CampaignState;
 import localData.Exposure;
 import net.sf.json.JSONObject;
 import output.DeliveryException;
-import output.NotificationHandler;
+import output.PushHandler;
 import remoteData.dataObjects.User;
 import rewards.Reward;
 
@@ -13,12 +13,12 @@ import java.sql.Timestamp;
 
 /*******************************************************************
  *
- *          Notification
+ *          Push Notification to a mobile device
  *
  *          An instance of the abstract Action resulting in a notification sent to the user
  */
 
-public class NotificationAction extends Action implements ActionInterface{
+public class MobilePushAction extends Action implements ActionInterface{
 
     String ref;   // Reference for facebook tracking
     private String reward;
@@ -39,7 +39,7 @@ public class NotificationAction extends Action implements ActionInterface{
      */
 
 
-    public NotificationAction(String message, User user, Timestamp timestamp, int significance, String ref, String campaignName, int messageId, CampaignState state, double responseFactor){
+    public MobilePushAction(String message, User user, Timestamp timestamp, int significance, String ref, String campaignName, int messageId, CampaignState state, double responseFactor){
 
         super(ActionType.NOTIFICATION, user, timestamp, message, significance, campaignName, messageId, state, responseFactor );
         this.ref = ref;
@@ -70,22 +70,21 @@ public class NotificationAction extends Action implements ActionInterface{
 
             System.out.println("--------------------------------------------------------");
             System.out.println("%% Skipping (reason: "+ state.name()+") " + type.name() + " for player " + actionParameter.name);
-            return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - (reason: "+ state.name()+") " );
+            return new ActionResponse(ActionResponseStatus.IGNORED,   "No Push Notification sent - (reason: "+ state.name()+") " );
 
         }
 
         if(!isLive())
-            return new ActionResponse(ActionResponseStatus.IGNORED,   "No Message sent - (reason: "+ state.name()+") " );
+            return new ActionResponse(ActionResponseStatus.IGNORED,   "No Push Notification sent - (reason: "+ state.name()+") " );
 
 
         System.out.println("--------------------------------------------------------");
         System.out.println("! Executing " + type.name() + "("+count+"/"+size+") for player " + actionParameter.name);
 
-        NotificationHandler handler = new NotificationHandler(testUser)
-                    .withRecipient(actionParameter.facebookId)
+        PushHandler handler = new PushHandler(testUser)
+                    .toRecipient(actionParameter.facebookId)
                     .withMessage(message)
-                    .withRef(ref)
-                    .withPromoCode(promoCode)
+                    .withReward(promoCode)
                     .withReward(reward)
                     .withGame(game);
 
@@ -124,19 +123,19 @@ public class NotificationAction extends Action implements ActionInterface{
     }
 
 
-    public NotificationAction withReward(String reward) {
+    public MobilePushAction withReward(String reward) {
         this.reward = reward;
         return this;
     }
 
-    public NotificationAction withReward(Reward reward) {
+    public MobilePushAction withReward(Reward reward) {
 
         this.reward = reward.getCode();
         return this;
     }
 
 
-    public NotificationAction withGame(String game) {
+    public MobilePushAction withGame(String game) {
         this.game = game;
         return this;
     }

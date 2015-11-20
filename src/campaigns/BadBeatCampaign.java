@@ -110,8 +110,8 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
                         System.out.println("    -- Campaign " + Name + " Firing. payout = " + yesterdayStats.toString());
 
                         return new NotificationAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!",
-                                user, getPriority(), getTag(), Name, 1, getState(), responseFactor)
-                                .attach(new GiveCoinAction(compensation, user, getPriority(), Name, 1, getState(), responseFactor));
+                                user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)
+                                .attach(new GiveCoinAction(compensation, user, executionTime, getPriority(), Name, 1, getState(), responseFactor));
 
                     }
                     else

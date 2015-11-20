@@ -18,20 +18,26 @@ public class CachedUser {
     public Timestamp lastSession;
     public int failMail;
     public int failNotification;
+    public final int failPush;
+    public int desktopSessions;
+    public int iosSessions;
 
-    public CachedUser(String facebookId, Timestamp lastSession, int failMail, int failNotification){
+    public CachedUser(String facebookId, Timestamp lastSession, int failMail, int failNotification, int failPush, int desktopSessions, int iosSessions){
 
 
         this.facebookId = facebookId;
         this.lastSession = lastSession;
         this.failMail = failMail;
         this.failNotification = failNotification;
+        this.failPush = failPush;
+        this.desktopSessions = desktopSessions;
+        this.iosSessions = iosSessions;
     }
 
 
     public String toString(){
 
-        return "(" + facebookId + ", " +lastSession.toString() + ", M:" +failNotification+ ", N:" +failNotification +  ")";
+        return "(" + facebookId + ", " +lastSession.toString() + ", M:" +failNotification+ ", N:" +failNotification + ", P:" +failPush + " - " + iosSessions + "/" +desktopSessions + ")";
 
     }
 

@@ -32,4 +32,8 @@ public class Reward {
     public int getCoins() {
         return coins;
     }
+
+    public String getName() {
+        return name;
+    }
 }

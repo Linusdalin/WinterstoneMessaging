@@ -104,14 +104,14 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
         if(isMale(user)){
 
             if(abSelect){
-                 action =  new NotificationAction(MessageF, user, getPriority(), getTag(), Name,  1, getState(), responseFactor)
+                 action =  new NotificationAction(MessageF, user, executionTime, getPriority(), getTag(), Name,  1, getState(), responseFactor)
                         .withGame(gameCode);
                 System.out.println("    -- Campaign " + Name + " firing. (Testing Female message to Male audience) ");
 
             }
             else{
 
-                action =  new NotificationAction(MessageM, user, getPriority(), getTag(), Name,  2, getState(), responseFactor)
+                action =  new NotificationAction(MessageM, user, executionTime, getPriority(), getTag(), Name,  2, getState(), responseFactor)
                         .withGame(gameCode);
                 System.out.println("    -- Campaign " + Name + " firing. (Testing Male message to Male audience) ");
 
@@ -121,14 +121,14 @@ public class GameNotificationGenderAB extends AbstractCampaign implements Campai
 
             if(abSelect){
 
-                action =  new NotificationAction(MessageM, user, getPriority(), getTag(), Name,  3, getState(), responseFactor)
+                action =  new NotificationAction(MessageM, user, executionTime, getPriority(), getTag(), Name,  3, getState(), responseFactor)
                         .withGame(gameCode);
                 System.out.println("    -- Campaign " + Name + " firing. (Testing Male message to Female audience) ");
 
             }
             else{
 
-                action =  new NotificationAction(MessageF, user, getPriority(), getTag(), Name,  4, getState(), responseFactor)
+                action =  new NotificationAction(MessageF, user, executionTime, getPriority(), getTag(), Name,  4, getState(), responseFactor)
                         .withGame(gameCode);
                 System.out.println("    -- Campaign " + Name + " firing. (Testing Female message to Female audience) ");
 

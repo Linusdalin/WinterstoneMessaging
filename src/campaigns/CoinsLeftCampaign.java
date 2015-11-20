@@ -1,7 +1,6 @@
 package campaigns;
 
 import action.ActionInterface;
-import email.AbstractEmail;
 import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
@@ -95,9 +94,9 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
                     System.out.println("    -- Campaign " + Name + " firing for high spender with balance " + user.balance );
                     return new NotificationAction("SlotAmerica is open for business. You have "+ user.balance+" coins left on your account. Click here to enjoy them in the Casino ",
-                            user, getPriority(), getTag(), Name, 1, getState(), responseFactor)
+                            user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)
                     .attach(new EmailAction(coinLeftEmail(user),
-                            user, getPriority(), Name, 1, getState(), responseFactor));
+                            user, executionTime, getPriority(), Name, 1, getState(), responseFactor));
 
                 }
                 else
@@ -111,9 +110,9 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
                     System.out.println("    -- Campaign " + Name + " firing for low spender with balance " + user.balance );
                     return new NotificationAction("SlotAmerica is open for business. You have "+ user.balance+" coins left on your account. Click here to enjoy them in the Casino ",
-                            user, getPriority(), getTag(), Name, 2, getState(), responseFactor)
+                            user, executionTime, getPriority(), getTag(), Name, 2, getState(), responseFactor)
                             .attach(new EmailAction(coinLeftEmail(user),
-                                    user, getPriority(), Name, 1, getState(), responseFactor));
+                                    user, executionTime, getPriority(), Name, 1, getState(), responseFactor));
 
                 }
                 else
@@ -125,7 +124,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
                     System.out.println("    -- Campaign " + Name + " firing for free player with balance " + user.balance );
                     return new NotificationAction("You have "+ user.balance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                            user, getPriority(), getTag(), Name, 3, getState(), responseFactor);
+                            user, executionTime, getPriority(), getTag(), Name, 3, getState(), responseFactor);
 
                 }
                 else

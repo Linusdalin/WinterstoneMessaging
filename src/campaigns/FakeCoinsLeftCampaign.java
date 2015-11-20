@@ -108,9 +108,9 @@ public class FakeCoinsLeftCampaign extends AbstractCampaign implements CampaignI
 
 
                 return new NotificationAction("Don't forget you have "+ newCoinBalance+" coins left on your account. There are some fabulous new games you can try out with it ",
-                        user, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
+                        user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
 
-                        .attach(new ManualAction("Credit user with " + (newCoinBalance-user.balance) + " coins.", user, getPriority(), Name, 1, getState(), responseFactor));
+                        .attach(new ManualAction("Credit user with " + (newCoinBalance-user.balance) + " coins.", user, executionTime, getPriority(), Name, 1, getState(), responseFactor));
 
 
             }

@@ -54,6 +54,14 @@ public class RequestHandler {
 
             con.setRequestMethod("GET");
 
+            if(user != null){
+
+                System.out.println("Setting basic auth for " + user);
+                con.setRequestProperty("Authorization", "Basic " + getBasicAuthenticationEncoding());
+
+            }
+
+
             int httpCode = con.getResponseCode();
 
             if(httpCode != 200){

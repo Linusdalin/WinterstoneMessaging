@@ -5,6 +5,7 @@
       <root url="file://$PROJECT_DIR$/../../JavaLibs/commons-logging-1.1.2" />
       <root url="jar://$PROJECT_DIR$/../../JavaLibs/ezmorph-1.0.6.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../JavaLibs/commons-lang-2.6/commons-lang-2.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../JavaLibs/commons-beanutils-1.9.2.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="file://$PROJECT_DIR$/../../JavaLibs/commons-logging-1.1.2/apidocs" />

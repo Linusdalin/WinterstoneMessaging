@@ -1,7 +1,6 @@
 package campaigns;
 
 import action.ActionInterface;
-import action.GiveCoinAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import receptivity.ReceptivityProfile;
@@ -28,7 +27,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
     private static final int Min_Sessions = 3;
     private static final int Max_Sessions = 12;
     private static final int Max_Age = 20;
-    private int[] MessageIds = {2, 3, 4};
+    private int[] MessageIds = {2, 3, 4, 5};
 
     ActivationPokeCampaign(int priority, CampaignState active){
 
@@ -91,7 +90,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
             System.out.println("    -- Sending a day two activation poke" );
             return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica, have you? Check out the rewards by clicking on the level bar.!",
-                    user, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
+                    user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
 
 
         }
@@ -101,7 +100,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
             System.out.println("    -- Sending a six  day activation poke on the correct day" );
             return new NotificationAction("Let's start climbing the reward stairs at SlotAmerica! Click here to get started with your daily bonus!",
-                    user, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
+                    user, executionTime, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
 
 
         }
@@ -112,7 +111,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
             System.out.println("    -- Sending a seven day activation poke" );
             return new NotificationAction("Let's start climbing the reward stairs at SlotAmerica! Click here to get started with your daily bonus!",
-                    user, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
+                    user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
 
 
         }
@@ -122,10 +121,10 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
         if(idleDays > 12 && isRightDay(playerInfo, executionTime, ReceptivityProfile.SignificanceLevel.GENERAL)){
 
 
-            System.out.println("    -- Sending a twelve day activation poke" );
-            return new NotificationAction("You have got 2000 coins extra to check out the cool level bonus system. Check out the rewards by clicking on the level bar.!",
-                    user, getPriority(), getTag(),  Name, 5, getState(), responseFactor)
-                    .attach(new GiveCoinAction(2000, user, getPriority(), Name, 5, getState(), responseFactor));
+            //System.out.println("    -- Sending a twelve day activation poke" );
+            //return new NotificationAction("You have got 2000 coins extra to check out the cool level bonus system. Check out the rewards by clicking on the level bar.!",
+            //        user, executionTime, getPriority(), getTag(),  Name, 5, getState(), responseFactor)
+            //        .attach(new GiveCoinAction(2000, user, executionTime, getPriority(), Name, 5, getState(), responseFactor));
 
         }
 

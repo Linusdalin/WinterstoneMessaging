@@ -41,7 +41,7 @@ public class CachedUserTable extends GenericTable {
 
             //    public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed,Timestamp created, int totalWager, int balance, int nextNumberOfPicks){
 
-            return new CachedUser(resultSet.getString(1), resultSet.getTimestamp(2), resultSet.getInt(3) , resultSet.getInt(4));
+            return new CachedUser(resultSet.getString(1), resultSet.getTimestamp(2), resultSet.getInt(3) , resultSet.getInt(4) , resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7));
 
 
         } catch (SQLException e) {
@@ -84,7 +84,9 @@ public class CachedUserTable extends GenericTable {
 
     public void store(CachedUser user, Connection connection) {
 
-        String insertQuery = "INSERT INTO user VALUES ('" + user.facebookId + "', '" + user.lastSession.toString() +"', "+ user.failMail+", "+ user.failNotification+")";
+
+        String insertQuery = "INSERT INTO user VALUES ('" + user.facebookId + "', '" + user.lastSession.toString() +"', "+ user.failMail+", "+ user.failNotification+
+                user.failPush + user.desktopSessions + user.iosSessions+")";
 
         try{
 

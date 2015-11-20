@@ -18,15 +18,17 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
     // Campaign config data
     private static final String Name = "Happy Hour";
     private static final int CoolDown_Days = 9;            // A bit more than a week to avoid getting it every day
-    private static final int[] MessageIds = { 1, 2, 3, 4, 5 };
+    private static final int[] MessageIds = { 1, 2, 3, 4, 5, 6, 7 };
 
 
     // Trigger specific config data
-    private static final int MAX_INACTIVITY = 15;
+    private static final int MAX_INACTIVITY = 14;
+    private int percentage;
 
-    HappyHourCampaign(int priority, CampaignState activation){
+    HappyHourCampaign(int priority, CampaignState activation, int percentage){
 
         super(Name, priority, activation);
+        this.percentage = percentage;
         setCoolDown(CoolDown_Days);
         registerMessageIds( MessageIds );
     }
@@ -59,13 +61,25 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
 
         if(inactivity > MAX_INACTIVITY){
 
-            if(user.payments > 0 && user.sessions > 50 && inactivity < MAX_INACTIVITY + 6 ){
+            if(user.payments > 0 && user.sessions > 55 && inactivity < MAX_INACTIVITY + 6 ){
 
                 // Previously active player
 
+                if(user.group.equalsIgnoreCase("C")){
+
+                    // TODO: This is only a temporary test. Must be configured properly in the campaign
+                    System.out.println("    -- Sending a happy hour reminder to previously highly active player" );
+                    return new NotificationAction("Hello, It is now SPECIAL happy hour at SlotAmerica with 100% extra on all coin purchases for a limited time. A perfect time to level up. Click here to get going!!",
+                            user, executionTime, getPriority(), getTag(),  Name, 7, getState(), responseFactor);
+
+
+                }
+
+
+
                 System.out.println("    -- Sending a happy hour reminder to previously highly active player" );
-                return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all purchases. A perfect time to try the real Vegas feeling. Click here to get going!!",
-                        user, getPriority(), getTag(),  Name, 1, getState(), responseFactor);
+                return new NotificationAction("Hello, It is now happy hour at SlotAmerica with "+ this.percentage+"% extra on all purchases. A perfect time to try the real Vegas feeling. Click here to get going!!",
+                        user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor);
 
 
             }
@@ -84,8 +98,8 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
                 // Very active player - entice to buy...   TEST
 
                 System.out.println("    -- Sending a happy hour reminder to active free player" );
-                return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all purchases. A perfect time to try the real Vegas feeling. Click here to get going!!",
-                        user, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
+                return new NotificationAction("Hello, It is now happy hour at SlotAmerica with extra coins on all purchases. A perfect time to try the real Vegas feeling. Click here to get going!!",
+                        user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
 
 
             }
@@ -100,16 +114,25 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
 
             // Frequent payer
 
+            if(user.group.equalsIgnoreCase("C")){
+
+                // TODO: This is only a temporary test. Must be configured properly in the campaign
+                System.out.println("    -- Sending a happy hour reminder to repeat payer" );
+                return new NotificationAction("Hello, It is now SPECIAL happy hour at SlotAmerica with 100% extra on all coin purchases for a limited time. A perfect time to level up. Click here to get going!!",
+                        user, executionTime, getPriority(), getTag(),  Name, 6, getState(), responseFactor);
+
+
+            }
+
             System.out.println("    -- Sending a happy hour reminder to repeat payer" );
-            return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all coin purchases for a limited time. A perfect time to level up. Click here to get going!!",
-                    user, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
+            return new NotificationAction("Hello, It is now happy hour at SlotAmerica with "+this.percentage+"% extra on all coin purchases for a limited time. A perfect time to level up. Click here to get going!!",
+                    user, executionTime, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
+
+
         }
 
 
-        System.out.println("    -- Sending a happy hour reminder" );
-        return new NotificationAction("Hello, It is now happy hour at SlotAmerica with 25% extra on all coin purchases for a limited time. A perfect time to level up. Click here to get going!!",
-                user, getPriority(), getTag(),  Name, 5, getState(), responseFactor);
-
+        return null;
 
     }
 

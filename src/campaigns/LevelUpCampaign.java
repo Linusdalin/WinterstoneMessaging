@@ -21,7 +21,7 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
     // Campaign config data
     private static final String Name = "LevelUp";
     private static final int CoolDown_Days = 11;      // This should really be once per level. Especially when players are not playing too much
-    private static final int[] MessageIds = { 0, 2, 3, 4, 5, 6, 7 };
+    private static final int[] MessageIds = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
 
     // Trigger specific config data
@@ -36,7 +36,7 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
 
 
     private static final String[] messages = {
-            "You are moving up the levels. Already at 10! Don't forget to check out the bonuses you get by levelling up at Slot America!",
+            "You are moving up the levels. Already at 10! Don't forget to check out the bonuses you get by levelling up at Slot America! Click here!",
             "",  // Deprecated
             "You are getting close to the level 50 bonus! The diamond bonus baseline will give you more free coins. Click here for a final push...",
             "You are getting close to the level 100 bonus with a personal permanent coin discount Click here for a final push...",
@@ -119,8 +119,8 @@ LevelUpCampaign(int priority, CampaignState activation){
         else{
 
 
-                System.out.println("    -- Campaign " + Name + " firing message for level " + user.level );
-                NotificationAction action =  new NotificationAction(messages[message], user, getPriority(), getTag(),  Name, (message + 1), getState(), responseFactor);
+                System.out.println("    -- Campaign " + Name + " firing message for level " + user.level + " with message " + message + 1  );
+                NotificationAction action =  new NotificationAction(messages[message], user, executionTime, getPriority(), getTag(),  Name, (message + 1), getState(), responseFactor);
 
             if(message == 7){
 

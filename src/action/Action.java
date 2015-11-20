@@ -6,6 +6,9 @@ import net.sf.json.JSONObject;
 import remoteData.dataObjects.User;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 
 /*************************************************************************
  *
@@ -21,6 +24,7 @@ public abstract class Action implements ActionInterface{
     protected final String message;
     private ActionInterface next = null;             // Associated actions in a chain
 
+    private Timestamp timestamp;
     private double responseFactor = 1;
     private int significance;
     private String campaignName;
@@ -46,9 +50,10 @@ public abstract class Action implements ActionInterface{
      * @param responseFactor         - Responsefactor for this specific campaign
      */
 
-    public Action(ActionType type, User user, String message, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
+    public Action(ActionType type, User user, Timestamp timestamp, String message, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
         this.type = type;
+        this.timestamp = timestamp;
         this.responseFactor = responseFactor;
         this.actionParameter = new ActionParameter(user.name, user.facebookId, user.email);
         this.message = message;
@@ -179,7 +184,7 @@ public abstract class Action implements ActionInterface{
         return new JSONObject()
                 .put("type", type.toString())
                 .put("actionParameter", actionParameter.toJSON())
-                .put("message", message)
+                .put("message", message.replaceAll("'", ""))            // TODO: Handle escaping better
                 .put("significance", significance)
                 .put("campaign", campaignName)
                 .put("messageId", messageId)
@@ -197,7 +202,23 @@ public abstract class Action implements ActionInterface{
 
     public void store(Connection connection, JSONObject data){
 
-        System.out.println("    ( Not implemented storing action... " + data.toString());
+
+        String insert = "insert into action values ('" + timestamp.toString() + "', '" + type.name()+ "', 'PENDING', '" + data.toString() + "')";
+
+        System.out.println("Store action with: " + insert);
+
+        try{
+
+            Statement statement = connection.createStatement();
+            statement.execute(insert);
+
+        }catch(SQLException e){
+
+            System.out.println("Error accessing data in database. SQL:" + insert);
+            e.printStackTrace();
+        }
+
+
     }
 
 
@@ -207,7 +228,6 @@ public abstract class Action implements ActionInterface{
         store(connection, data);
 
     }
-
 
 
 

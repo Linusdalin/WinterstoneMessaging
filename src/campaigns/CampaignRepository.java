@@ -22,34 +22,45 @@ public class CampaignRepository {
     public static final List<CampaignInterface> activeCampaigns = new ArrayList<CampaignInterface>(){{
 
 
+
         add(new RememberDiamondCampaign     ( 80, CampaignState.ACTIVE ));
-        add(new LevelUpCampaign             ( 60, CampaignState.ACTIVE ));
-        add(new GameActivationCampaign      ( 65, CampaignState.ACTIVE));
-        add(new ActivationPokeCampaign      ( 55, CampaignState.ACTIVE));
-        add(new ActivationFreeCoinCampaign  ( 62, CampaignState.ACTIVE));
-
         add(new GettingStartedCampaign      ( 80, CampaignState.ACTIVE ));
-        add(new ChurnPokeCampaign           ( 70, CampaignState.ACTIVE));
         add(new BadBeatCampaign             ( 95, CampaignState.ACTIVE));
-        add(new CoinsLeftCampaign           ( 70, CampaignState.ACTIVE));
-        add(new ReactivationCampaign        ( 60, CampaignState.ACTIVE));
 
+        add(new LevelUpCampaign             ( 60, CampaignState.ACTIVE ));
+        //add(new GameActivationCampaign      ( 65, CampaignState.ACTIVE));
+        add(new ActivationPokeCampaign      ( 55, CampaignState.ACTIVE));
+        //add(new ActivationFreeCoinCampaign  ( 62, CampaignState.ACTIVE));
 
-        //add(new HappyHourCampaign       ( 95, CampaignState.ACTIVE));
+        //add(new ChurnPokeCampaign           ( 70, CampaignState.ACTIVE));
+        //add(new CoinsLeftCampaign           ( 70, CampaignState.ACTIVE));
+        //add(new ReactivationCampaign        ( 60, CampaignState.ACTIVE));
+
+        //add(new HappyHourCampaign       ( 95, CampaignState.ACTIVE, 25));
 
         //add(new EngagementCampaign      ( 65, CampaignState.TEST_MODE ));
         //add(new FakeCoinsLeftCampaign   ( 90, CampaignState.TEST_MODE));
 
-        //add(new GameNotificationWeekendAB  (95, CampaignState.ACTIVE, "os4x", "Do you know your Gettysburg address? \"Four’s score but sevens are also go!\" Aww… stop nagging us about our history knowledge and come play this week’s game instead!",
-        //        null));
+        //add(new GameNotificationWeekendAB  (95, CampaignState.ACTIVE, "famous_bells", "4 times the fun! 81 ways to win! Click here to get 5 free spins to test it out! ", null));
 
-        //add(new GameNotification (95, CampaignState.ACTIVE, "home_run", "Refuse to Lose! Hit a Homerun in SlotAmerica with our new game. 3,000 free credits are yours to try it out! Just click here",
-        //        null, RewardRepository.homeRun));
+        //add(new GameNotification (95, CampaignState.ACTIVE, "clockwork", "Can you stand the test of time? Here is 2000 coins on the house to try our new slot “Clockwork”. Just click to redeem.",
+        //        null, RewardRepository.clockwork));
 
         //add(new GameNotificationGenderAB  (90, CampaignState.ACTIVE));         // Special test.
 
         add(new FirstPaymentCampaign    ( 95, CampaignState.ACTIVE));
-        //add(new RewardReminderCampaign  ( 94, CampaignState.TEST_MODE, RewardRepository.witchesWild, "witches_wild", "Don't forget your "+RewardRepository.witchesWild.getCoins()+" free coins to try out the ned Whiches Wild release"));
+        //add(new RewardReminderCampaign  ( 94, CampaignState.ACTIVE, RewardRepository.clockwork, "clockwork", "Don't forget your "+RewardRepository.clockwork.getCoins()+" free coins to try out the new game release. It is still waitning for you"));
+
+        add(new MobileGameNotification( 96, CampaignState.TEST_MODE, "os6x", "New game out for SlotAmerica. Old School 6x. Try now!", null));
+
+
+        //TODO. Mobile welcome
+        //TODO: Mobile release with new game
+        //TODO: Mobile conversion special welcome
+        //TODO: Mobile conversion mail (olika kategorier)
+
+
+        //TODO: spelartyper: mobileonly, mobileconverted, mobileTry, mobileCanvasPay
 
     }};
 

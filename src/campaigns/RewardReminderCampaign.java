@@ -5,6 +5,7 @@ import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
 import rewards.Reward;
+import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
@@ -26,6 +27,10 @@ public class RewardReminderCampaign extends AbstractCampaign implements Campaign
     private Reward reward;
     private String game;
     private String message;
+
+    private static final int Min_Sessions = 15;
+    private static final int Max_Inactivity = 5;
+
 
 
     RewardReminderCampaign(int priority, CampaignState activation, Reward reward, String game, String message){
@@ -55,12 +60,29 @@ public class RewardReminderCampaign extends AbstractCampaign implements Campaign
 
         User user = playerInfo.getUser();
 
-        if(!isPaying(user)){
 
-            System.out.println("    -- Campaign " + Name + " not firing. Only Paying users." );
+        String dayRestriction    = isSpecificDay(executionTime, false, "måndag");
+
+        if(dayRestriction != null){
+
+            System.out.println("    -- Campaign " + Name + " not applicable. "+ dayRestriction);
+            return null;
+        }
+
+        if(user.payments == 0){
+
+            System.out.println("    -- Campaign " + Name + " not applicable.Only paying players)" );
+            return null;
+        }
+
+
+        if(user.sessions < Min_Sessions){
+
+            System.out.println("    -- Campaign " + Name + " not applicable. User is not frequent enough (" + user.sessions + " < " + Min_Sessions + ")" );
             return null;
 
         }
+
 
         Timestamp executionDay = getDay(executionTime);
 
@@ -71,18 +93,24 @@ public class RewardReminderCampaign extends AbstractCampaign implements Campaign
             return null;
 
         }
+        int inactivity = getDaysBetween(lastSession, executionDay);
+
+        if(inactivity >  Max_Inactivity){
+
+            System.out.println("    -- Campaign " + Name + " not firing. User is inactive (" + inactivity + " >" + Max_Inactivity + ")" );
+            return null;
+        }
 
         // Check exposure and NOT claimed reward
 
-        if(false){
+        if(!RewardRepository.hasClaimed(user, reward)){
 
-            System.out.println("    -- Campaign " + Name + " firing message 1" );
+            System.out.println("    -- Campaign " + Name + " firing message 1 for reward " +reward.getName() + "(" + reward.getCoins() + ")" );
             return new NotificationAction(message,
-                    user, getPriority(), getTag(), Name, 1, getState(), responseFactor)
+                    user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)
                     .withGame(game);
 
         }
-
 
         return  null;
 

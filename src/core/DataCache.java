@@ -8,8 +8,6 @@ import remoteData.dataObjects.*;
 import response.ResponseHandler;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +110,8 @@ public class DataCache {
      *          This is to update the last sessions for players by going through any new sessions.
      *
      *
+     *          Also look for mobile sessions to store if the player is playing mobile
+     *
      */
 
 
@@ -139,12 +139,27 @@ public class DataCache {
             updateLastSession(session);
             ResponseHandler responseHandler = new ResponseHandler(session.facebookId, connection);
             responseHandler.storeResponse(session, connection);
+
             session = gameSessions.getNext();
         }
 
 
+
     }
 
+    private void noteSessionSource(String facebookId, boolean mobile, boolean desktop, Connection connection) {
+
+        CachedUserTable table = new CachedUserTable("user = '"+ facebookId+"'", 1);
+        table.load(connection);
+        CachedUser user = table.getNext();
+
+        if(mobile)
+            user.iosSessions++;
+        if(desktop)
+            user.desktopSessions++;
+
+
+    }
 
     private void updateLastSession(GameSession session) {
 
@@ -155,7 +170,7 @@ public class DataCache {
 
             // Store new
 
-            cachedUser = new CachedUser(session.facebookId, session.timeStamp, 0, 0);
+            cachedUser = new CachedUser(session.facebookId, session.timeStamp, 0, 0, 0, 0, 0);
             cachedUserTable.store(cachedUser, connection);
             System.out.println("  - Creating new user " + cachedUser.facebookId + " with last session " + session.timeStamp);
 

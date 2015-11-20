@@ -3,7 +3,6 @@ package campaigns;
 import action.ActionInterface;
 import action.NotificationAction;
 import core.PlayerInfo;
-import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
@@ -103,7 +102,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
         System.out.println("    -- Campaign " + Name + " fire notification" );
         return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
-                user, getPriority(), getTag(), Name, messageId, getState(), responseFactor);
+                user, executionTime, getPriority(), getTag(), Name, messageId, getState(), responseFactor);
 
 
     }

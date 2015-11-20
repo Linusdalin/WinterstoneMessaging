@@ -18,24 +18,23 @@ import dbManager.ConnectionHandler;
  *              *  - Get campaign acceptance as feedback
  *              *  - Test Thursday players click through
  *              *  - Check resent click to add allowed messages
- *               - Big weekend test
- *               - Unclaimed reward reminder
+ *              *  - Big weekend test
+ *              *  - Unclaimed reward reminder
  *               - Store all actions in database - not in memory to allow for one pass
  *               - Test night players click through
  *               - Complete scheduling of multiple runs, multiple sending with replace action and three batches over 24 hours
- *               - Handle sessions separately to count acceptance of rewards
  *
- *              coin error 500 for player 675417622563573
+ *               - Add coins to first payment mail and schedule a reminder notification
  */
 
 public class Execute {
 
         private static final int     Threshold              = 50;
         private static final int     Send_Cap               = 10000;
-        private static final int     User_Cap               = 125000;
+        private static final int     User_Cap               = 200000;
         private static final boolean DRY_RUN                = false;
         private static final boolean OVERRIDE_TIME_CONSTR   = true;
-        private static final String  UserScrapeStart        = "2015-08-01 07:11:07";      // "2015-01-18";
+        private static final String  UserScrapeStart        = "2015-05-27 04:44:55";
         private static final String  TEST_USER              = null;                       // "627716024";          // Tina:     "105390519812878";
 
         private static final boolean SEND_EMAIL             = true;
