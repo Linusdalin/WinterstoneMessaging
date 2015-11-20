@@ -2,6 +2,7 @@ package campaigns;
 
 import action.ActionInterface;
 import action.EmailAction;
+import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
@@ -25,7 +26,8 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
     // Campaign config data
     private static final String Name = "ChurnPoke";
     private static final int CoolDown_Days = 6;
-    private int[] MessageIds = {3, 8, 9, 15, 14, 29, 30};
+    private int[] MessageIds = {3,  8, 9, 15, 14, 29, 30,
+                                203};
 
 
     // Trigger specific config data
@@ -75,8 +77,15 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
         if(idleDays == 3 || idleDays == 4){
 
-
             System.out.println("    -- Sending a three day churn warning poke" );
+
+            if(playerInfo.getUsageProfile().isAnnymousMobile()){
+
+                return new MobilePushAction("Hello, your daily bonus is waiting for you. Click to claim it NOW!",
+                        user, executionTime, getPriority(), getTag(),  Name, 203, getState(), responseFactor);
+
+            }
+
             return new NotificationAction("Hello, your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
                     user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
 
@@ -86,7 +95,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a NINE day churn warning poke" );
             return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
-                    user, executionTime, getPriority(), getTag(),  Name,  9, getState(), responseFactor);
+                user, executionTime, getPriority(), getTag(),  Name,  9, getState(), responseFactor);
 
 
         }

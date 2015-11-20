@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
@@ -20,7 +21,9 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
     // Campaign config data
     private static final String Name = "Remember Diamond";
     private static final int CoolDown_Days = 9;
-    private static final int[] MessageIds = { 2, 3, 4 };
+    private static final int[] MessageIds = {   2,   3,   4,
+                                              202, 203, 204
+    };
 
 
     // Trigger specific config data
@@ -44,13 +47,13 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
      *
      *              The output could be one of 4 different messages depending on the day
      *
-     * @param info             - the user to evaluate
+     * @param playerInfo             - the user to evaluate
      */
 
 
-    public ActionInterface evaluate(PlayerInfo info, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
 
-        User user = info.getUser();
+        User user = playerInfo.getUser();
 
         if(user.sessions < MIN_SESSIONS){
 
@@ -71,7 +74,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
         }
 
 
-        Timestamp lastSession = info.getLastSession();
+        Timestamp lastSession = playerInfo.getLastSession();
 
         if(lastSession == null){
 
@@ -101,6 +104,15 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
         // Last session was Between 24 and 42 hours ago and diamond pick is correct. Send the message
 
         System.out.println("    -- Campaign " + Name + " fire notification" );
+
+        if(playerInfo.getUsageProfile().isAnnymousMobile()){
+
+            messageId += 200;
+
+            return new MobilePushAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
+                    user, executionTime, getPriority(), getTag(), Name, messageId, getState(), responseFactor);
+        }
+
         return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
                 user, executionTime, getPriority(), getTag(), Name, messageId, getState(), responseFactor);
 

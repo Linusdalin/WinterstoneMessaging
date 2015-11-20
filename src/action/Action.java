@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 
 public abstract class Action implements ActionInterface{
 
+    private int id;
     protected final ActionType type;
     protected final String message;
     private ActionInterface next = null;             // Associated actions in a chain
@@ -52,10 +53,17 @@ public abstract class Action implements ActionInterface{
 
     public Action(ActionType type, User user, Timestamp timestamp, String message, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
+        this(0, type, new ActionParameter(user.name, user.facebookId, user.email), timestamp, message, significance, campaignName, messageId, state, responseFactor);
+
+    }
+
+    public Action(int id, ActionType type, ActionParameter parameter, Timestamp timestamp, String message, int significance, String campaignName, int messageId, CampaignState state, double responseFactor) {
+
+        this.id = id;
         this.type = type;
         this.timestamp = timestamp;
         this.responseFactor = responseFactor;
-        this.actionParameter = new ActionParameter(user.name, user.facebookId, user.email);
+        this.actionParameter = parameter;
         this.message = message;
         this.significance = significance;
         this.campaignName = campaignName;
@@ -188,6 +196,7 @@ public abstract class Action implements ActionInterface{
                 .put("significance", significance)
                 .put("campaign", campaignName)
                 .put("messageId", messageId)
+                .put("responseFactor", responseFactor)
                 .put("state", state.name());
     }
 
@@ -203,7 +212,7 @@ public abstract class Action implements ActionInterface{
     public void store(Connection connection, JSONObject data){
 
 
-        String insert = "insert into action values ('" + timestamp.toString() + "', '" + type.name()+ "', 'PENDING', '" + data.toString() + "')";
+        String insert = "insert into action values (0, '" + timestamp.toString() + "', '" + type.name()+ "', 'PENDING', '" + data.toString() + "')";
 
         System.out.println("Store action with: " + insert);
 
@@ -229,6 +238,26 @@ public abstract class Action implements ActionInterface{
 
     }
 
+    @Override
+    public void updateAsExecuted(Connection connection) {
+
+        String update = "update action set status = 'EXECUTED' where id = " + id;
+
+        System.out.println("Store action with: " + update);
+
+        try{
+
+            Statement statement = connection.createStatement();
+            statement.execute(update);
+
+        }catch(SQLException e){
+
+            System.out.println("Error accessing data in database. SQL:" + update);
+            e.printStackTrace();
+        }
+
+
+    }
 
 
 }

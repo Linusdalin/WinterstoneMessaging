@@ -91,6 +91,18 @@ public class TimeAnalyser {
     }
 
 
+    /*************************************************************************************'''''
+     *
+     *          Calculate the response factor for a specific campaign based on previous response
+     *
+     *
+     *          //TODO: This is pretty simple. Could be improved upon
+     *
+     * @param user                          - the user
+     * @param campaign                      - the specific campaign
+     * @return
+     */
+
     public double getResponseAdjustment(User user, CampaignInterface campaign) {
 
         if(hasResponded(connection, user, campaign.getTag())){

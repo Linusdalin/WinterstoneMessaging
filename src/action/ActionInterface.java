@@ -34,5 +34,5 @@ public interface ActionInterface {
     void setResponseFactor(double i);
 
     void store(Connection connection);
-
+    void updateAsExecuted(Connection connection);
 }

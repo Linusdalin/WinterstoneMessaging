@@ -12,9 +12,9 @@ import java.util.Calendar;
 
 public class Send {
 
-    private static final int     Send_Cap               = 1;
+    private static final int     Send_Cap               = 10000;
     private static final boolean DRY_RUN                = true;
-    private static final String  TEST_USER              = null;                       // "627716024";          // Tina:     "105390519812878";
+    private static final String  TEST_USER              = "627716024";                       // "627716024";          // Tina:     "105390519812878";
 
     private static final boolean SEND_EMAIL             = true;
     private static final int BACK_TRACK_DAYS            = 0;
@@ -52,6 +52,10 @@ public class Send {
 
         }
 
+        int pendingActions = engine.countActions(BACK_TRACK_DAYS);
+
+        System.out.println("Executing " + ( Send_Cap < pendingActions ? Send_Cap + " of " : "") + pendingActions + " generated actions");
+
 
         System.out.print("Start Run?\n>");
         CampaignEngine.waitReturn();
@@ -63,6 +67,7 @@ public class Send {
         engine.executeSend(executionTime, BACK_TRACK_DAYS);
 
     }
+
 
 
 }

@@ -1,5 +1,7 @@
 package email;
 
+import net.sf.json.JSONObject;
+
 /*********************************************************************************
  *
  *
@@ -16,5 +18,12 @@ public class NotificationEmail extends AbstractEmail implements EmailInterface {
         super(subject, html, plainText, Template);
 
     }
+
+    public NotificationEmail(JSONObject json) {
+
+        super(json.getString("subject"), json.getString("body"), json.getString("plainText"), Template);
+
+    }
+
 
 }

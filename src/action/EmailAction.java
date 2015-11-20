@@ -37,10 +37,15 @@ public class EmailAction extends Action implements ActionInterface{
 
      */
 
-
     public EmailAction(EmailInterface email, User user, Timestamp timeStamp, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        super(ActionType.EMAIL, user, timeStamp, email.getPlainText(), significance, campaignName, messageId, state, responseFactor );
+        this(0, email, new ActionParameter(user.name, user.facebookId, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
+
+    }
+
+    public EmailAction(int id, EmailInterface email, ActionParameter parameter, Timestamp timeStamp, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
+
+        super(id, ActionType.EMAIL, parameter, timeStamp, email.getPlainText(), significance, campaignName, messageId, state, responseFactor );
         this.email = email;
         setPromoCode(createPromoCode(campaignName, messageId));
 

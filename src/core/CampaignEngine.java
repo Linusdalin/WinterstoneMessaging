@@ -40,6 +40,7 @@ public class CampaignEngine {
     private boolean sendEmail;
     private int analysis_cap;
     private int batchSize;
+    private boolean purge;
     private Outbox notificationOutbox;
     private Outbox manualActionOutbox;          // Manual messages
     private Outbox coinActionOutbox;          // Manual messages
@@ -60,7 +61,7 @@ public class CampaignEngine {
      *
      */
 
-    CampaignEngine(ConnectionHandler.Location dataSource, int threshold, boolean dryRun, boolean overrideTime, boolean sendEmail, int send_cap, int analysis_cap, String testUser, int batchSize){
+    CampaignEngine(ConnectionHandler.Location dataSource, int threshold, boolean dryRun, boolean overrideTime, boolean sendEmail, int send_cap, int analysis_cap, String testUser, int batchSize, boolean purge){
 
         this.threshold = threshold;
         this.dryRun = dryRun;
@@ -68,6 +69,7 @@ public class CampaignEngine {
         this.sendEmail = sendEmail;
         this.analysis_cap = analysis_cap;
         this.batchSize = batchSize;
+        this.purge = purge;
 
         try{
 
@@ -154,26 +156,32 @@ public class CampaignEngine {
         SoundPlayer player = new SoundPlayer();
         player.playSound(SoundPlayer.ReadyBeep);
 
-        System.out.println("\nPress Enter to Start\n>");
-        waitReturn();
+
+        // Check if we want an immediate purge or separatey executing the actions in the database
+        if(purge){
+
+            System.out.println("\nPress Enter to Start\n>");
+            waitReturn();
 
 
-        System.out.println(" ******************************************\n * Purging Notifications ");
+            System.out.println(" ******************************************\n * Purging Notifications ");
 
-        //notificationOutbox.listRecepients();
-        notificationOutbox.purge(executionTime);
+            //notificationOutbox.listRecepients();
+            notificationOutbox.purge(executionTime);
 
-        System.out.println(" ******************************************\n * Purging Email ");
+            System.out.println(" ******************************************\n * Purging Email ");
 
-        emailOutbox.purge(executionTime);
+            emailOutbox.purge(executionTime);
 
-        System.out.println(" ******************************************\n * Coin Actions ");
+            System.out.println(" ******************************************\n * Coin Actions ");
 
-        coinActionOutbox.purge(executionTime);
+            coinActionOutbox.purge(executionTime);
 
-        System.out.println(" ******************************************\n * Manual Actions ");
+            System.out.println(" ******************************************\n * Manual Actions ");
 
-        manualActionOutbox.purge(executionTime);
+            manualActionOutbox.purge(executionTime);
+        }
+
     }
 
 
@@ -460,26 +468,35 @@ public class CampaignEngine {
 
     private void queueAction(ActionInterface action, Connection connection) {
 
-        if(action.getType() == ActionType.NOTIFICATION )
-            notificationOutbox.queue(action);
+        if(purge){
 
-        if(action.getType() == ActionType.EMAIL )
-            emailOutbox.queue(action);
+            if(action.getType() == ActionType.NOTIFICATION )
+                notificationOutbox.queue(action);
 
-        if(action.getType() == ActionType.MANUAL_ACTION )
-            manualActionOutbox.queue(action);
+            if(action.getType() == ActionType.EMAIL )
+                emailOutbox.queue(action);
 
-        if(action.getType() == ActionType.COIN_ACTION )
-            coinActionOutbox.queue(action);
+            if(action.getType() == ActionType.MANUAL_ACTION )
+                manualActionOutbox.queue(action);
+
+            if(action.getType() == ActionType.COIN_ACTION )
+                coinActionOutbox.queue(action);
+
+        }
+
 
         // Store in the database for
         action.store(connection);
 
         ActionInterface next = action.getAssociated();
 
-        if(next != null)
-            queueAction( next, connection );
+        if(next != null){
+            if(purge)
+                queueAction( next, connection );
 
+            action.store(connection);
+
+        }
     }
 
 

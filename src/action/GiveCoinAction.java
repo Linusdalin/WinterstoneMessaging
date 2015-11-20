@@ -22,9 +22,16 @@ public class GiveCoinAction extends Action implements ActionInterface{
     private static final String message = "Coins for player";
     private int amount;
 
+
     public GiveCoinAction(int amount, User user, Timestamp timeStamp, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        super(ActionType.COIN_ACTION, user, timeStamp, message, significance, campaignName, messageId, state, responseFactor );
+        this(0, amount, new ActionParameter(user.name, user.facebookId, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
+    }
+
+
+    public GiveCoinAction(int id, int amount, ActionParameter parameter, Timestamp timeStamp, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
+
+        super(id, ActionType.COIN_ACTION, parameter, timeStamp, message, significance, campaignName, messageId, state, responseFactor );
         this.amount = amount;
     }
 

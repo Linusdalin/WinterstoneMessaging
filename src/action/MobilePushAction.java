@@ -38,10 +38,16 @@ public class MobilePushAction extends Action implements ActionInterface{
      * @param state                   - campaign state
      */
 
-
     public MobilePushAction(String message, User user, Timestamp timestamp, int significance, String ref, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        super(ActionType.NOTIFICATION, user, timestamp, message, significance, campaignName, messageId, state, responseFactor );
+        this(0, message, new ActionParameter(user.name, user.facebookId, user.email), timestamp, significance, ref, campaignName, messageId, state, responseFactor);
+
+    }
+
+
+    public MobilePushAction(int id, String message, ActionParameter parameter, Timestamp timestamp, int significance, String ref, String campaignName, int messageId, CampaignState state, double responseFactor){
+
+        super(id, ActionType.PUSH, parameter, timestamp, message, significance, campaignName, messageId, state, responseFactor );
         this.ref = ref;
         setPromoCode(createPromoCode(campaignName, messageId));
 

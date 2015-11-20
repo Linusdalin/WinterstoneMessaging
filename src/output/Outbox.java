@@ -55,6 +55,8 @@ public class Outbox {
 
             if(response.isExecuted()){
                 success++;
+                action.updateAsExecuted(connection);
+
             }
             else
                 noteFailedMessageDelivery(action.getParameters().facebookId, action.getType(), response.getStatus());

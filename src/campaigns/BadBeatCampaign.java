@@ -2,6 +2,7 @@ package campaigns;
 
 import action.ActionInterface;
 import action.GiveCoinAction;
+import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import core.Yesterday;
@@ -35,7 +36,8 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
     private static final int BAD_PAYOUT = 80;
 
     private static final int MAX_REMAINING_BALANCE = 2000 ;
-    private int[] MessageIds = { 1 };
+    private int[] MessageIds = { 1,
+                                201 };
 
 
     BadBeatCampaign(int priority, CampaignState active){
@@ -108,6 +110,14 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
                         }
 
                         System.out.println("    -- Campaign " + Name + " Firing. payout = " + yesterdayStats.toString());
+
+                        if(playerInfo.getUsageProfile().isAnnymousMobile()){
+
+                            return new MobilePushAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!",
+                                    user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)
+                                    .attach(new GiveCoinAction(compensation, user, executionTime, getPriority(), Name, 201, getState(), responseFactor));
+
+                        }
 
                         return new NotificationAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!",
                                 user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)

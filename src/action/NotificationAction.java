@@ -26,7 +26,7 @@ public class NotificationAction extends Action implements ActionInterface{
 
     /*****************************************************************************************
      *
-     *          Create an action
+     *          Create an action during execution
      *
      *
      * @param message                 - the messahe to send
@@ -41,11 +41,37 @@ public class NotificationAction extends Action implements ActionInterface{
 
     public NotificationAction(String message, User user, Timestamp timestamp, int significance, String ref, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        super(ActionType.NOTIFICATION, user, timestamp, message, significance, campaignName, messageId, state, responseFactor );
+        this(0, message, new ActionParameter(user.name, user.facebookId, user.email), timestamp, significance, ref, campaignName, messageId, state, responseFactor);
+
+    }
+
+
+    /*********************************************************************************************''
+     *
+     *
+     *              Create an action from data in the database
+     *
+     * @param id                      - id from database (or 0 for creating
+     * @param message
+     * @param parameter
+     * @param timestamp
+     * @param significance
+     * @param ref
+     * @param campaignName
+     * @param messageId
+     * @param state
+     * @param responseFactor
+     */
+
+
+    public NotificationAction(int id, String message, ActionParameter parameter, Timestamp timestamp, int significance, String ref, String campaignName, int messageId, CampaignState state, double responseFactor){
+
+        super(id, ActionType.NOTIFICATION, parameter, timestamp, message, significance, campaignName, messageId, state, responseFactor );
         this.ref = ref;
         setPromoCode(createPromoCode(campaignName, messageId));
 
     }
+
 
     /**************************************************************
      *

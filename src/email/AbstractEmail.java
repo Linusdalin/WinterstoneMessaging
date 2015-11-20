@@ -32,11 +32,15 @@ public abstract class AbstractEmail implements EmailInterface{
         return template;
     }
 
-    //TODO: Implement serialization of email
 
     @Override
     public JSONObject toJSON() {
-        return new JSONObject();
+
+        return new JSONObject()
+                .put("template", template)
+                .put("subject", subject)
+                .put("body", body)
+                .put("plainText", plainText);
     }
 
     public String getBody() {

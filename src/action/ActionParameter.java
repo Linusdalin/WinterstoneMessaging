@@ -21,6 +21,16 @@ public class ActionParameter {
         this.email = email;
     }
 
+
+    public ActionParameter(JSONObject json){
+
+        this.name = json.getString("name");
+        this.facebookId = json.getString("facebookId");
+        this.email = json.getString("email");
+    }
+
+
+
     public JSONObject toJSON() {
         return new JSONObject()
                 .put("name", name)

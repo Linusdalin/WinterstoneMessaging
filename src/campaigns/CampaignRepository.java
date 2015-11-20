@@ -32,6 +32,7 @@ public class CampaignRepository {
         add(new ActivationPokeCampaign      ( 55, CampaignState.ACTIVE));
         //add(new ActivationFreeCoinCampaign  ( 62, CampaignState.ACTIVE));
 
+
         //add(new ChurnPokeCampaign           ( 70, CampaignState.ACTIVE));
         //add(new CoinsLeftCampaign           ( 70, CampaignState.ACTIVE));
         //add(new ReactivationCampaign        ( 60, CampaignState.ACTIVE));

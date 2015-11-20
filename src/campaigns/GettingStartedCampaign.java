@@ -2,6 +2,7 @@ package campaigns;
 
 import action.ActionInterface;
 import action.EmailAction;
+import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
@@ -76,6 +77,13 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
             if(daysBefore(user.created, executionDay, 3 )){
 
                 System.out.println("    -- Campaign " + Name + " Running message 3 for " + user.name );
+
+                if(playerInfo.getUsageProfile().isAnnymousMobile()){
+
+                    return new MobilePushAction("We here at SlotAmerica are missing you! The thrilling slot machines are awaiting and you can use the FREE bonus to find your favorite game! Click here to get started",
+                            user, executionTime, getPriority(), getTag(), Name, 3, getState(), responseFactor);
+                }
+
                 return new NotificationAction("We here at SlotAmerica are missing you! The thrilling slot machines are awaiting and you can use the FREE bonus to find your favorite game! Click here to get started",
                         user, executionTime, getPriority(), getTag(), Name, 3, getState(), responseFactor);
 
