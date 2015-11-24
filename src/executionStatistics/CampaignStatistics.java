@@ -12,7 +12,9 @@ import action.ActionType;
 public class CampaignStatistics {
 
     private int timesFiredNotification = 0;
+    private int timesFiredPush = 0;
     private int timesFiredEmail = 0;
+    private int timesCoolingDown = 0;
     private int timesOverrun = 0;
     private int timesPotential = 0;
 
@@ -29,6 +31,9 @@ public class CampaignStatistics {
         if(type == ActionType.NOTIFICATION)
             timesFiredNotification++;
 
+        if(type == ActionType.PUSH)
+            timesFiredPush++;
+
         if(type == ActionType.EMAIL)
             timesFiredEmail++;
     }
@@ -36,7 +41,7 @@ public class CampaignStatistics {
 
     public String toString(){
 
-        return "Fired: ( N:" + timesFiredNotification + " + E:" + timesFiredEmail + " ) Overrun: " + timesOverrun + (timesPotential > 0 ? " Potential (if live): " + timesPotential : "");
+        return "Fired: ( N:" + timesFiredNotification + " + MP:" + timesFiredPush + " + E:" + timesFiredEmail+ " ) Cooling Down: "+ timesCoolingDown+", Overrun: " + timesOverrun + (timesPotential > 0 ? " Potential (if live): " + timesPotential : "");
     }
 
     public String getName() {
@@ -52,6 +57,11 @@ public class CampaignStatistics {
     public void countOverrun() {
 
         timesOverrun++;
+    }
+
+    public void countCoolDown() {
+
+        timesCoolingDown++;
     }
 
 

@@ -88,6 +88,15 @@ public class DataCache {
 
     }
 
+    public CachedUser getCachedUser(User user) {
+
+        CachedUserTable userTable = new CachedUserTable();
+        userTable.load(connection,"and facebookId='" + user.facebookId + "'","ASC", 1 );
+
+        return userTable.getNext();
+
+    }
+
 
     public List<Payment> getPaymentsForUser(User user) {
 
@@ -140,26 +149,13 @@ public class DataCache {
             ResponseHandler responseHandler = new ResponseHandler(session.facebookId, connection);
             responseHandler.storeResponse(session, connection);
 
+
+
             session = gameSessions.getNext();
         }
 
-
-
     }
 
-    private void noteSessionSource(String facebookId, boolean mobile, boolean desktop, Connection connection) {
-
-        CachedUserTable table = new CachedUserTable("user = '"+ facebookId+"'", 1);
-        table.load(connection);
-        CachedUser user = table.getNext();
-
-        if(mobile)
-            user.iosSessions++;
-        if(desktop)
-            user.desktopSessions++;
-
-
-    }
 
     private void updateLastSession(GameSession session) {
 
@@ -170,7 +166,7 @@ public class DataCache {
 
             // Store new
 
-            cachedUser = new CachedUser(session.facebookId, session.timeStamp, 0, 0, 0, 0, 0);
+            cachedUser = new CachedUser(session.facebookId, session.timeStamp, 0, 0, 0, (session.clientType.equals("facebook") ? 1 : 0), (session.clientType.equals("ios") ? 1 : 0), (session.clientType.equals("ios") ? session.timeStamp : null));
             cachedUserTable.store(cachedUser, connection);
             System.out.println("  - Creating new user " + cachedUser.facebookId + " with last session " + session.timeStamp);
 
@@ -181,8 +177,9 @@ public class DataCache {
                 System.out.println("  - NOT updating older session for user " + cachedUser.facebookId);
             else{
 
+                boolean iOsSession = (session.clientType.equals("ios"));
                 cachedUser.lastSession = session.timeStamp;
-                cachedUserTable.updateTime(cachedUser, connection);
+                cachedUserTable.updateTime(cachedUser, iOsSession, session.timeStamp, connection);
                 System.out.println("  - Updating with new session for user " + cachedUser.facebookId + "@ " + session.timeStamp);
             }
         }

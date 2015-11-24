@@ -14,7 +14,7 @@ import remoteData.dataObjects.User;
 
 public class RewardRepository {
 
-    public static final Reward freeCoinAcitivationPaying  = new Reward("Free Coin Activation Paying", "512853e3-8389-453a-b92d-479e330414ba", 3000, true);
+    public static final Reward freeCoinAcitivation  = new Reward("Free Coin Activation Paying", "512853e3-8389-453a-b92d-479e330414ba", 3000, true);
     public static final Reward freeCoinAcitivationFree    = new Reward("Free Coin Activation Non-Paying", "8606fa50-6c62-4c25-ba21-40600fc79d42", 1000, true);
 
     public static final Reward homeRun      = new Reward("Home Run", "3670d282-34a0-4337-a4f8-3a3da70a9378", 3000, true);
@@ -22,6 +22,7 @@ public class RewardRepository {
     public static final Reward veteransWarmup   = new Reward("Veterans Warmup", "d7eeb526-8527-4606-888c-c10fd31f0081", 2000, true);
     public static final Reward veterans         = new Reward("Veterans day",    "3addaa32-8cbf-4e60-b7cd-ae2d9c87c8ab", 2000, true);
     public static final Reward clockwork         = new Reward("Clockwork",    "aa4f3a90-8383-4800-b745-883761344b1e", 2000, true);
+    public static final Reward bellsFreespin         = new Reward("Bells",    "354b5b4d-48ef-49a8-9529-5535ecbc87c9", 5, true);
 
     public static final Reward mobileTest         = new Reward("Mobile T",    "ce48dc8c-4bc3-4835-8e41-27510285f857", 7777, true);
     public static final Reward mobile1            = new Reward("Mobile 1",    "ac805f4b-630f-41a2-b73d-addd750b1c11", 5000, true);

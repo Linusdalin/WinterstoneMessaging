@@ -16,6 +16,7 @@ public class Yesterday {
     private int actions;
     private int totalWager;
     private int totalWin;
+    private boolean playedMobile = false;
 
     public Yesterday(int actions, int totalWager, int totalWin){
         this.actions = actions;
@@ -45,6 +46,11 @@ public class Yesterday {
                 totalWin += session.totalWin;
                 actions += session.spins;
             }
+
+            if(session.clientType.equals("ios")){
+                playedMobile = true;
+            }
+
         }
 
     }
@@ -58,6 +64,9 @@ public class Yesterday {
     public int getPayout(){
 
         if(!didPlay())
+            return 0;
+
+        if(totalWager == 0)
             return 0;
 
         return (100*totalWin)/totalWager;
@@ -82,4 +91,7 @@ public class Yesterday {
     }
 
 
+    public boolean playedMobile() {
+        return playedMobile;
+    }
 }

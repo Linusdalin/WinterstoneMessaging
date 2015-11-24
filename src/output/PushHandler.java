@@ -107,7 +107,7 @@ public class PushHandler {                             //TODO: Fix parameters
             actualUser = overrideUser;
         }
 
-        String request = pushService + "?playerId="+ recipient+"&message=" + URLEncoder.encode(message);
+        String request = pushService + "?playerId="+ actualUser+"&message=" + URLEncoder.encode(message);
         String category = "";
 
 

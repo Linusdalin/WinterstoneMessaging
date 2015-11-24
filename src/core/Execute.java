@@ -30,17 +30,17 @@ import dbManager.ConnectionHandler;
 public class Execute {
 
         private static final int     Threshold              = 50;
-        private static final int     Send_Cap               = 1;
-        private static final int     User_Cap               = 350000;
-        private static final boolean DRY_RUN                = true;
+        private static final int     Send_Cap               = 10000;
+        private static final int     User_Cap               = 360000;
+        private static final boolean DRY_RUN                = false;
         private static final boolean OVERRIDE_TIME_CONSTR   = true;
         private static final String  UserScrapeStart        = "0000-00-00";
-        private static final String  TEST_USER              = "627716024";                       // "627716024";          // Tina:     "105390519812878";
+        private static final String  TEST_USER              = null;                           // "627716024";          // Tina:     "105390519812878";
 
         private static final boolean SEND_EMAIL             = true;
-        private static final int     BatchSize              = 25000;
+        private static final int     BatchSize              = 50000;
 
-        private static final boolean Instant_Purge          = false;
+        private static final boolean Instant_Purge          = true;
 
 
     /********************************************************************

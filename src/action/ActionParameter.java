@@ -33,7 +33,7 @@ public class ActionParameter {
 
     public JSONObject toJSON() {
         return new JSONObject()
-                .put("name", name)
+                .put("name", name.replaceAll("'", ""))
                 .put("facebookId", facebookId)
                 .put("email", email);
     }

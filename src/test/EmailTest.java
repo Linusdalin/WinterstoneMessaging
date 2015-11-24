@@ -3,6 +3,7 @@ package test;
 
 import campaigns.FirstPaymentCampaign;
 import campaigns.GettingStartedCampaign;
+import campaigns.MobileCrossPromotionCampaign;
 import email.NotificationEmail;
 import email.ReleaseEmail;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import output.DeliveryException;
 import output.EmailHandler;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
+import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
@@ -196,6 +198,15 @@ public class EmailTest {
             success = handler.send();
 
             assertThat("Should work", success, is(true) );
+
+            handler = new EmailHandler()
+                    .withEmail(MobileCrossPromotionCampaign.tryMobileEmail(user, "test-1", RewardRepository.mobile1))
+                    .toRecipient(user.facebookId);
+
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
+
 
         }catch(DeliveryException e){
 

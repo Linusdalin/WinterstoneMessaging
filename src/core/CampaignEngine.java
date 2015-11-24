@@ -17,6 +17,7 @@ import sound.SoundPlayer;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
@@ -42,6 +43,7 @@ public class CampaignEngine {
     private int batchSize;
     private boolean purge;
     private Outbox notificationOutbox;
+    private Outbox pushOutbox;
     private Outbox manualActionOutbox;          // Manual messages
     private Outbox coinActionOutbox;          // Manual messages
     private Outbox emailOutbox;
@@ -81,6 +83,7 @@ public class CampaignEngine {
             // Create an outbox for all messages
 
             notificationOutbox  = new Outbox(send_cap, dryRun,                  testUser, localConnection);
+            pushOutbox          = new Outbox(send_cap, dryRun,                  testUser, localConnection);
             manualActionOutbox  = new Outbox(send_cap, dryRun,                  testUser, localConnection);
             coinActionOutbox    = new Outbox(send_cap, dryRun,                  testUser, localConnection);
             emailOutbox         = new Outbox(send_cap, (dryRun || !sendEmail),  testUser, localConnection);
@@ -124,7 +127,6 @@ public class CampaignEngine {
 
         Calendar calendar = Calendar.getInstance();
         Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
-        ExposureTable campaignExposures = new ExposureTable(localConnection);
         int count = 0;
         ExecutionStatistics executionStatistics = new ExecutionStatistics(CampaignRepository.activeCampaigns);
 
@@ -137,7 +139,17 @@ public class CampaignEngine {
 
         do{
 
-            userCount = handleBatch(batch++, startDate, dbCache, executionTime, campaignExposures, executionStatistics, userCount);
+            try{
+
+                Connection tempConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
+                userCount = handleBatch(tempConnection, batch++, startDate, dbCache, executionTime, executionStatistics, userCount);
+                tempConnection.close();
+
+            }catch(SQLException e){
+
+                e.printStackTrace();
+                continue;
+            }
 
         } while(userCount != -1);
 
@@ -146,6 +158,7 @@ public class CampaignEngine {
         System.out.println(executionStatistics.toString());
 
         System.out.println("Total notifications: " + notificationOutbox.size());
+        System.out.println("Total push:          " + pushOutbox.size());
         System.out.println("Total emails:        " + emailOutbox.size() + ( sendEmail? "": "( but these are suppressed)"));
         System.out.println("Total manual:        " + manualActionOutbox.size());
         System.out.println("Total coins:         " + coinActionOutbox.size());
@@ -168,6 +181,11 @@ public class CampaignEngine {
 
             //notificationOutbox.listRecepients();
             notificationOutbox.purge(executionTime);
+
+            System.out.println(" ******************************************\n * Purging Mobile Push Notifications");
+
+            //notificationOutbox.listRecepients();
+            pushOutbox.purge(executionTime);
 
             System.out.println(" ******************************************\n * Purging Email ");
 
@@ -192,20 +210,22 @@ public class CampaignEngine {
      *          Execute one batch
      *
      *
+     *
+     * @param tempConnection
      * @param batchNo                       - the batch ordinal
      * @param startDate                     - original start date (not for the batch!)
      * @param dbCache                       - locally cached data
      * @param executionTime                 - time for execution
-     * @param campaignExposures             - cached data
      * @param executionStatistics           - cached data
      * @param userCount                     - count to stop at cap
      *
      * @return                        - the new user count (or -1 if there are no more users to get)
      */
 
-    private int handleBatch(int batchNo, String startDate, DataCache dbCache, Timestamp executionTime, ExposureTable campaignExposures, ExecutionStatistics executionStatistics, int userCount) {
+    private int handleBatch(Connection tempConnection, int batchNo, String startDate, DataCache dbCache, Timestamp executionTime, ExecutionStatistics executionStatistics, int userCount) {
 
         System.out.println(" -- Handle Batch #" + batchNo);
+        ExposureTable campaignExposures = new ExposureTable(tempConnection);
 
         UserTable allPlayers = new UserTable();
         allPlayers.load(dbConnection, " and users.created >= '"+ startDate+"'", "ASC", batchSize, userCount);      // Restriction for testing
@@ -219,7 +239,7 @@ public class CampaignEngine {
             System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
             PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
 
-            ActionInterface action = evaluateUser(playerInfo, executionTime, campaignExposures, executionStatistics);
+            ActionInterface action = evaluateUser(tempConnection, playerInfo, executionTime, campaignExposures, executionStatistics);
             handleAction(action, playerInfo, campaignExposures, executionStatistics);
 
             user = allPlayers.getNext();
@@ -228,6 +248,7 @@ public class CampaignEngine {
         if(userCount >= analysis_cap)
             return -1;
 
+        allPlayers.close();
         return userCount;
     }
 
@@ -264,7 +285,7 @@ public class CampaignEngine {
 
             System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
 
-            ActionInterface action = evaluateUser(playerInfo, executionTime, campaignExposures, executionStatistics);
+            ActionInterface action = evaluateUser(dbConnection, playerInfo, executionTime, campaignExposures, executionStatistics);
 
 
             if(action == null)
@@ -289,15 +310,16 @@ public class CampaignEngine {
     */
 
 
-    private ActionInterface evaluateUser(PlayerInfo playerInfo, Timestamp executionTime, ExposureTable campaignExposures, ExecutionStatistics executionStatistics) {
+    private ActionInterface evaluateUser(Connection tempConnection, PlayerInfo playerInfo, Timestamp executionTime, ExposureTable campaignExposures, ExecutionStatistics executionStatistics) {
 
         // Package and pre calculate the playerInfo
         // This is used for all the analysis and defines the API to the information in the database
 
-        TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo, localConnection);
+        TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo, tempConnection);
         User user = playerInfo.getUser();
-        ResponseHandler responseHandler = new ResponseHandler(user.facebookId, localConnection);
+        ResponseHandler responseHandler = new ResponseHandler(user.facebookId, tempConnection);
         int outcome = ExecutionStatistics.MISSED; // Keep track of the outcome for the user
+        Exposure lastExposure;
 
         // Check for "dead" players that we should not even try to send a message to
 
@@ -324,7 +346,7 @@ public class CampaignEngine {
             // Get a response factor for the campaign. This is used to boost significance and to decide eligibility (stored in the action)
             double responseFactor = timeAnalyser.getResponseAdjustment(user, campaign);
 
-            Exposure lastExposure = campaignExposures.getLastExposure(campaign.getName(), user);
+            lastExposure = campaignExposures.getLastExposure(campaign.getName(), user);
 
             if(lastExposure != null){
 
@@ -332,6 +354,7 @@ public class CampaignEngine {
 
                     System.out.println("    -- Last exposure for campaign "+ campaign.getName()+" is " + lastExposure.exposureTime.toString() + ", less than "+ campaign.getCoolDown()+" days ago. Avoiding over exposure");
                     outcome = ExecutionStatistics.COOLDOWN;
+                    executionStatistics.registerCoolDown(campaign);
                     continue;
                 }
 
@@ -473,6 +496,9 @@ public class CampaignEngine {
             if(action.getType() == ActionType.NOTIFICATION )
                 notificationOutbox.queue(action);
 
+            if(action.getType() == ActionType.PUSH )
+                pushOutbox.queue(action);
+
             if(action.getType() == ActionType.EMAIL )
                 emailOutbox.queue(action);
 
@@ -491,10 +517,7 @@ public class CampaignEngine {
         ActionInterface next = action.getAssociated();
 
         if(next != null){
-            if(purge)
-                queueAction( next, connection );
-
-            action.store(connection);
+           queueAction( next, connection );
 
         }
     }

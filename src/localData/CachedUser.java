@@ -21,8 +21,9 @@ public class CachedUser {
     public final int failPush;
     public int desktopSessions;
     public int iosSessions;
+    public Timestamp firstMobileSession;
 
-    public CachedUser(String facebookId, Timestamp lastSession, int failMail, int failNotification, int failPush, int desktopSessions, int iosSessions){
+    public CachedUser(String facebookId, Timestamp lastSession, int failMail, int failNotification, int failPush, int desktopSessions, int iosSessions, Timestamp firstMobileSession){
 
 
         this.facebookId = facebookId;
@@ -32,6 +33,7 @@ public class CachedUser {
         this.failPush = failPush;
         this.desktopSessions = desktopSessions;
         this.iosSessions = iosSessions;
+        this.firstMobileSession = firstMobileSession;
     }
 
 

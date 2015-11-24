@@ -38,9 +38,9 @@ public abstract class AbstractEmail implements EmailInterface{
 
         return new JSONObject()
                 .put("template", template)
-                .put("subject", subject)
-                .put("body", body)
-                .put("plainText", plainText);
+                .put("subject", subject.replaceAll("'", ""))
+                .put("body", body.replaceAll("'", ""))
+                .put("plainText", plainText.replaceAll("'", ""));
     }
 
     public String getBody() {

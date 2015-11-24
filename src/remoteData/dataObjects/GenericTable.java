@@ -115,11 +115,13 @@ public class GenericTable {
     }
 
 
-
-    protected void close() {
+    public void close() {
 
         try {
+
+            resultSet.close();
             statement.close();
+
         } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

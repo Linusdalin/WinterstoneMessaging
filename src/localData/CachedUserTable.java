@@ -41,7 +41,7 @@ public class CachedUserTable extends GenericTable {
 
             //    public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed,Timestamp created, int totalWager, int balance, int nextNumberOfPicks){
 
-            return new CachedUser(resultSet.getString(1), resultSet.getTimestamp(2), resultSet.getInt(3) , resultSet.getInt(4) , resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7));
+            return new CachedUser(resultSet.getString(1), resultSet.getTimestamp(2), resultSet.getInt(3) , resultSet.getInt(4) , resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7), resultSet.getTimestamp(8));
 
 
         } catch (SQLException e) {
@@ -105,9 +105,18 @@ public class CachedUserTable extends GenericTable {
 
     }
 
-    public void updateTime(CachedUser user, Connection connection) {
+    public void updateTime(CachedUser user, boolean iOsSession, Timestamp sessionTime, Connection connection) {
 
-        String updateQuery = "UPDATE user SET lastSession='" + user.lastSession + "' WHERE facebookId='"+user.facebookId+"'";
+        if(iOsSession){
+
+            System.out.println(" !! Found iosSession for player " + user.facebookId + " updating user info");
+        }
+
+
+        String updateQuery = "UPDATE user SET lastSession='" + user.lastSession +
+                "', "+(iOsSession ? "iosSessions = iosSessions + 1": "desktopSessions = desktopSessions + 1")+
+                 (iOsSession && user.iosSessions == 0 ? ", firstMobile = '"+ sessionTime.toString() +"'": "")+
+                " WHERE facebookId='"+user.facebookId+"'";
 
         try{
 
@@ -169,6 +178,26 @@ public class CachedUserTable extends GenericTable {
 
     }
 
+    public void updateFailPush(String facebookId, Connection connection) {
+
+        String updateQuery = "UPDATE user SET failPush=failPush+1  WHERE facebookId='"+facebookId+"'";
+
+        try{
+
+            Statement statement = connection.createStatement();
+            //System.out.println(updateQuery);
+
+            // execute update SQL stetement
+            statement.execute(updateQuery);
+
+        } catch (SQLException e) {
+
+
+            System.out.println(e.getMessage());
+
+        }
+
+    }
 
 
 }

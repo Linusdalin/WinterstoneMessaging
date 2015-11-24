@@ -61,7 +61,7 @@ public class ExecutionStatistics {
 
     public void registerSelected(ActionInterface selectedAction) {
 
-        int campaignIndex = getCampaignIndex(selectedAction);
+        int campaignIndex = getCampaignIndex(selectedAction.getCampaign());
 
         if(campaignStatistics[campaignIndex] == null)
             campaignStatistics[campaignIndex] = new CampaignStatistics(selectedAction.getCampaign());
@@ -84,7 +84,7 @@ public class ExecutionStatistics {
 
     public void registerOverrun(ActionInterface action) {
 
-        int campaignIndex = getCampaignIndex(action);
+        int campaignIndex = getCampaignIndex(action.getCampaign());
 
         if(campaignStatistics[campaignIndex] == null)
             campaignStatistics[campaignIndex] = new CampaignStatistics(action.getCampaign());
@@ -93,6 +93,16 @@ public class ExecutionStatistics {
 
     }
 
+    public void registerCoolDown(CampaignInterface campaign) {
+
+        int campaignIndex = getCampaignIndex(campaign.getName());
+
+        if(campaignStatistics[campaignIndex] == null)
+            campaignStatistics[campaignIndex] = new CampaignStatistics(campaign.getName());
+
+        campaignStatistics[campaignIndex].countCoolDown();
+
+    }
 
     public void registerOutcome(int reason){
 
@@ -103,17 +113,17 @@ public class ExecutionStatistics {
 
     }
 
-    private int getCampaignIndex(ActionInterface action) {
+    private int getCampaignIndex(String campaignName) {
 
         int campaignIx = 0;
         for (CampaignInterface activeCampaign : activeCampaigns) {
 
-            if(activeCampaign.getName().equals(action.getCampaign()))
+            if(activeCampaign.getName().equals(campaignName))
                 return campaignIx;
             campaignIx++;
         }
 
-        throw new RuntimeException("Could not find campaign " + action.getCampaign() + " references from action");
+        throw new RuntimeException("Could not find campaign " + campaignName + " references from action");
 
     }
 
@@ -143,9 +153,9 @@ public class ExecutionStatistics {
         out.append("Cool down: " + totalPlayerOutcome[ COOLDOWN ] + "\n");
         out.append("Missed:    " + totalPlayerOutcome[ MISSED ] + "\n");
 
-        for (int i = 6; i < strikeCount.length; i++) {
-            out.append(" - Strikeout: " + i + ": " + strikeCount[i] + "\n");
-        }
+        //for (int i = 6; i < strikeCount.length; i++) {
+        //    out.append(" - Strikeout: " + i + ": " + strikeCount[i] + "\n");
+        //}
 
         out.append("\nCompletely overlooked pretty active players: " + overLooked + "\n");
 

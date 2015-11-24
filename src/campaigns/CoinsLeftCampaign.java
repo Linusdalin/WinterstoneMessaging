@@ -32,7 +32,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
     private static final int INACTIVITY_LIMIT2   = 25;   // 25 days inactivity before stopping
 
 
-    private static final int COINS_FOR_FREE_PLAYER           = 4500;
+    private static final int COINS_FOR_FREE_PLAYER           = 3000;
     private static final int COINS_FOR_LOW_SPENDER           = 15000;
     private static final int COINS_FOR_HIGH_SPENDER          = 20000;
 
@@ -112,7 +112,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                     return new NotificationAction("SlotAmerica is open for business. You have "+ user.balance+" coins left on your account. Click here to enjoy them in the Casino ",
                             user, executionTime, getPriority(), getTag(), Name, 2, getState(), responseFactor)
                             .attach(new EmailAction(coinLeftEmail(user),
-                                    user, executionTime, getPriority(), Name, 1, getState(), responseFactor));
+                                    user, executionTime, getPriority(), Name, 2, getState(), responseFactor));
 
                 }
                 else

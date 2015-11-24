@@ -127,18 +127,18 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
             if(isPaying(user)){
 
 
-                return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationPaying.getCoins()+" coins extra on top of the bonus for you to play with on your account. Click here to collect and play!",
-                        user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
-                        .withReward(RewardRepository.freeCoinAcitivationPaying);
+                //return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationPaying.getCoins()+" coins extra on top of the bonus for you to play with on your account. Click here to collect and play!",
+                //        user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
+                //        .withReward(RewardRepository.freeCoinAcitivationPaying);
 
 
 
             }
             else{
 
-                return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivationFree.getCoins()+" free coins for you to play with on your account. Click here to collect and play!",
+                return new NotificationAction( user.name +", We have added "+ RewardRepository.freeCoinAcitivation.getCoins()+" free coins for you to play with on your account. Click here to collect and play!",
                         user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor)
-                        .withReward(RewardRepository.freeCoinAcitivationFree);
+                        .withReward(RewardRepository.freeCoinAcitivation);
 
             }
 

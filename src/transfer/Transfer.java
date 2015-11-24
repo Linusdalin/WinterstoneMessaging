@@ -158,9 +158,7 @@ public class Transfer {
 
             while(session != null){
 
-                //System.out.println("Got payment: " + payment.toString());
                 session.store(localConnection);
-
                 session = table.getNext();
                 count++;
 

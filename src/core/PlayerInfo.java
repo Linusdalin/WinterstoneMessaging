@@ -1,5 +1,6 @@
 package core;
 
+import localData.CachedUser;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.Payment;
@@ -123,14 +124,34 @@ public class PlayerInfo {
      *
      * @return     - profile classification
      *
-     *          //TODO: Not implemented classification of profile
+     *          //TODO: Not implemented ALL classifications
      *
      */
 
     public UsageProfileClassification getUsageProfile(){
 
+        if(user.facebookId.startsWith("ap_"))
+            return UsageProfileClassification.ANONYMOUS;
+
+        CachedUser user = dbCache.getCachedUser(this.user);
+
+        if(user == null)
+            return UsageProfileClassification.UNKNOWN;
+
+        if(user.desktopSessions > 0 && user.iosSessions == 0)
+            return UsageProfileClassification.CANVAS;
+
+        if(user.iosSessions > 0)
+            return UsageProfileClassification.MOBILE_TRY;
+
         return UsageProfileClassification.UNKNOWN;
 
     }
 
+    public Timestamp getFirstMobileSession(){
+
+        CachedUser user = dbCache.getCachedUser(this.user);
+        return user.firstMobileSession;
+
+    }
 }

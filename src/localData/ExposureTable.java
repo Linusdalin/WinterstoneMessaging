@@ -95,6 +95,7 @@ public class ExposureTable extends GenericTable {
         load(connection, "and user= '"+ facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)");
         List<Exposure> exposuresForUser = getAll();
         System.out.println("Found " + exposuresForUser.size() + " exposures for user " + facebookId);
+        close();
         return exposuresForUser.size();
 
     }

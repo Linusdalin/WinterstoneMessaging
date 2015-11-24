@@ -26,7 +26,9 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
     // Campaign config data
     private static final String Name = "GameNotification";
     private static final int CoolDown_Days = 5;     // Avoid duplicate runs
-    private static final int[] MessageIds = { 1, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+    private static final int[] MessageIds = { 1, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                                            21, 22, 23,24,
+                                            31, 32, 33, 34};
 
 
     private static final String Day1 = "torsdag";   // Swedish due to locale on test computer
@@ -35,7 +37,7 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
     private static final String Day4 = "söndag";   // Swedish due to locale on test computer
 
 
-    private static final int INACTIVITY_LIMIT_FREE      = 18;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 16;   // Max days inactivity to get message
     private static final int INACTIVITY_LIMIT_PAYING    = 75;   // Max days inactivity to get message
     private static final int ACTIVITY_MIN   = 12;               // Min sessions to be active
 
@@ -265,7 +267,7 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
 
         }
 
-        System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification to a sunday to ANY player not addressed yet "+ favouriteDay+")"+ "  " +playerInfo.getReceptivityForPlayer().toString());
+        System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification to ANY player not addressed yet "+ favouriteDay+")"+ "  " +playerInfo.getReceptivityForPlayer().toString());
         return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  24, getState(), responseFactor)
                 .withGame(gameCode);
 

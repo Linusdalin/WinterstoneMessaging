@@ -96,6 +96,10 @@ public class Outbox {
                     table.updateFailNotification(user, connection);
                     System.out.println(" --- Updating failed Notification for player " + user);
                     break;
+                case PUSH:
+                    table.updateFailPush(user, connection);
+                    System.out.println(" --- Updating failed Push for player " + user);
+                    break;
                 case MANUAL_ACTION:
                     break;
                 case EMAIL:

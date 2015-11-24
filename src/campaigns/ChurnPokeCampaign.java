@@ -86,7 +86,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             }
 
-            return new NotificationAction("Hello, your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+            return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
                     user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
 
 

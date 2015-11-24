@@ -26,4 +26,11 @@ public enum UsageProfileClassification {
     public boolean isAnnymousMobile() {
         return this == ANONYMOUS;
     }
+
+    public boolean hasTriedMobile(){
+
+        return this == HALF_HALF || this == MOBILE_TRY || isMobilePlayer();
+    }
+
+
 }

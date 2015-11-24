@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.GiveCoinAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import receptivity.ReceptivityProfile;
@@ -95,7 +96,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
         }
 
-        if(idleDays == 6 && isRightDay(playerInfo, executionTime, ReceptivityProfile.SignificanceLevel.GENERAL)){
+        if(idleDays == 5 || idleDays == 6 || idleDays == 7 && isRightDay(playerInfo, executionTime, ReceptivityProfile.SignificanceLevel.GENERAL)){
 
 
             System.out.println("    -- Sending a six  day activation poke on the correct day" );
@@ -118,13 +119,20 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
         // Added a desperation notification here to get players back
 
-        if(idleDays > 12 && isRightDay(playerInfo, executionTime, ReceptivityProfile.SignificanceLevel.GENERAL)){
+        if(idleDays > 12  && isRightDay(playerInfo, executionTime, ReceptivityProfile.SignificanceLevel.GENERAL)){
 
 
             //System.out.println("    -- Sending a twelve day activation poke" );
             //return new NotificationAction("You have got 2000 coins extra to check out the cool level bonus system. Check out the rewards by clicking on the level bar.!",
             //        user, executionTime, getPriority(), getTag(),  Name, 5, getState(), responseFactor)
             //        .attach(new GiveCoinAction(2000, user, executionTime, getPriority(), Name, 5, getState(), responseFactor));
+
+
+            System.out.println("    -- Sending a twelve day activation poke" );
+            return new NotificationAction(user.name + ", you have got 6,000 coins extra to check out the cool level bonus system. Check out the rewards by clicking on the level bar.!",
+                    user, executionTime, getPriority(), getTag(),  Name, 5, getState(), responseFactor)
+                    .attach(new GiveCoinAction(6000, user, executionTime, getPriority(), Name, 6, getState(), responseFactor));
+
 
         }
 
