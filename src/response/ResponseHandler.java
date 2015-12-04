@@ -147,7 +147,7 @@ public class ResponseHandler {
     /********************************************************************
      *
      *          This is a simplification.
-     *          //TODO: Look for exposures AFTER the last response
+     *          //TODO: Improvement: Look for exposures AFTER the last response
      *
      *
      * @return

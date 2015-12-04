@@ -48,7 +48,7 @@ public class ActionTable extends GenericTable {
             if(!resultSet.next())
                 return null;
 
-            return createAction(resultSet.getInt(1), resultSet.getTimestamp(2), resultSet.getString(3), resultSet.getString(4), new JSONObject(resultSet.getString(5)));
+            return createAction(resultSet.getInt(1), resultSet.getInt(2), resultSet.getTimestamp(3), resultSet.getString(4), resultSet.getString(5), new JSONObject(resultSet.getString(6)));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,16 +64,17 @@ public class ActionTable extends GenericTable {
      *
      *
      *
+     *
      * @param id
+     * @param timeSlot
      * @param timeStamp
      * @param type                 - the type of action
      * @param status
-     * @param actionData           - the data of the action
-     * @return
+     * @param actionData           - the data of the action     @return
      */
 
 
-    private ActionInterface createAction(int id, Timestamp timeStamp, String type, String status, JSONObject actionData) {
+    private ActionInterface createAction(int id, int timeSlot, Timestamp timeStamp, String type, String status, JSONObject actionData) {
 
         ActionInterface action = null;
 
@@ -99,28 +100,33 @@ public class ActionTable extends GenericTable {
             String message = actionData.getString("message");
             String ref = "notification";
 
-            action = new NotificationAction(id, message, parameter, timeStamp, significance, ref, campaign, messageId, state, responseFactor);
+            action = new NotificationAction(id, message, parameter, timeStamp, significance, ref, campaign, messageId, state, responseFactor)
+                    .scheduleInTime(timeSlot);
+
         }
 
         if(type.equals(ActionType.EMAIL.name())){
 
             EmailInterface email = new NotificationEmail(actionData.getJSONObject("email"));
 
-            action = new EmailAction(id, email, parameter, timeStamp, significance, campaign, messageId, state, responseFactor);
+            action = new EmailAction(id, email, parameter, timeStamp, significance, campaign, messageId, state, responseFactor)
+                    .scheduleInTime(timeSlot);
         }
 
         if(type.equals(ActionType.COIN_ACTION.name())){
 
             int amount = actionData.getInt("amount");
 
-            action = new GiveCoinAction(id, amount, parameter, timeStamp, significance, campaign, messageId, state, responseFactor);
+            action = new GiveCoinAction(id, amount, parameter, timeStamp, significance, campaign, messageId, state, responseFactor)
+                .scheduleInTime(timeSlot);
         }
 
         if(type.equals(ActionType.MANUAL_ACTION.name())){
 
             String message = actionData.getString("message");
 
-            action = new ManualAction(id, message, parameter, timeStamp, significance, campaign, messageId, state, responseFactor);
+            action = new ManualAction(id, message, parameter, timeStamp, significance, campaign, messageId, state, responseFactor)
+                .scheduleInTime(timeSlot);
         }
 
         if(type.equals(ActionType.PUSH.name())){
@@ -128,7 +134,8 @@ public class ActionTable extends GenericTable {
             String message = actionData.getString("message");
             String ref = "notification";
 
-            action = new MobilePushAction(id, message, parameter, timeStamp, significance, ref, campaign, messageId, state, responseFactor);
+            action = new MobilePushAction(id, message, parameter, timeStamp, significance, ref, campaign, messageId, state, responseFactor)
+                        .scheduleInTime(timeSlot);
         }
 
 

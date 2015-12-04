@@ -377,4 +377,5 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return cal.get(java.util.Calendar.DAY_OF_WEEK);
     }
 
+
 }

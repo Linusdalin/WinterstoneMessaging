@@ -14,11 +14,10 @@ import java.net.URLEncoder;
  */
 
 
-public class PushHandler {                             //TODO: Fix parameters
+public class PushHandler {
 
     private static final String pushService = "https://slotamerica:fruitclub@data-warehouse.slot-america.com/sendNotification/";
 
-    //private static final String mailService = "http://slotamerica:fruitclub@dev.slot-america.com:3302/sendNotification/?playerId=10152816515441025&message=test";
     private static final int MAX_MESSAGE_SIZE = 180;           //TODO: Check this. What is the max size for a push message
 
     private String overrideUser = null;

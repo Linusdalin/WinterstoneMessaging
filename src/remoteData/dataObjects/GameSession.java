@@ -46,7 +46,7 @@ public class GameSession {
     private int totalSpins;
     public String clientType;
 
-    GameSession(Timestamp timeStamp, String sessionId, String game, String facebookId,
+    public GameSession(Timestamp timeStamp, String sessionId, String game, String facebookId,
                 String name, String promocode, String fbSource, Timestamp actionTime, int totalWager, int totalWin, int endBalance, int spins, int totalSpins,
                 String clientType){
         this.timeStamp = timeStamp;

@@ -35,4 +35,7 @@ public interface ActionInterface {
 
     void store(Connection connection);
     void updateAsExecuted(Connection connection);
+
+    int getSchedulingTime();
+
 }

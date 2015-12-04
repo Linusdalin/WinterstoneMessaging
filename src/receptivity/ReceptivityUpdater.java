@@ -20,6 +20,15 @@ public class ReceptivityUpdater {
 
     public static void main(String[] arg){
 
+        ReceptivityUpdater updater = new ReceptivityUpdater();
+        updater.executeUpdate();
+
+    }
+
+
+    public void executeUpdate(){
+
+
         System.out.println(" *******************************************************\n * Updating receptivity database");
 
         Connection connection    = ConnectionHandler.getConnection(ConnectionHandler.Location.local);

@@ -35,8 +35,6 @@ public class TimeAnalyser {
      *          Calculate eligibility for receiving a message
      *
      *          //TODO: Add a back-off when overall response goes down
-     *          //TODO: Use the response rate to increate the limit
-     *
      *
      * @param campaignExposures     - campaign exposures
      * @param handler               - handler for all responses to lookup response frequency
@@ -96,11 +94,11 @@ public class TimeAnalyser {
      *          Calculate the response factor for a specific campaign based on previous response
      *
      *
-     *          //TODO: This is pretty simple. Could be improved upon
+     *          //TODO: Improvement: This is pretty simple. Could be improved upon
      *
      * @param user                          - the user
      * @param campaign                      - the specific campaign
-     * @return
+     * @return                              - a rate
      */
 
     public double getResponseAdjustment(User user, CampaignInterface campaign) {

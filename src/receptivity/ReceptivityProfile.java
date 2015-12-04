@@ -27,6 +27,10 @@ public class ReceptivityProfile {
     public static final int Significant = 1;
     public static final int Not_significant = -1;
 
+    public static final int DAY     = 0;
+    public static final int EVENING = 1;
+    public static final int NIGHT   = 2;
+
     // Level of significance requested
     public enum SignificanceLevel { SPECIFIC, GENERAL}
 
@@ -68,6 +72,27 @@ public class ReceptivityProfile {
         this.totalSessions = sum(sessionsPerDay);
 
     }
+
+    public ReceptivityProfile(String userId, int[][] sessions){
+
+        this.userId = userId;
+
+        this.profile = new int[][] {
+                {sessions[0][0], sessions[0][1], sessions[0][2]},
+                {sessions[1][0], sessions[1][1], sessions[1][2]},
+                {sessions[2][0], sessions[2][1], sessions[2][2]},
+                {sessions[3][0], sessions[3][1], sessions[3][2]},
+                {sessions[4][0], sessions[4][1], sessions[4][2]},
+                {sessions[5][0], sessions[5][1], sessions[5][2]},
+                {sessions[6][0], sessions[6][1], sessions[6][2]},
+
+
+        };
+
+        this.totalSessions = sum(sessions);
+
+    }
+
 
 
     public ReceptivityProfile(String userId, int[][] data, Timestamp lastUpdate){
@@ -143,12 +168,12 @@ public class ReceptivityProfile {
         int hour = cal.get(Calendar.HOUR_OF_DAY);
 
         if(hour >= 6 && hour < 17 )
-            return 0;
+            return DAY;
 
         if(hour >= 17 )
-            return 1;
+            return EVENING;
 
-            return 2;
+            return NIGHT;
 
     }
 
@@ -263,6 +288,85 @@ public class ReceptivityProfile {
         return Not_significant;
 
     }
+
+
+    /**************************************************************************
+     *
+     *              Get the preferred time of day for the player
+     *
+     *
+     *
+     * @param significanceLevel
+     * @return
+     */
+
+    public int getFavouriteTimeOfDay(SignificanceLevel significanceLevel) {
+
+        int bestTime = -1;
+        int bestTimeSessions = 0;
+        int worstTimeSessions = 999999999;
+
+        for(int timeOfDay = 0; timeOfDay < 3; timeOfDay++){
+
+            int sessionsForTime = sum(profile, timeOfDay);
+            if(sessionsForTime > bestTimeSessions){
+
+                bestTime = timeOfDay;
+                bestTimeSessions = sessionsForTime;
+            }
+
+            if(sessionsForTime < worstTimeSessions){
+
+                worstTimeSessions = sessionsForTime;
+            }
+
+        }
+
+        double factor;
+
+        // The factor will define how big the significant day is compared to the average
+
+        if(significanceLevel == SignificanceLevel.GENERAL)
+            factor = 1.2;
+        else
+            factor = 1.5;
+
+        // Now check if the day with the most hits is significant
+        // We use a simple formula saying that the number of sessions should be twice the average
+
+        int threshold = (int)((factor * (totalSessions)) / 3);
+
+        if(bestTimeSessions > threshold){
+
+            return bestTime;
+        }
+
+        return Not_significant;
+
+    }
+
+    /*************************************************************
+     *
+     *          Sum all of a time bracket over all days
+     *
+     * @param profile
+     * @param timeOfDay
+     * @return
+     */
+
+    private int sum(int[][] profile, int timeOfDay) {
+
+        int total = 0;
+
+        for (int[] day : profile) {
+
+            total += day[timeOfDay];
+        }
+
+        return total;
+
+    }
+
 
     private int sum(int[] intArray) {
 

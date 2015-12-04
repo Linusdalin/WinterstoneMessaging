@@ -8,7 +8,6 @@ import email.EmailInterface;
 import email.NotificationEmail;
 import remoteData.dataObjects.User;
 import rewards.Reward;
-import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
@@ -18,7 +17,7 @@ import java.sql.Timestamp;
  *          Sending out a message to the mobile players about a new game release
  */
 
-public class MobileCrossPromotionCampaign extends AbstractCampaign implements CampaignInterface {
+public class MobileCrossPromotionCampaign extends AbstractMobileCampaign implements CampaignInterface {
 
     // Campaign config data
     private static final String Name = "CrossPromotion";
@@ -28,11 +27,11 @@ public class MobileCrossPromotionCampaign extends AbstractCampaign implements Ca
     private static final String GameLink = "https://app.adjust.com/drl7ga?deep_link=slotamerica://&campaign=";
     private static final String ImageLink = "http://slamdunkgaming.com/IpadIphone.png";
 
-    private static final int INACTIVITY_LIMIT_FREE      = 18;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 50;   // Max days inactivity to get message
     private static final int INACTIVITY_LIMIT_PAYING    = 75;   // Max days inactivity to get message
-    private static final int ACTIVITY_MIN   = 12;               // Min sessions to be active
+    private static final int ACTIVITY_MIN   = 10;               // Min sessions to be active
 
-    private static final int DAILY_LIMIT   = 400;               // Min sessions to be active
+    private static final int DAILY_LIMIT   = 1000;               // Mails per day
 
     private int count = 0;
 
@@ -166,12 +165,6 @@ public class MobileCrossPromotionCampaign extends AbstractCampaign implements Ca
     }
 
 
-
-    //TODO: Different actions depending on user (payments and frequency)
-
-    private Reward getRewardForUser(User user) {
-        return RewardRepository.mobile1;
-    }
 
 
     /*********************************************************************

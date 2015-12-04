@@ -25,14 +25,23 @@ public class Transfer {
 
     public static void main(String[] args){
 
-        System.out.println("*********************************************************\n* Transferring data from the main database to local mirror...");
-
         Transfer transfer = new Transfer();
-        transfer.paymentTransfer();
-        transfer.sessionTransfer();
-        transfer.close();
+        transfer.executeTransfer();
 
     }
+
+
+    public void executeTransfer(){
+
+        System.out.println("*********************************************************\n* Transferring data from the main database to local mirror...");
+
+        paymentTransfer();
+        sessionTransfer();
+        close();
+
+
+    }
+
 
     private void close() {
 
@@ -57,7 +66,7 @@ public class Transfer {
 
     }
 
-    Transfer(){
+    public Transfer(){
 
         localConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
 

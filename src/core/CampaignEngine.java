@@ -480,12 +480,8 @@ public class CampaignEngine {
      *
      *          Put the actions in the correct outbox (depending on type)
      *
-     *
      * @param action             - the action
      *
-     *
-     *        // TODO: Use the action stored in the database and remove the outboxes
-     *        // TODO: Implement replace here if there already is an action for the user queued
      */
 
 

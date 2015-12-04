@@ -75,8 +75,6 @@ public class NotificationHandler {
             return false;
         }
 
-
-
         if(dummyOverride != null){
 
             // Use dummy override to send out ONE controlled message for the first
@@ -84,12 +82,7 @@ public class NotificationHandler {
 
         }
 
-        //recipient = "627716024"; //TODO: Remove this when tested to actually send
-        //recipient = "105390519812878";
-
-
         RequestHandler requestHandler = new RequestHandler("https://graph.facebook.com/v2.3/" + recipient + "/notifications");
-
 
         String response = requestHandler.executePost("access_token=" + accessToken + "&href=?promoCode="+ this.promoCode+
                 (reward != null ? "%26reward="+ reward : "")+

@@ -27,11 +27,15 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
     private static final String Name = "ChurnPoke";
     private static final int CoolDown_Days = 6;
     private int[] MessageIds = {3,  8, 9, 15, 14, 29, 30,
-                                203};
+                                203,
+                                1000, 1001, 1002, 1010, 1011, 1012, 1020, 1021, 1022           // Temp test for time scheduling
+
+    };
 
 
     // Trigger specific config data
     private static final int Min_Sessions = 9;
+    private static final boolean AB_TEST_ACTIVE = false;
 
     ChurnPokeCampaign(int priority, CampaignState active){
 
@@ -86,8 +90,12 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             }
 
-            return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
-                    user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
+            if(AB_TEST_ACTIVE)
+                return timeSchedulingTest(playerInfo, executionTime, responseFactor);
+            else
+                return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                        user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
+
 
 
         }
@@ -168,6 +176,112 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
     }
 
+    /*************************************************************************************************
+     *
+     *              Time of day scheduling test
+     *
+     *
+     *
+     * @param playerInfo
+     * @param executionTime
+     * @param responseFactor
+     * @return
+     */
+
+
+
+    private ActionInterface timeSchedulingTest(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+
+        User user = playerInfo.getUser();
+        int favouriteTime = playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.SPECIFIC);
+
+        switch(favouriteTime){
+
+            case ReceptivityProfile.DAY:
+
+                if(randomize3(user, 0)){
+
+                    // Schedule correctly
+                    return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                            user, executionTime, getPriority(), getTag(),  Name, 1000, getState(), responseFactor)
+                            .scheduleInTime( ReceptivityProfile.DAY );
+                }
+
+                if(randomize3(user, 1)){
+
+                    // Schedule later
+                    return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                            user, executionTime, getPriority(), getTag(),  Name, 1001, getState(), responseFactor)
+                            .scheduleInTime( ReceptivityProfile.EVENING );
+                }
+
+                // Schedule earlier
+                return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                        user, executionTime, getPriority(), getTag(),  Name, 1002, getState(), responseFactor)
+                        .scheduleInTime( ReceptivityProfile.NIGHT );
+
+            case ReceptivityProfile.EVENING:
+
+                if(randomize3(user, 0)){
+
+                    // Schedule correctly
+                    return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                            user, executionTime, getPriority(), getTag(),  Name, 1011, getState(), responseFactor)
+                            .scheduleInTime( ReceptivityProfile.EVENING );
+                }
+
+                if(randomize3(user, 1)){
+
+                    // Schedule later
+                    return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                            user, executionTime, getPriority(), getTag(),  Name, 1012, getState(), responseFactor)
+                            .scheduleInTime( ReceptivityProfile.NIGHT );
+                }
+
+                // Schedule earlier
+                return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                        user, executionTime, getPriority(), getTag(),  Name, 1010, getState(), responseFactor)
+                        .scheduleInTime( ReceptivityProfile.DAY );
+
+            case ReceptivityProfile.NIGHT:
+
+                if(randomize3(user, 0)){
+
+                    // Schedule correctly
+                    return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                            user, executionTime, getPriority(), getTag(),  Name, 1022, getState(), responseFactor)
+                            .scheduleInTime( ReceptivityProfile.DAY );
+                }
+
+                if(randomize3(user, 1)){
+
+                    // Schedule later
+                    return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                            user, executionTime, getPriority(), getTag(),  Name, 1020, getState(), responseFactor)
+                            .scheduleInTime( ReceptivityProfile.EVENING );
+                }
+
+                // Schedule earlier
+                return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                        user, executionTime, getPriority(), getTag(),  Name, 1021, getState(), responseFactor)
+                        .scheduleInTime( ReceptivityProfile.NIGHT );
+
+
+            default:
+
+                // No specific time of day for user.
+
+                return new NotificationAction("Hello "+ user.name+", your daily bonus is waiting for you at Slot America. Click here to claim it NOW!",
+                        user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor)
+                        .scheduleInTime( favouriteTime );
+
+        }
+
+
+
+
+
+    }
 
 
     private EmailInterface churnPokeEmail(User user) {

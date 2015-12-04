@@ -34,6 +34,7 @@ public abstract class Action implements ActionInterface{
     protected String promoCode;
 
     protected ActionParameter actionParameter;
+    private int timeSlot;
 
 
     /*******************************************************************************************
@@ -93,6 +94,13 @@ public abstract class Action implements ActionInterface{
     public ActionInterface getAssociated() {
         return next;
     }
+
+    public ActionInterface scheduleInTime(int timeSlot) {
+
+        this.timeSlot = timeSlot;
+        return this;
+    }
+
 
 
     public boolean isLive() {
@@ -212,7 +220,7 @@ public abstract class Action implements ActionInterface{
     public void store(Connection connection, JSONObject data){
 
 
-        String insert = "insert into action values (0, '" + timestamp.toString() + "', '" + type.name()+ "', 'PENDING', '" + data.toString() + "')";
+        String insert = "insert into action values (0, " + timeSlot + ", '" + timestamp.toString() + "', '" + type.name()+ "', 'PENDING', '" + data.toString() + "')";
 
         System.out.println("Store action with: " + insert);
 
@@ -257,6 +265,11 @@ public abstract class Action implements ActionInterface{
         }
 
 
+    }
+
+    @Override
+    public int getSchedulingTime() {
+        return timeSlot;
     }
 
 

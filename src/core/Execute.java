@@ -1,6 +1,8 @@
 package core;
 
 import dbManager.ConnectionHandler;
+import receptivity.ReceptivityUpdater;
+import transfer.Transfer;
 
 /************************************************************************************
  *
@@ -30,8 +32,8 @@ import dbManager.ConnectionHandler;
 public class Execute {
 
         private static final int     Threshold              = 50;
-        private static final int     Send_Cap               = 10000;
-        private static final int     User_Cap               = 360000;
+        private static final int     Send_Cap               = 7000;
+        private static final int     User_Cap               = 400000;
         private static final boolean DRY_RUN                = false;
         private static final boolean OVERRIDE_TIME_CONSTR   = true;
         private static final String  UserScrapeStart        = "0000-00-00";
@@ -40,6 +42,9 @@ public class Execute {
         private static final boolean SEND_EMAIL             = true;
         private static final int     BatchSize              = 50000;
 
+
+        private static final boolean Transfer               = true;
+        private static final boolean Receptivity_Update     = true;
         private static final boolean Instant_Purge          = true;
 
 
@@ -85,6 +90,21 @@ public class Execute {
 
         System.out.print("Start Run?\n>");
         CampaignEngine.waitReturn();
+
+        if(Transfer){
+
+            Transfer transfer = new Transfer();
+            transfer.executeTransfer();
+        }
+
+        if(Receptivity_Update){
+
+            ReceptivityUpdater updater = new ReceptivityUpdater();
+            updater.executeUpdate();
+
+
+        }
+
         engine.executeRun(UserScrapeStart);
 
     }

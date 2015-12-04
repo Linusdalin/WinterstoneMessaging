@@ -19,6 +19,8 @@ public class Send {
     private static final boolean SEND_EMAIL             = true;
     private static final int BACK_TRACK_DAYS            = 0;
 
+    private static final int TimeSlot                   = -1;                                   // 0 = day (17:00), 1 = evening (00:00), 2 = night (06:00)
+
 
     /********************************************************************
      *
@@ -64,7 +66,7 @@ public class Send {
         Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
 
 
-        engine.executeSend(executionTime, BACK_TRACK_DAYS);
+        engine.executeSend(executionTime, BACK_TRACK_DAYS, TimeSlot);
 
     }
 

@@ -6,7 +6,6 @@ import core.PlayerInfo;
 import core.UsageProfileClassification;
 import remoteData.dataObjects.User;
 import rewards.Reward;
-import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
@@ -16,7 +15,7 @@ import java.sql.Timestamp;
  *          Sending out a message to the mobile players about a new game release
  */
 
-public class MobileConversionWelcomeCampaign extends AbstractCampaign implements CampaignInterface {
+public class MobileConversionWelcomeCampaign extends AbstractMobileCampaign implements CampaignInterface {
 
     // Campaign config data
     private static final String Name = "ConversionWelcome";
@@ -114,13 +113,6 @@ public class MobileConversionWelcomeCampaign extends AbstractCampaign implements
 
         return action;
 
-    }
-
-
-    //TODO: Different actions depending on user (payments and frequency)
-
-    private Reward getRewardForUser(User user) {
-        return RewardRepository.mobile1;
     }
 
 

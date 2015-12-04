@@ -10,8 +10,8 @@ import java.sql.Timestamp;
  *
  *          Handle and calculate significance
  *
- *          //TODO: Add a method for registering a payment. It should be significant
- *          //TODO: Add more significance for longer sessions
+ *          //TODO: Improvement: Add a method for registering a payment. It should be significant
+ *          //TODO: Improvement: Add more significance for longer sessions
  *
  */
 
