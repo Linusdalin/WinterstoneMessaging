@@ -33,8 +33,8 @@ public class Execute {
 
         private static final int     Threshold              = 50;
         private static final int     Send_Cap               = 7000;
-        private static final int     User_Cap               = 400000;
-        private static final boolean DRY_RUN                = false;
+        private static final int     User_Cap               = 1000;
+        private static final boolean DRY_RUN                = true;
         private static final boolean OVERRIDE_TIME_CONSTR   = true;
         private static final String  UserScrapeStart        = "0000-00-00";
         private static final String  TEST_USER              = null;                           // "627716024";          // Tina:     "105390519812878";

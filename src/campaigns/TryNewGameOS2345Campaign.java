@@ -1,39 +1,39 @@
 package campaigns;
 
 import action.ActionInterface;
-import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
-import email.EmailInterface;
-import email.NotificationEmail;
-import recommendation.GameRecommendation;
 import recommendation.GameRecommender;
 import remoteData.dataObjects.User;
+import rewards.Reward;
+import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
 
 /************************************************************************'
  *
- *              Sending a message to players that have not played the new game
+ *          Giving free spins to players that have not tried a specific game
  *
  */
 
-public class GameActivationCampaign extends AbstractCampaign implements CampaignInterface {
+public class TryNewGameOS2345Campaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "GameActivationPoke";
-    private static final int CoolDown_Days = 15;
+    private static final String Game = "os2345x";
+    private static final String GameName = "Old School 2x3x4x5x";
+    private static final String Name = "TryNewGame"+Game;
+    private static final int CoolDown_Days = 9999;            // Just once per game
     private int[] MessageIds = {1, 2};
 
 
     // Trigger specific config data
-    private static final int Min_Sessions = 12;
-    private static final int Min_Inactivity = 6;
-    private static final int Max_Inactivity = 100;
-    private static final int Max_Inactivity_Notification = 32;
+    private static final int Min_Sessions = 30;
+    private static final int Min_Inactivity = 5;
+    private static final int Max_Inactivity = 32;
+    private static final int SwitchToEmail = 9999;   //TODO: Optimize this
 
-    GameActivationCampaign(int priority, CampaignState active){
+    TryNewGameOS2345Campaign(int priority, CampaignState active){
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
@@ -88,35 +88,49 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
 
         GameRecommender recommender = new GameRecommender(playerInfo, executionTime);
-        GameRecommendation gameRecommendation = recommender.getMissedNewGameRecommendation();
+        boolean hasTried = recommender.hasTried(Game);
 
-        if(gameRecommendation == null){
+        if(hasTried){
 
-            System.out.println("    -- Campaign " + Name + " not firing. No game to promote" );
+            System.out.println("    -- Campaign " + Name + " not firing. Player already tried " + Game );
             return null;
 
         }
 
-        if(inactivity < Max_Inactivity_Notification){
+        // Decide on a reasonable Freespin promotion
 
-            System.out.println("    -- Sending a game recommendation \"" + gameRecommendation.getRecommendation() + "\n" );
-            return new NotificationAction("We have a new game for you! Check out " + gameRecommendation.getRecommendation(),
+        Reward reward = decideReward(playerInfo.getUser());
+
+        if(!RewardRepository.hasClaimed(user, reward)){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Player already claimed freespin reward for " + Game );
+            return null;
+
+        }
+
+
+         if(inactivity < SwitchToEmail){
+
+            System.out.println("    -- Sending freespin offer for game " + Game + "\n" );
+            return new NotificationAction("We have added " + reward.getCoins() + " free spins for you in the game " + GameName + " click here to claim and play for free!",
                     user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
-                    .withGame(gameRecommendation.getCode());
+                    .withGame(Game)
+                    .withReward(reward);
 
         }
         else{
 
             // Sending a mail instead
 
-            System.out.println("    -- Sending an EMAIL  game recommendation \"" + gameRecommendation.getRecommendation() + "\n" );
-            return new EmailAction(gameActivationEmail(user, gameRecommendation), user, executionTime, getEmailPriority(), getTag(), 2, getState(), responseFactor);
-
+            System.out.println("    -- NO EMAIL IMPLEMENTED for freespin offer \"" + Game + "\n" );
+            return null;
 
 
         }
 
     }
+
+    /*
 
     private EmailInterface gameActivationEmail(User user, GameRecommendation recommendation) {
         return new NotificationEmail("we have a recommendation for you", "<p>Don't miss out the new game we released here at Slot America. We think you will like it...</p>" +
@@ -124,6 +138,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
                 "Hello "+ user.name+" Don't miss out the new game we released here at Slot America. We think you will like it...");
     }
 
+*/
 
 
     /*********************************************************************
@@ -139,6 +154,21 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
         return isTooEarly(executionTime, overrideTime);
 
     }
+
+    protected Reward decideReward(User user) {
+
+        if(isHighSpender(user))
+            return RewardRepository.OS2345High;
+
+        if(isPaying(user))
+            return RewardRepository.OS2345Paying;
+
+        if(isFrequent(user))
+            return RewardRepository.OS2345Frequent;
+
+        return RewardRepository.OS2345Rest;
+    }
+
 
 
 

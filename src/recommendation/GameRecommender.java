@@ -2,6 +2,8 @@ package recommendation;
 
 import campaigns.AbstractCampaign;
 import core.PlayerInfo;
+import localData.GamePlay;
+
 import java.sql.Timestamp;
 
 /*****************************************************************'
@@ -49,7 +51,7 @@ public class GameRecommender {
      * @return    - a recommendation of a game (or null for no recommendation)
      */
 
-    public GameRecommendation getGameRecommendation() {
+    public GameRecommendation getMissedNewGameRecommendation() {
 
         Timestamp lastSession = playerInfo.getLastSession();
 
@@ -83,5 +85,13 @@ public class GameRecommender {
         }
 
         return null;
+    }
+
+    public boolean hasTried(String game) {
+
+        GamePlay gamePlay = playerInfo.getGamePlay(game);
+
+        return(gamePlay != null);
+
     }
 }

@@ -18,9 +18,12 @@ public enum UsageProfileClassification {
     CANVAS_PAY               // Plays on mobile but pays on facebook
     ;
 
+
+    //TODO: handle HALF_HALF separately
+
     public boolean isMobilePlayer(){
 
-        return this == ANONYMOUS || this == CONVERTED ||this == CANVAS_PAY ||this == MOBILE_AQU;
+        return this == ANONYMOUS || this == CONVERTED ||this == CANVAS_PAY ||this == MOBILE_AQU||this == HALF_HALF;
     }
 
     public boolean isAnnymousMobile() {
@@ -29,7 +32,7 @@ public enum UsageProfileClassification {
 
     public boolean hasTriedMobile(){
 
-        return this == HALF_HALF || this == MOBILE_TRY || isMobilePlayer();
+        return  this == MOBILE_TRY || isMobilePlayer();
     }
 
 

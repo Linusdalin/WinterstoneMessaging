@@ -198,6 +198,10 @@ public class CampaignEngine {
             System.out.println(" ******************************************\n * Manual Actions ");
 
             manualActionOutbox.purge(executionTime);
+
+            player.playSound(SoundPlayer.ReadyBeep);
+            player.playSound(SoundPlayer.ReadyBeep);
+
         }
 
     }
@@ -228,7 +232,7 @@ public class CampaignEngine {
         ExposureTable campaignExposures = new ExposureTable(tempConnection);
 
         UserTable allPlayers = new UserTable();
-        allPlayers.load(dbConnection, " and users.created >= '"+ startDate+"'", "ASC", batchSize, userCount);      // Restriction for testing
+        allPlayers.load(dbConnection, " and users.created >= '"+ startDate+"' and users.uninstall=0", "ASC", batchSize, userCount);      // Restriction for testing
         User user = allPlayers.getNext();
 
         if(user == null)

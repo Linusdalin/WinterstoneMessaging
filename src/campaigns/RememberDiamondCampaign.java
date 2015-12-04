@@ -100,13 +100,13 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
         if(user.nextNumberOfPicks > 9)
             messageId = 4;
 
-
         // Last session was Between 24 and 42 hours ago and diamond pick is correct. Send the message
 
         System.out.println("    -- Campaign " + Name + " fire notification" );
 
-        if(playerInfo.getUsageProfile().isAnnymousMobile()){
+        if(playerInfo.getUsageProfile().isMobilePlayer()){
 
+            //TODO: Remove Diamond reminder om mobile when it is implemented client side
             messageId += 200;
 
             return new MobilePushAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",

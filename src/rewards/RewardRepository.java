@@ -30,6 +30,10 @@ public class RewardRepository {
     public static final Reward mobilePaying         = new Reward("Mobile Paying",   "5509ff05-bba2-45f5-8973-ee64b6f3c4fa", 10000, true);
     public static final Reward mobileHighRoller     = new Reward("Mobile High",     "4898cd43-02b0-49f6-af17-c220acacd3a6", 15000, true);
 
+    public static final Reward OS2345High           = new Reward("OS High",         "b40a14c3-6738-4d3b-b78c-1d4ecddd8410", 25, true);    //500
+    public static final Reward OS2345Paying         = new Reward("OS Paying",       "57894573-63fd-4044-a70f-ad60ec7b7788", 15, true);    //250
+    public static final Reward OS2345Frequent       = new Reward("OS Fequent",      "31893e9c-bffe-4270-a281-22dd1743540f", 10, true);    //250
+    public static final Reward OS2345Rest           = new Reward("OS Rest",         "4c1c1486-3841-444a-a7e5-d1950387d2da", 10, true);    //100
 
 
     /****************************

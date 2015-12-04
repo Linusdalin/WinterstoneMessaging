@@ -147,11 +147,11 @@ public class ExecutionStatistics {
 
         }
 
-        out.append("Reached:   " + totalPlayerOutcome[ REACHED ] + "\n");
-        out.append("Exposed:   " + totalPlayerOutcome[ EXPOSED ] + "\n");
-        out.append("GivenUp:   " + totalPlayerOutcome[ GIVEUP ] + "\n");
-        out.append("Cool down: " + totalPlayerOutcome[ COOLDOWN ] + "\n");
-        out.append("Missed:    " + totalPlayerOutcome[ MISSED ] + "\n");
+        out.append("Reached:   " + totalPlayerOutcome[ REACHED ] + " (Sending to today)\n");
+        out.append("Exposed:   " + totalPlayerOutcome[ EXPOSED ] + " (Cant reach because the player exposure limit)\n");
+        out.append("GivenUp:   " + totalPlayerOutcome[ GIVEUP ]  + " (No point - no answer)\n");
+        out.append("Cool down: " + totalPlayerOutcome[ COOLDOWN ]+ " (Cant reach because all campaigns are cooling down.\n");
+        out.append("Missed:    " + totalPlayerOutcome[ MISSED ] + "  (No campaign appropriate for the player)\n");
 
         //for (int i = 6; i < strikeCount.length; i++) {
         //    out.append(" - Strikeout: " + i + ": " + strikeCount[i] + "\n");

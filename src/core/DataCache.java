@@ -1,8 +1,6 @@
 package core;
 
-import localData.CachedUser;
-import localData.CachedUserTable;
-import localData.ReceptivityTable;
+import localData.*;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.*;
 import response.ResponseHandler;
@@ -145,7 +143,10 @@ public class DataCache {
 
         while(session != null){
 
-            updateLastSession(session);
+            updateLastSession(session, connection);
+
+            updateGamePlay(session, connection);
+
             ResponseHandler responseHandler = new ResponseHandler(session.facebookId, connection);
             responseHandler.storeResponse(session, connection);
 
@@ -157,7 +158,7 @@ public class DataCache {
     }
 
 
-    private void updateLastSession(GameSession session) {
+    private void updateLastSession(GameSession session, Connection connection) {
 
         cachedUserTable.load(connection, "and facebookId = '" + session.facebookId + "'", "ASC", 1);
         CachedUser cachedUser = cachedUserTable.getNext();
@@ -187,6 +188,39 @@ public class DataCache {
 
     }
 
+
+    public static void updateGamePlay(GameSession session, Connection connection) {
+
+        GamePlayTable table = new GamePlayTable(connection);
+
+        GamePlay gamePlay = table.getGamesForUser(session.facebookId, session.game);
+
+        if(gamePlay == null){
+
+            // Store new
+
+            gamePlay = new GamePlay(session.facebookId, session.game, 1, session.timeStamp);
+            gamePlay.store(connection);
+
+            System.out.println("  - Noting new GamePlay ("+(gamePlay.occurrences + 1)+") by " + gamePlay.facebookId + " with game " + gamePlay.game + " @" + session.timeStamp.toString());
+
+
+        }else{
+
+            if(gamePlay.lastTime.after(session.timeStamp))
+                System.out.println("  - NOT updating older game play of "+ gamePlay+" @ "+ session.timeStamp.toString() +" for user " + gamePlay.facebookId);
+            else{
+
+                table.updateGamePlay(gamePlay, session.timeStamp, connection);
+                System.out.println("  - Updating game play ("+ gamePlay.game+") for user " + gamePlay.facebookId + " @ " + session.timeStamp);
+            }
+        }
+
+
+    }
+
+
+
     //select * from game_session where facebookId= '10154214671319358' and date(timestamp) = date(date_sub('2015-08-25', interval 1 day)) limit 100;
 
 
@@ -203,5 +237,11 @@ public class DataCache {
         ReceptivityTable table = new ReceptivityTable();
         return  table.getReceptivityForPlayer(facebookId, connection);
 
+    }
+
+    public GamePlay getGamePlay(String facebookId, String game) {
+
+        GamePlayTable table = new GamePlayTable(connection);
+        return table.getGamesForUser(facebookId, game);
     }
 }

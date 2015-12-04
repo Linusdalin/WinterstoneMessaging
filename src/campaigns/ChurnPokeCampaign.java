@@ -27,7 +27,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
     private static final String Name = "ChurnPoke";
     private static final int CoolDown_Days = 6;
     private int[] MessageIds = {3,  8, 9, 15, 14, 29, 30,
-                                203,
+                                203, 205, 207,
                                 1000, 1001, 1002, 1010, 1011, 1012, 1020, 1021, 1022           // Temp test for time scheduling
 
     };
@@ -83,7 +83,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             System.out.println("    -- Sending a three day churn warning poke" );
 
-            if(playerInfo.getUsageProfile().isAnnymousMobile()){
+            if(playerInfo.getUsageProfile().hasTriedMobile()){
 
                 return new MobilePushAction("Hello, your daily bonus is waiting for you. Click to claim it NOW!",
                         user, executionTime, getPriority(), getTag(),  Name, 203, getState(), responseFactor);
@@ -99,12 +99,27 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
 
         }
+        else if((idleDays == 5 || idleDays == 6)
+                && playerInfo.getUsageProfile().hasTriedMobile()){
+
+            System.out.println("    -- Sending a FIVE day churn warning poke on mobile" );
+            return new MobilePushAction("Hello, the games are hot and the bonus ready to pick!",
+                    user, executionTime, getPriority(), getTag(),  Name, 205, getState(), responseFactor);
+
+        }
+        else if((idleDays == 7 || idleDays == 8)
+                && playerInfo.getUsageProfile().hasTriedMobile()){
+
+            System.out.println("    -- Sending a SEVEN day churn warning poke on mobile" );
+            return new MobilePushAction("Hi, the luck is awaiting you at SlotAmerica. Come in and experience the thrill.!",
+                    user, executionTime, getPriority(), getTag(),  Name, 207, getState(), responseFactor);
+
+        }
         else if(idleDays == 9 && !betterTomorrow(playerInfo, executionTime)){
 
             System.out.println("    -- Sending a NINE day churn warning poke" );
             return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
                 user, executionTime, getPriority(), getTag(),  Name,  9, getState(), responseFactor);
-
 
         }
         else if(idleDays == 9 || idleDays == 10){

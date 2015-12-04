@@ -1,6 +1,7 @@
 package core;
 
 import localData.CachedUser;
+import localData.GamePlay;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.Payment;
@@ -124,7 +125,7 @@ public class PlayerInfo {
      *
      * @return     - profile classification
      *
-     *          //TODO: Not implemented ALL classifications
+     *          //TODO: Missing time aspect for switching
      *
      */
 
@@ -141,8 +142,16 @@ public class PlayerInfo {
         if(user.desktopSessions > 0 && user.iosSessions == 0)
             return UsageProfileClassification.CANVAS;
 
-        if(user.iosSessions > 0)
+        if(user.iosSessions > 0){
+
+            if(user.iosSessions > user.desktopSessions )
+                return UsageProfileClassification.CONVERTED;
+
+            if(user.iosSessions > 50 && user.desktopSessions > 50 )
+                return UsageProfileClassification.HALF_HALF;
+
             return UsageProfileClassification.MOBILE_TRY;
+        }
 
         return UsageProfileClassification.UNKNOWN;
 
@@ -153,5 +162,10 @@ public class PlayerInfo {
         CachedUser user = dbCache.getCachedUser(this.user);
         return user.firstMobileSession;
 
+    }
+
+    public GamePlay getGamePlay(String game) {
+
+        return dbCache.getGamePlay(getUser().facebookId, game);
     }
 }
