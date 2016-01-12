@@ -25,9 +25,9 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 18;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 72;   // Max days inactivity to get message
-    private static final int ACTIVITY_MIN   = 18;               // Min sessions to be active
+    private static final int INACTIVITY_LIMIT_FREE      = 15;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = 90;   // Max days inactivity to get message
+    private static final int ACTIVITY_MIN   = 10;               // Min sessions to be active
 
 
     private final String message;

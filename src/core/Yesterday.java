@@ -36,7 +36,7 @@ public class Yesterday {
 
     public Yesterday(PlayerInfo info, Timestamp executionTime){
 
-        List<GameSession> sessions = info.getSessionsYesterday(executionTime);
+        List<GameSession> sessions = info.getSessionsYesterday(executionTime, 1);
 
         for (GameSession session : sessions) {
 

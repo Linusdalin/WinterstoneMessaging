@@ -127,6 +127,12 @@ public class RewardReminderCampaign extends AbstractCampaign implements Campaign
 
     public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
 
+        String specificWeekDay = isSpecificDay(executionTime, false, "måndag");
+
+        if(specificWeekDay != null)
+            return specificWeekDay;
+
+
         return isTooEarly(executionTime, overrideTime);
 
     }

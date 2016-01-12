@@ -1,6 +1,8 @@
 package remoteData.dataObjects;
 
-import java.sql.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /*******************************************************************************
  *
@@ -47,5 +49,21 @@ public class UserTable extends GenericTable {
 
         return null;
     }
+
+    public List<User> getAll(){
+
+    List<User> users = new ArrayList<>();
+    User response = getNext();
+
+    while(response != null){
+
+        users.add(response);
+        response = getNext();
+    }
+
+    return users;
+
+}
+
 
 }

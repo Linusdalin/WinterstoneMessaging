@@ -40,7 +40,7 @@ public class Response {
 
     private String toSQLValues() {
 
-        return "'" + facebookId + "', '" +campaignName + "', " +messageId + ", " +count + ", '" +lastUpdate + "'" ;
+        return "'" + facebookId + "', '" +campaignName + "', " +messageId + ", " +count + ", '" +lastUpdate.toString() + "'" ;
 
 
     }

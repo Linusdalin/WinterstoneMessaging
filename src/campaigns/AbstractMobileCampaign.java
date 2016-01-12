@@ -11,6 +11,7 @@ import rewards.RewardRepository;
  */
 public abstract class AbstractMobileCampaign extends AbstractCampaign{
 
+    protected static final String GameLink = "https://app.adjust.com/drl7ga?deep_link=slotamerica://&campaign=";
 
     public AbstractMobileCampaign(String name, int priority, CampaignState state) {
 

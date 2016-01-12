@@ -1,6 +1,9 @@
 package core;
 
+import dbManager.DatabaseException;
 import localData.*;
+import output.DeliveryException;
+import output.RequestHandler;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.*;
 import response.ResponseHandler;
@@ -48,8 +51,9 @@ public class DataCache {
 
 
             PaymentTable paymentTable = new PaymentTable();
-            paymentTable.load(this.connection,"and timestamp > '"+ startDate+"'", "ASC", limit );
+            paymentTable.loadAndRetry(this.connection,"and timestamp > '"+ startDate+"'", "ASC", limit );
             allPayments = paymentTable.getAll();
+
 
         }
 
@@ -63,10 +67,14 @@ public class DataCache {
     public List<GameSession> getSessionsForUser(User user) {
 
         GameSessionTable sessionTable = new GameSessionTable();
-        sessionTable.load(connection,"and facebookId='" + user.facebookId + "'","ASC", -1 );
+
+        try {
+            sessionTable.load(connection,"and facebookId='" + user.facebookId + "'","ASC", -1 );
+        } catch (DatabaseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         List<GameSession> sessionsForUser = sessionTable.getAll();
-
         System.out.println(" -- Got " + sessionsForUser.size() + " sessions for user " + user.name);
 
         return sessionsForUser;
@@ -76,7 +84,7 @@ public class DataCache {
     public Timestamp getLastSessionForUser(User user) {
 
         CachedUserTable userTable = new CachedUserTable();
-        userTable.load(connection,"and facebookId='" + user.facebookId + "'","ASC", 1 );
+        userTable.loadAndRetry(connection, "and facebookId='" + user.facebookId + "'", "ASC", 1);
 
         CachedUser last = userTable.getNext();
         if(last == null)
@@ -86,10 +94,29 @@ public class DataCache {
 
     }
 
+    public Timestamp getLastMobileSessionForUser(User user) {
+
+        CachedUserTable userTable = new CachedUserTable();
+        userTable.loadAndRetry(connection, "and facebookId='" + user.facebookId + "'", "ASC", 1);
+
+        CachedUser last = userTable.getNext();
+        if(last == null)
+            return null;
+
+        if(last.lastMobileSession == null){
+            System.out.println(" -- Found no mobile sessions for user " + user.name + " reverting to desktop");
+            return last.lastSession;
+        }
+
+        return last.lastMobileSession;
+
+    }
+
+
     public CachedUser getCachedUser(User user) {
 
         CachedUserTable userTable = new CachedUserTable();
-        userTable.load(connection,"and facebookId='" + user.facebookId + "'","ASC", 1 );
+        userTable.loadAndRetry(connection, "and facebookId='" + user.facebookId + "'", "ASC", 1);
 
         return userTable.getNext();
 
@@ -102,7 +129,7 @@ public class DataCache {
             return new ArrayList<Payment>();
 
         PaymentTable paymentTable = new PaymentTable();
-        paymentTable.load(connection,"and playerId='" + user.facebookId + "'","ASC", -1 );
+        paymentTable.loadAndRetry(connection, "and playerId='" + user.facebookId + "'", "ASC", -1);
 
         List<Payment> paymentsForUser = paymentTable.getAll();
 
@@ -135,9 +162,9 @@ public class DataCache {
         GameSessionTable gameSessions = new GameSessionTable();
 
         if(lastForAnyone == null)
-            gameSessions.load(connection, "", "ASC", 10000);
+            gameSessions.loadAndRetry(connection, "", "ASC", 10000);
         else
-            gameSessions.load(connection, "and timeStamp > '" + lastForAnyone.toString() + "'", "ASC", 1200000);
+            gameSessions.loadAndRetry(connection, "and timeStamp > '" + lastForAnyone.toString() + "'", "ASC", 1200000);
 
         GameSession session = gameSessions.getNext();
 
@@ -160,14 +187,25 @@ public class DataCache {
 
     private void updateLastSession(GameSession session, Connection connection) {
 
-        cachedUserTable.load(connection, "and facebookId = '" + session.facebookId + "'", "ASC", 1);
+        cachedUserTable.loadAndRetry(connection, "and facebookId = '" + session.facebookId + "'", "ASC", 1);
         CachedUser cachedUser = cachedUserTable.getNext();
 
         if(cachedUser == null){
 
             // Store new
 
-            cachedUser = new CachedUser(session.facebookId, session.timeStamp, 0, 0, 0, (session.clientType.equals("facebook") ? 1 : 0), (session.clientType.equals("ios") ? 1 : 0), (session.clientType.equals("ios") ? session.timeStamp : null));
+            if(session.clientType.equals("ios")){
+
+                cachedUser = new CachedUser(session.facebookId, session.timeStamp, 0, 0, 0,
+                        0,  1, session.timeStamp, session.timeStamp, -1);
+
+            }else{
+
+                cachedUser = new CachedUser(session.facebookId, session.timeStamp, 0, 0, 0,
+                        1, 0, null, null, -1);
+
+            }
+
             cachedUserTable.store(cachedUser, connection);
             System.out.println("  - Creating new user " + cachedUser.facebookId + " with last session " + session.timeStamp);
 
@@ -193,7 +231,12 @@ public class DataCache {
 
         GamePlayTable table = new GamePlayTable(connection);
 
-        GamePlay gamePlay = table.getGamesForUser(session.facebookId, session.game);
+        GamePlay gamePlay = null;
+        try {
+            gamePlay = table.getGamesForUser(session.facebookId, session.game);
+        } catch (DatabaseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         if(gamePlay == null){
 
@@ -224,10 +267,10 @@ public class DataCache {
     //select * from game_session where facebookId= '10154214671319358' and date(timestamp) = date(date_sub('2015-08-25', interval 1 day)) limit 100;
 
 
-    public List<GameSession> getSessionsYesterday(User user, Timestamp analysisDate) {
+    public List<GameSession> getSessionsYesterday(User user, Timestamp analysisDate, int days) {
 
         GameSessionTable gameSessions = new GameSessionTable();
-        gameSessions.load(connection, "and facebookId='"+ user.facebookId+"' and date(timeStamp) = date(date_sub('"+ analysisDate+"', interval 1 day))", "ASC", 100);
+        gameSessions.loadAndRetry(connection, "and facebookId='" + user.facebookId + "' and date(timeStamp) = date(date_sub('" + analysisDate + "', interval " + days + " day))", "ASC", 100);
         return gameSessions.getAll();
 
     }
@@ -241,7 +284,42 @@ public class DataCache {
 
     public GamePlay getGamePlay(String facebookId, String game) {
 
-        GamePlayTable table = new GamePlayTable(connection);
-        return table.getGamesForUser(facebookId, game);
+        try {
+
+            GamePlayTable table = new GamePlayTable(connection);
+            return table.getGamesForUser(facebookId, game);
+
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void updateLevel(String facebookId, int level) {
+
+        CachedUserTable table = new CachedUserTable();
+        table.updateLevel(facebookId, level, connection);
+
+    }
+
+    public String getClaimedRewards(String facebookId) {
+
+        try {
+
+            RequestHandler requestHandler = new RequestHandler("https://data-warehouse.slot-america.com/api/players/"+facebookId+"/claimed-rewards/")
+                    .withBasicAuth("5b09eaa11e4bcd80800200c", "X");
+            String response = requestHandler.executeGet();
+
+            System.out.println(" - Got: " + response);
+            return(response);
+
+        } catch (DeliveryException e) {
+
+            e.printStackTrace();
+            return "";
+        }
+
+
     }
 }

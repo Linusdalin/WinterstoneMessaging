@@ -47,8 +47,8 @@ public class SignificanceManager {
 
     private ReceptivityProfile getProfileForPlayer(String facebookId) {
 
-        ReceptivityTable table = new ReceptivityTable("and facebookId = '"  + facebookId + "'", 1);
-        table.load(connection);
+        ReceptivityTable table = new ReceptivityTable();
+        table.loadAndRetry(connection, "and facebookId = '"  + facebookId + "'", "", 1);
         ReceptivityProfile profile = table.getNext();
 
         if(profile == null){

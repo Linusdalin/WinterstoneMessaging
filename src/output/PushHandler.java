@@ -16,7 +16,7 @@ import java.net.URLEncoder;
 
 public class PushHandler {
 
-    private static final String pushService = "https://slotamerica:fruitclub@data-warehouse.slot-america.com/sendNotification/";
+    private static final String DefaultPushService = "https://slotamerica:fruitclub@data-warehouse.slot-america.com/sendNotification/";
 
     private static final int MAX_MESSAGE_SIZE = 180;           //TODO: Check this. What is the max size for a push message
 
@@ -26,15 +26,20 @@ public class PushHandler {
     private String rewardId = null;
     private String recipient;
 
+    private String pushService;
+
     public PushHandler( ){
 
         this(null);
+        pushService = DefaultPushService;
     }
+
 
 
     public PushHandler(String override) {
 
         this.overrideUser = override;
+        pushService = DefaultPushService;
     }
 
     public PushHandler withMessage(String message){
@@ -111,7 +116,7 @@ public class PushHandler {
 
 
         if(game != null)
-            category += "game:pink_sapphires";
+            category += "game:" + game;
 
 
         if(rewardId != null){
@@ -162,6 +167,21 @@ public class PushHandler {
 
         System.out.println(" --- This is ok!");
         return true;
+    }
+
+    /****************************************************************
+     *
+     *
+     *          Override the URL to the push service. E.g. for use on stage
+     *
+     * @param url
+     * @return
+     */
+
+    public PushHandler withAlternateService(String url){
+
+        pushService = url;
+        return this;
     }
 
 

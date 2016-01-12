@@ -45,7 +45,7 @@ public class ReceptivityUpdater {
         System.out.println("Starting from " + startFrom);
 
         GameSessionTable gameSessions = new GameSessionTable();
-        gameSessions.load(connection, "and timeStamp > '" + startFrom + "'", "ASC", sessionCap);
+        gameSessions.loadAndRetry(connection, "and timeStamp > '" + startFrom + "'", "ASC", sessionCap);
         GameSession session = gameSessions.getNext();
 
         while(session != null){

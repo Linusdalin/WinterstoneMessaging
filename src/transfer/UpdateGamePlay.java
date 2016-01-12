@@ -2,6 +2,7 @@ package transfer;
 
 import core.DataCache;
 import dbManager.ConnectionHandler;
+import dbManager.DatabaseException;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.GameSessionTable;
 
@@ -16,20 +17,26 @@ import java.sql.SQLException;
 
 public class UpdateGamePlay {
 
-    private static final int MAX_RECORDS = 1500000;     // Max records at a time
-    private static final String startTime = "2015-10-23 22:17:39.0";
+    private static final int MAX_RECORDS = 1000000;     // Max records at a time
+    private static final String startTime = "2015-11-30 01:09:50.0";
 
     Connection localConnection = null;
 
     public static void main(String[] args){
 
-        UpdateGamePlay transfer = new UpdateGamePlay();
-        transfer.executeUpdate();
+        try {
+
+            UpdateGamePlay transfer = new UpdateGamePlay();
+            transfer.executeUpdate();
+
+        } catch (DatabaseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
     }
 
 
-    public void executeUpdate(){
+    public void executeUpdate() throws DatabaseException {
 
 
         GameSessionTable gameSessions = new GameSessionTable();

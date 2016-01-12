@@ -124,12 +124,12 @@ public class MobilePushAction extends Action implements ActionInterface{
 
     private void noteSuccessFulExposure(String actualUser, Timestamp executionTime, Connection localConnection) {
 
-        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.NOTIFICATION.name());
+        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.PUSH.name());
         exposure.store(localConnection);
     }
 
 
-    public MobilePushAction withReward(String reward) {
+    public ActionInterface withReward(String reward) {
         this.reward = reward;
         return this;
     }
@@ -168,6 +168,11 @@ public class MobilePushAction extends Action implements ActionInterface{
 
         super.store(connection, data);
 
+    }
+
+    @Override
+    public String getReward() {
+        return reward;
     }
 
 

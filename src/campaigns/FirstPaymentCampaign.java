@@ -21,7 +21,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
 
     // Campaign config data
     private static final String Name = "FirstPayment";
-    private static final int CoolDown_Days = 365000;
+    private static final int CoolDown_Days = 365000;            // Only once
     private int[] MessageIds = { 2 };
 
 
@@ -60,12 +60,14 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
         }
 
 
+        /*
         if(!abSelect1(user)){
 
             System.out.println("    -- Campaign " + Name + " ignoring for A/B test" );
             return null;
 
         }
+          */
 
         Payment payment = playerInfo.getFirstPayment();
         if(payment == null){

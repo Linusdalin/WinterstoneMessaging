@@ -56,8 +56,8 @@ public class ResponseHandler {
 
         int messageId = getMessageId(session.promocode);
 
-        ResponseTable responseTable = new ResponseTable("and user = '"+ user+"' and campaign = '"+ campaign+"' and messageId = " + messageId, 1, connection);
-        responseTable.load(connection);
+        ResponseTable responseTable = new ResponseTable(connection);
+        responseTable.loadAndRetry(connection, "and user = '"+ user+"' and campaign = '"+ campaign+"' and messageId = " + messageId, "", 1);
         Response response = responseTable.getNext();
 
         if(response == null){
@@ -110,7 +110,8 @@ public class ResponseHandler {
 
             e.printStackTrace();
             System.out.println("Fail to get message id from promo code: " + promoCode );
-            throw new RuntimeException();
+
+            return 1;
         }
 
     }
@@ -121,7 +122,7 @@ public class ResponseHandler {
         if(cachedUser == null){
 
             CachedUserTable table = new CachedUserTable("and facebookId = '" + userId + "'", 1);
-            table.load(connection);
+            table.loadAndRetry(connection, "and facebookId = '" + userId + "'", "", 1);
             cachedUser = table.getNext();
 
         }

@@ -24,11 +24,10 @@ public class MobileCrossPromotionCampaign extends AbstractMobileCampaign impleme
     private static final int CoolDown_Days = 999999999;     // Only Once
     private int[] MessageIds = { 1 };
 
-    private static final String GameLink = "https://app.adjust.com/drl7ga?deep_link=slotamerica://&campaign=";
     private static final String ImageLink = "http://slamdunkgaming.com/IpadIphone.png";
 
-    private static final int INACTIVITY_LIMIT_FREE      = 50;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 75;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 100;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = 200;   // Max days inactivity to get message
     private static final int ACTIVITY_MIN   = 10;               // Min sessions to be active
 
     private static final int DAILY_LIMIT   = 1000;               // Mails per day
@@ -79,11 +78,6 @@ public class MobileCrossPromotionCampaign extends AbstractMobileCampaign impleme
         }
         int inactivity = getDaysBetween(lastSession, executionDay);
 
-        if(isPaying(user)){
-
-            System.out.println("    -- Campaign " + Name + " not active. Only free users for now");
-            return null;
-        }
 
         if(!isPaying(user) && inactivity > INACTIVITY_LIMIT_FREE){
 
@@ -138,7 +132,8 @@ public class MobileCrossPromotionCampaign extends AbstractMobileCampaign impleme
                 "It is with great pleasure that we announce the launch of SlotAmerica on iOS. Available today on the <a href=\""+GameLink+tag+"\">Appstore</a>, you can now finally enjoy SlotAmerica on your iPhone and iOS."+
                 "</td><td width=60%><img src=\""+ ImageLink+"\" width=\"250\"></td>"+
                 "</tr></table>"+
-                "<p>Here, we’ve collected some of your favourite SlotAmerica games, including Royal Colors, Black Onyx and Pink Sapphires. More great games will be added all the time.</p>"+
+                "<p>Here, we’ve collected some of your favourite SlotAmerica games, including Royal Colors, Black Onyx and Pink Sapphires and two games from our Old School series (2x3x4x5x and Six times Pay!) . " +
+                    "More great games will be added all the time. If there is a specific favorite game you are missing, please let us know.</p>"+
                 "<p>There are several ways to download the game to your iOS device:</p>\n"+
                 "<li>Enter the Appstore on your iPhone or iPad, and search for ‘SlotAmerica’</li>\n"+
                 "<li>Got to our <a href=\"www.facebook.com/slotamerica/\">SlotAmerica Facebook page</a>  and click on the “Send to Mobile”-button.</li>\n"+
@@ -164,6 +159,42 @@ public class MobileCrossPromotionCampaign extends AbstractMobileCampaign impleme
                         "plain text");
     }
 
+
+    public static EmailInterface tryMobile2(User user, String tag, Reward reward) {
+
+
+        return new NotificationEmail("SlotAmerica games on iOS and Android!", "<p>SlotAmerica is now available on both iOS and Android</p>" +
+
+                "<table><tr><td width=40%>"+
+                "The success of SlotAmerica on iPhone and iPad continues. We now start rolling out the SlotAmerica on Android available through the <a href=\""+GameLink+tag+"\">Google Store</a>, so now you can now finally enjoy SlotAmerica on your pretty much any smart phone."+
+                "</td><td width=60%><img src=\""+ ImageLink+"\" width=\"250\"></td>"+
+                "</tr></table>"+
+                "<p>We are continuously adding more and more games on the mobile platform. Among the latest releases is <b><i>Six Times Pay</b></i> and the SlotAmerica game . " +
+                "More great games will be added all the time. If there is a specific favorite game you are missing, please let us know.</p>"+
+                "<p>There are several ways to download the game to your iOS device:</p>\n"+
+                "<li>Enter the Appstore on your iPhone or iPad, and search for ‘SlotAmerica’</li>\n"+
+                "<li>Got to our <a href=\"www.facebook.com/slotamerica/\">SlotAmerica Facebook page</a>  and click on the “Send to Mobile”-button.</li>\n"+
+                "<li>Follow this link to go directly to the Appstore <a href=\""+ GameLink+tag+"\">here</a></li>\n"+
+                "<p>Once you’ve downloaded and entered SlotAmerica, be sure to register with your Facebook account and continue to play from your existing SlotAmerica account – same level, same coins, same daily bonus.</p>\n"+
+                "<p>As a gift to you for downloading the game, we’ll send you "+ reward.getCoins()+" free coins to your phone (this might take a day or two – please bear with us). All you then have to do is click on the notification and claim your gift. \n"+
+                "<p>Finally, if you experience any difficulties with any of this – or have any questions or feedback about the game, please don’t hesitate to contact us on support@slot-america.com.</p>" +
+                "<p>We’re really look forward to finally sharing the SlotAmerica iOS experience with you!</p>\n" +
+                "<p>Happy playing!</p>\n" +
+                "<p><b>Sam and Diane</b></p>\n" +
+                "<p>Your SlotAmerica Casino Managers</p>\n" +
+                "<p><i>Support for Android devices is still in the works. We’ll let you know as soon as we’re ready to launch.</i></p>\n",
+
+                "It is with great pleasure that we announce the launch of SlotAmerica on iOS. Available today on the Appstore, you can now finally enjoy SlotAmerica on your iPhone and iOS.\n"+
+                        "Here, we’ve collected some of your favourite SlotAmerica games, including Royal Colors, Black Onyx and Pink Sapphires. More great games will be added all the time.\n"+
+                        "There are several ways to download the game to your iOS device:</p>\n"+
+                        " - Enter the Appstore on your iPhone or iPad, and search for ‘SlotAmerica’\n"+
+                        " - Got to our SlotAmerica Facebook page and click on the “Send to Mobile”-button.\n"+
+                        "Once you’ve downloaded and entered SlotAmerica, be sure to register with your Facebook account and continue to play from your existing SlotAmerica account – same level, same coins, same daily bonus.\n"+
+                        "As a gift to you for downloading the game, we’ll send you "+ reward.getCoins()+" free coins to your phone (this might take a day or two – please bear with us). All you then have to do is click on the notification and claim your gift."+
+
+
+                        "plain text");
+    }
 
 
 

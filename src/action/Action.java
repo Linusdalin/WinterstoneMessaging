@@ -4,6 +4,7 @@ import campaigns.CampaignInterface;
 import campaigns.CampaignState;
 import net.sf.json.JSONObject;
 import remoteData.dataObjects.User;
+import rewards.Reward;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -35,6 +36,7 @@ public abstract class Action implements ActionInterface{
 
     protected ActionParameter actionParameter;
     private int timeSlot;
+    private boolean force = false;
 
 
     /*******************************************************************************************
@@ -168,7 +170,7 @@ public abstract class Action implements ActionInterface{
     }
 
 
-    protected int getMessageId() {
+    public int getMessageId() {
         return messageId;
     }
 
@@ -272,5 +274,50 @@ public abstract class Action implements ActionInterface{
         return timeSlot;
     }
 
+    @Override
+    public ActionInterface getNext() {
+
+        return next;
+    }
+
+
+    /***************************************************************
+     *
+     *          A standard action has no reward.
+     *
+     *
+     * @return
+     */
+
+    @Override
+    public String getReward() {
+        return null;
+    }
+
+    @Override
+    public boolean isForced() {
+        return force;
+    }
+
+
+    public ActionInterface forceAction(){
+
+        force = true;
+        return this;
+
+    }
+
+
+    public ActionInterface withReward(String reward) {
+
+            throw new RuntimeException("cannot assign reward to incompatible action");
+
+    }
+
+    public ActionInterface withReward(Reward reward) {
+
+        throw new RuntimeException("cannot assign reward to incompatible action");
+
+    }
 
 }

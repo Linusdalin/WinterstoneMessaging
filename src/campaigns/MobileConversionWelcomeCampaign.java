@@ -71,7 +71,7 @@ public class MobileConversionWelcomeCampaign extends AbstractMobileCampaign impl
 
         UsageProfileClassification classification = playerInfo.getUsageProfile();
 
-        if(classification.isAnnymousMobile()){
+        if(classification.isAnonymousMobile()){
 
             System.out.println("    -- Campaign " + Name + " not active. Player is anonymous mobile. Campaign is only for converted players )");
             return null;

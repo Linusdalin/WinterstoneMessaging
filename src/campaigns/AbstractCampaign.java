@@ -1,5 +1,6 @@
 package campaigns;
 
+import constraints.ConstraintInterface;
 import core.PlayerInfo;
 import localData.Exposure;
 import receptivity.ReceptivityProfile;
@@ -7,7 +8,9 @@ import remoteData.dataObjects.User;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /******************************************************************************''
  *
@@ -26,6 +29,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
     private final CampaignState state;
     private String shortName;
     private int[] messageIds = { 0 };  // Default is to not distinguish between any different message ids. All messages are grouped into one
+    private List<ConstraintInterface> constraints = new ArrayList<>();
 
 
     AbstractCampaign(String name, int priority, CampaignState state){
@@ -375,6 +379,19 @@ public abstract class AbstractCampaign implements CampaignInterface{
         Calendar cal = Calendar.getInstance();
         cal.setTime(ts);
         return cal.get(java.util.Calendar.DAY_OF_WEEK);
+    }
+
+
+
+    protected void setConstraint(ConstraintInterface constraint) {
+
+        this.constraints.add(constraint);
+    }
+
+
+    protected ConstraintInterface getFailConstraint() {
+
+        return null;  //TODO: Not implemented
     }
 
 

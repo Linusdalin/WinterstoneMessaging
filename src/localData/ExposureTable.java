@@ -92,7 +92,7 @@ public class ExposureTable extends GenericTable {
 
     public int getUserExposure(String facebookId, int personal_CoolOff) {
 
-        load(connection, "and user= '"+ facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)");
+        loadAndRetry(connection, "and user= '"+ facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)", "ASC", -1);
         List<Exposure> exposuresForUser = getAll();
         System.out.println("Found " + exposuresForUser.size() + " exposures for user " + facebookId);
         close();
@@ -103,7 +103,7 @@ public class ExposureTable extends GenericTable {
 
     public Exposure getLastExposure(String campaign, User user){
 
-        load(connection, "and user= '"+ user.facebookId+"' and campaignName='"+campaign+"'", "DESC", 1);
+        loadAndRetry(connection, "and user= '"+ user.facebookId+"' and campaignName='"+campaign+"'", "DESC", 1);
         Exposure exposure = getNext();
 
         close();

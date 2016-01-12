@@ -26,7 +26,13 @@ public enum UsageProfileClassification {
         return this == ANONYMOUS || this == CONVERTED ||this == CANVAS_PAY ||this == MOBILE_AQU||this == HALF_HALF;
     }
 
-    public boolean isAnnymousMobile() {
+    public boolean isMobileExclusive(){
+
+        return this == ANONYMOUS || this == MOBILE_AQU;
+    }
+
+
+    public boolean isAnonymousMobile() {
         return this == ANONYMOUS;
     }
 

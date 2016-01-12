@@ -1,6 +1,9 @@
 package remoteData.dataObjects;
 
 
+import dbManager.DatabaseException;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,28 +40,50 @@ public class GenericTable {
     }
 
 
-    public void load(Connection connection){
+    public void load(Connection connection) throws DatabaseException {
 
         load(connection, restriction, "ASC", -1);
     }
 
-    public void load(Connection connection, String restriction){
+    public void load(Connection connection, String restriction) throws DatabaseException {
 
         load(connection, restriction, "ASC", -1);
 
     }
 
-    public void load(Connection connection, String restriction, String order, int limit){
+    public void loadAndRetry(Connection connection, String restriction, String order, int limit){
+
+        boolean retry = false;
+
+        do{
+
+            String queryString = getQueryString(restriction, limit, -1, order);
+            try {
+
+                //System.out.println("QueryString: " + queryString);
+                loadFromDB(connection, queryString);
+
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                System.out.println("Error reading from database. Retry?\n>");
+                waitReturn();
+                retry = true;
+            }
+
+        }while(retry);
+
+    }
+
+
+    public void load(Connection connection, String restriction, String order, int limit) throws DatabaseException {
 
         String queryString = getQueryString(restriction, limit, -1, order);
-
-        //System.out.println("Query: " + queryString);
-
         loadFromDB(connection, queryString);
     }
 
 
-    public void load(Connection connection, String restriction, String order, int limit, int offset){
+
+    public void load(Connection connection, String restriction, String order, int limit, int offset) throws DatabaseException {
 
         String queryString = getQueryString(restriction, limit, offset, order);
         //System.out.println("Query: " + queryString);
@@ -68,7 +93,7 @@ public class GenericTable {
 
 
 
-    protected void loadFromDB(Connection connection, String queryString) {
+    protected void loadFromDB(Connection connection, String queryString)throws DatabaseException {
 
         if(connection == null){
 
@@ -85,6 +110,13 @@ public class GenericTable {
 
             System.out.println("Error accessing data in database with the query:\n" + queryString);
             e.printStackTrace();
+            throw new DatabaseException();
+
+        }catch(Exception e){
+
+            System.out.println("Communication fail\n" + queryString);
+            e.printStackTrace();
+            throw new DatabaseException();
         }
     }
 
@@ -127,6 +159,18 @@ public class GenericTable {
         }
     }
 
+
+    public static void waitReturn() {
+        try {
+
+            System.in.read();
+
+        } catch (IOException e) {
+
+            System.out.println("Error getting input. Ignoring");
+        }
+
+    }
 
 
 }

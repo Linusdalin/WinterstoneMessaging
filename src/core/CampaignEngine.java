@@ -2,10 +2,14 @@ package core;
 
 import action.ActionInterface;
 import action.ActionType;
+import action.NotificationAction;
 import campaigns.CampaignInterface;
 import campaigns.CampaignRepository;
+import campaigns.CampaignState;
 import dbManager.ConnectionHandler;
+import dbManager.DatabaseException;
 import executionStatistics.ExecutionStatistics;
+import hailMary.HailMaryUsers;
 import localData.Exposure;
 import localData.ExposureTable;
 import output.Outbox;
@@ -13,6 +17,7 @@ import remoteData.dataObjects.User;
 import remoteData.dataObjects.UserTable;
 import response.ResponseHandler;
 import response.ResponseStat;
+import rewards.RewardRepository;
 import sound.SoundPlayer;
 
 import java.io.IOException;
@@ -153,9 +158,14 @@ public class CampaignEngine {
 
         } while(userCount != -1);
 
-        System.out.println(" ******************************************\n * Evaluated " + count + " users resulting in the following actions:");
+        // Execute Hail Mary actions on the lost group of players. This is just a temporary test
+        //hailMary(executionTime, dbCache, executionStatistics, localConnection);
+
+        System.out.println(" ******************************************\n * Evaluated all users resulting in the following statistics:\n\n");
 
         System.out.println(executionStatistics.toString());
+
+        System.out.println(" ******************************************\n * Outboxes to purge:\n\n");
 
         System.out.println("Total notifications: " + notificationOutbox.size());
         System.out.println("Total push:          " + pushOutbox.size());
@@ -215,7 +225,7 @@ public class CampaignEngine {
      *
      *
      *
-     * @param tempConnection
+     * @param tempConnection                - connection to database
      * @param batchNo                       - the batch ordinal
      * @param startDate                     - original start date (not for the batch!)
      * @param dbCache                       - locally cached data
@@ -228,17 +238,25 @@ public class CampaignEngine {
 
     private int handleBatch(Connection tempConnection, int batchNo, String startDate, DataCache dbCache, Timestamp executionTime, ExecutionStatistics executionStatistics, int userCount) {
 
+
+
         System.out.println(" -- Handle Batch #" + batchNo);
         ExposureTable campaignExposures = new ExposureTable(tempConnection);
 
         UserTable allPlayers = new UserTable();
-        allPlayers.load(dbConnection, " and users.created >= '"+ startDate+"' and users.uninstall=0", "ASC", batchSize, userCount);      // Restriction for testing
+        loadWithRetry(allPlayers, startDate, userCount);
         User user = allPlayers.getNext();
 
         if(user == null)
             return -1;
 
         while(user != null && (userCount++ < analysis_cap || analysis_cap == -1)){
+
+            // Loop over all users.
+            //   - Get the information,
+            //   - get an appropriate action (depending on user info and previous activity and finally
+            //   - handle the action (queue and store statistics)
+
 
             System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
             PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
@@ -254,6 +272,28 @@ public class CampaignEngine {
 
         allPlayers.close();
         return userCount;
+    }
+
+    private void loadWithRetry(UserTable allPlayers, String startDate, int userCount) {
+
+        boolean retry = false;
+
+        do{
+
+            try {
+                allPlayers.load(dbConnection, " and users.created >= '"+ startDate+"' and users.uninstall=0", "ASC", batchSize, userCount);      // Restriction for testing
+
+            } catch (DatabaseException e) {
+
+                SoundPlayer.playSound(SoundPlayer.FailBeep);
+                System.out.println("Error with the database. Retry?\n>");
+
+                waitReturn();
+                retry = true;
+
+            }
+
+        }while(retry);
     }
 
 
@@ -275,7 +315,11 @@ public class CampaignEngine {
         for (String userId : testPlayers) {
 
             UserTable userTable = new UserTable("and facebookId = " + userId, 1);
-            userTable.load(dbConnection);
+            try {
+                userTable.load(dbConnection);
+            } catch (DatabaseException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
             User user = userTable.getNext();
 
             PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
@@ -289,7 +333,7 @@ public class CampaignEngine {
 
             System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
 
-            ActionInterface action = evaluateUser(dbConnection, playerInfo, executionTime, campaignExposures, executionStatistics);
+            ActionInterface action = evaluateUser(localConnection, playerInfo, executionTime, campaignExposures, executionStatistics);
 
 
             if(action == null)
@@ -322,7 +366,9 @@ public class CampaignEngine {
         TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo, tempConnection);
         User user = playerInfo.getUser();
         ResponseHandler responseHandler = new ResponseHandler(user.facebookId, tempConnection);
+
         int outcome = ExecutionStatistics.MISSED; // Keep track of the outcome for the user
+
         Exposure lastExposure;
 
         // Check for "dead" players that we should not even try to send a message to
@@ -420,6 +466,20 @@ public class CampaignEngine {
 
             System.out.println(" Removing action " + selectedAction.getCampaign() + " as we have given up on the player");
             executionStatistics.registerOutcome(ExecutionStatistics.GIVEUP);
+
+            ActionInterface associatedAction = selectedAction.getNext();
+
+            if(associatedAction != null){
+
+                // There is an associated action. If this is a fore coin action, we should execute it anyway
+
+                if(associatedAction.getType() == ActionType.COIN_ACTION && associatedAction.isForced()){
+
+                    return associatedAction;
+                }
+
+
+            }
             return null;
         }
 
@@ -463,7 +523,7 @@ public class CampaignEngine {
         }
 
         ResponseHandler handler = new ResponseHandler( user.facebookId, localConnection );
-        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler, selectedAction.getResponseFactor());
+        int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler, selectedAction);
 
         eligibility = timeAnalyser.adjustForResponse(eligibility, selectedAction );
 
@@ -476,6 +536,13 @@ public class CampaignEngine {
 
         executionStatistics.registerOutcome(ExecutionStatistics.REACHED);
         queueAction(selectedAction, localConnection);
+
+
+        if(selectedAction.getMessageId() >= 100){
+
+            System.out.println("Id too high " + selectedAction.getMessageId() + " for action " + selectedAction.getCampaign());
+        }
+
         executionStatistics.registerSelected(selectedAction);
 
     }
@@ -553,6 +620,41 @@ public class CampaignEngine {
 
             System.out.println("Error getting input. Ignoring");
         }
+
+    }
+
+    /****************************************************************************************************
+     *
+     *              Hail Mary is a test performed on a set of 12,000 users that are not in the
+     *              SQL database. Probably due to misses in the registration or that they are older.
+     *
+     *
+     * @param executionTime             - time for execution (for logging)
+     * @param dbCache                   - data about the user. (Not used)
+     * @param executionStatistics
+     * @param localConnection
+     */
+
+
+    public void hailMary(Timestamp executionTime, DataCache dbCache, ExecutionStatistics executionStatistics, Connection localConnection ) {
+
+        String name = "hailMary";
+        ExposureTable campaignExposures = new ExposureTable(localConnection);
+
+
+        for (String lostUser : HailMaryUsers.lostUsers) {
+
+            User user = new User(lostUser, "", "", "", "", null, 0, 0, 0, 0, 0, 0, 0, 0, "A", "M");
+            PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
+
+            ActionInterface action = new NotificationAction( "Hello, We ar missing you at SlotAmrica. To welcome you back we have added "+ RewardRepository.freeCoinAcitivation.getCoins()+" free coins for you to play with on your account. Click here to collect and play!",
+                    user, executionTime, 60, name,  name, 1, CampaignState.ACTIVE, 1.0)
+                    .withReward(RewardRepository.freeCoinAcitivation);
+
+            handleAction(action, playerInfo, campaignExposures, executionStatistics);
+
+        }
+
 
     }
 

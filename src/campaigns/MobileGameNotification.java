@@ -2,6 +2,7 @@ package campaigns;
 
 import action.ActionInterface;
 import action.MobilePushAction;
+import action.NotificationAction;
 import core.PlayerInfo;
 import core.UsageProfileClassification;
 import remoteData.dataObjects.User;
@@ -24,9 +25,9 @@ public class MobileGameNotification extends AbstractCampaign implements Campaign
 
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 18;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 30;   // Max days inactivity to get message
     private static final int INACTIVITY_LIMIT_PAYING    = 72;   // Max days inactivity to get message
-    private static final int ACTIVITY_MIN   = 10;               // Min sessions to be active
+    private static final int ACTIVITY_MIN   = 5;               // Min sessions to be active
 
 
     private final String message;
@@ -95,7 +96,7 @@ public class MobileGameNotification extends AbstractCampaign implements Campaign
 
         UsageProfileClassification classification = playerInfo.getUsageProfile();
 
-        if(!classification.isMobilePlayer()){
+        if(!classification.hasTriedMobile()){
 
             System.out.println("    -- Campaign " + Name + " not active. Not a mobile player. ( Classification: "+ classification.name()+" )");
             return null;
@@ -104,13 +105,31 @@ public class MobileGameNotification extends AbstractCampaign implements Campaign
 
         System.out.println("    -- Campaign " + Name + " firing. ");
 
-        MobilePushAction action =  new MobilePushAction(message, user, executionTime, getPriority(), getTag(), Name,  1, getState(), responseFactor)
-                .withGame(gameCode);
+        if(!playerInfo.fallbackFromMobile()){
 
-        if(reward != null)
-            action.withReward(reward);
+            MobilePushAction action =  new MobilePushAction("New game release! " + message, user, executionTime, getPriority(), getTag(), Name,  31, getState(), responseFactor)
+                    .withGame(gameCode);
 
-        return action;
+            if(reward != null)
+                action.withReward(reward);
+
+            return  action;
+
+        }
+        else{
+
+            // Mobile player that has failed mobile communication. Fallback to facebook message
+
+            if(!classification.isAnonymousMobile()){
+
+                return new NotificationAction("New release on SlotAmerica mobile! ! " + message,
+                        user, executionTime, getPriority(), getTag() , Name, 1, getState(), responseFactor);
+
+            }
+
+        }
+
+        return null;
 
     }
 

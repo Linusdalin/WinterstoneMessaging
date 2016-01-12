@@ -41,7 +41,7 @@ public class CachedUserTable extends GenericTable {
 
             //    public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed,Timestamp created, int totalWager, int balance, int nextNumberOfPicks){
 
-            return new CachedUser(resultSet.getString(1), resultSet.getTimestamp(2), resultSet.getInt(3) , resultSet.getInt(4) , resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7), resultSet.getTimestamp(8));
+            return new CachedUser(resultSet.getString(1), resultSet.getTimestamp(2), resultSet.getInt(3) , resultSet.getInt(4) , resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7), resultSet.getTimestamp(8), resultSet.getTimestamp(9), resultSet.getInt(10));
 
 
         } catch (SQLException e) {
@@ -84,9 +84,14 @@ public class CachedUserTable extends GenericTable {
 
     public void store(CachedUser user, Connection connection) {
 
+        String firstMobile = null;
 
-        String insertQuery = "INSERT INTO user VALUES ('" + user.facebookId + "', '" + user.lastSession.toString() +"', "+ user.failMail+", "+ user.failNotification+
-                user.failPush + user.desktopSessions + user.iosSessions+")";
+        if(user.firstMobileSession != null)
+            firstMobile = "'" + user.firstMobileSession.toString() + "'";
+
+
+        String insertQuery = "INSERT INTO user VALUES ('" + user.facebookId + "', '" + user.lastSession.toString() +"', "+ user.failMail+", "+ user.failNotification+ ", " +
+                user.failPush +", "+ user.desktopSessions +", "+ user.iosSessions+", "+ firstMobile + ", " + user.level + ", " + user.level +")";
 
         try{
 
@@ -98,7 +103,7 @@ public class CachedUserTable extends GenericTable {
 
         } catch (SQLException e) {
 
-
+            System.out.println("Error accessing data in database. SQL:" + insertQuery);
             System.out.println(e.getMessage());
 
         }
@@ -115,8 +120,30 @@ public class CachedUserTable extends GenericTable {
 
         String updateQuery = "UPDATE user SET lastSession='" + user.lastSession +
                 "', "+(iOsSession ? "iosSessions = iosSessions + 1": "desktopSessions = desktopSessions + 1")+
+                (iOsSession ? ", lastMobile='"+sessionTime.toString()+"'" : "")+
                  (iOsSession && user.iosSessions == 0 ? ", firstMobile = '"+ sessionTime.toString() +"'": "")+
                 " WHERE facebookId='"+user.facebookId+"'";
+
+        try{
+
+            Statement statement = connection.createStatement();
+            //System.out.println(updateQuery);
+
+            // execute update SQL stetement
+            statement.execute(updateQuery);
+
+        } catch (SQLException e) {
+
+
+            System.out.println(e.getMessage());
+
+        }
+
+    }
+
+    public void updateLevel(String facebookId, int newLevel, Connection connection) {
+
+        String updateQuery = "UPDATE user SET level = "+ newLevel+"  WHERE facebookId='"+facebookId+"'";
 
         try{
 
@@ -155,7 +182,6 @@ public class CachedUserTable extends GenericTable {
         }
 
     }
-
 
     public void updateFailNotification(String facebookId, Connection connection) {
 

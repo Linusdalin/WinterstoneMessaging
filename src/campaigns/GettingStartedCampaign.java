@@ -31,6 +31,7 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
     GettingStartedCampaign(int priority, CampaignState active){
 
         super(Name, priority, active);
+
         setCoolDown(CoolDown_Days);
         registerMessageIds( MessageIds );
     }
@@ -55,6 +56,13 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
         if( user.amount == 0 && (user.lastgamePlayed== null || user.lastgamePlayed.equals(""))){
 
+            if(playerInfo.getUsageProfile().isMobileExclusive() && !playerInfo.fallbackFromMobile()){
+
+                return new MobilePushAction("Remember you get an extra diamond pick for every day in a row you are playing. The games are waiting. Click here for your free bonus!",
+                        user, executionTime, getPriority(), getTag(), Name, 31, getState(), responseFactor);
+            }
+
+
             if(daysBefore(user.created, executionDay, 1 )){
 
                 System.out.println("    -- Campaign " + Name + " Running message 1 for " + user.name );
@@ -78,36 +86,51 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
                 System.out.println("    -- Campaign " + Name + " Running message 3 for " + user.name );
 
-                if(playerInfo.getUsageProfile().isAnnymousMobile()){
+                if(playerInfo.getUsageProfile().isMobileExclusive() && !playerInfo.fallbackFromMobile()){
 
                     return new MobilePushAction("We here at SlotAmerica are missing you! The thrilling slot machines are awaiting and you can use the FREE bonus to find your favorite game! Click here to get started",
-                            user, executionTime, getPriority(), getTag(), Name, 3, getState(), responseFactor);
+                            user, executionTime, getPriority(), getTag(), Name, 32, getState(), responseFactor);
                 }
 
                 return new NotificationAction("We here at SlotAmerica are missing you! The thrilling slot machines are awaiting and you can use the FREE bonus to find your favorite game! Click here to get started",
-                        user, executionTime, getPriority(), getTag(), Name, 3, getState(), responseFactor);
+                        user, executionTime, getPriority(), getTag(), Name, 2, getState(), responseFactor);
 
             }
 
+            if(daysBefore(user.created, executionDay, 6 )){
+
+                if(playerInfo.getUsageProfile().isMobileExclusive() && !playerInfo.fallbackFromMobile()){
+
+                    return new MobilePushAction("Remember you get an extra diamond pick for every day in a row you are playing. The games are waiting. Click here for your free bonus!",
+                        user, executionTime, getPriority(), getTag(), Name, 33, getState(), responseFactor);
+                }
+            }
 
             if(daysBefore(user.created, executionDay, 8 )){
 
+                if(playerInfo.getUsageProfile().isMobileExclusive() && !playerInfo.fallbackFromMobile()){
+
+                    System.out.println("    -- Campaign " + Name + " Pushing 8 day getting started message for " + user.name );
+                    return new MobilePushAction("Don't miss out on the new game releases here at Slot America. Use your free bonus to try it out?",
+                            user, executionTime, getPriority(), getTag(), Name, 34, getState(), responseFactor);
+                }
+
                 System.out.println("    -- Campaign " + Name + " Emailing 8 day getting started message for " + user.name );
-                return new EmailAction(gettingStartedEmail1(user), user, executionTime, getPriority(), getTag(), 8, getState(), responseFactor);
+                return new EmailAction(gettingStartedEmail1(user), user, executionTime, getPriority(), getTag(), 24, getState(), responseFactor);
 
             }
 
             if(daysBefore(user.created, executionDay, 12 )){
 
                 System.out.println("    -- Campaign " + Name + " Emailing 12 day getting started message for " + user.name );
-                return new EmailAction(gettingStartedEmail1(user), user, executionTime, getPriority(), getTag(), 12, getState(), responseFactor);
+                return new EmailAction(gettingStartedEmail1(user), user, executionTime, getPriority(), getTag(), 25, getState(), responseFactor);
 
             }
 
             if(daysBefore(user.created, executionDay, 16 )){
 
                 System.out.println("    -- Campaign " + Name + " Emailing 16 day getting started message for " + user.name );
-                return new EmailAction(gettingStartedEmail2(user), user, executionTime, getPriority(), getTag(), 16, getState(), responseFactor);
+                return new EmailAction(gettingStartedEmail2(user), user, executionTime, getPriority(), getTag(), 26, getState(), responseFactor);
 
             }
 

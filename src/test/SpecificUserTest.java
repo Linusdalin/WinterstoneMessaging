@@ -4,13 +4,15 @@ package test;
 import core.DataCache;
 import core.PlayerInfo;
 import dbManager.ConnectionHandler;
+import dbManager.DatabaseException;
 import org.junit.Test;
-import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 import remoteData.dataObjects.UserTable;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
+
+import static junit.framework.Assert.assertTrue;
 
 /*****************************************************************************''
  *
@@ -28,7 +30,11 @@ public class SpecificUserTest {
         Connection cacheConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
         Connection connection = ConnectionHandler.getConnection(ConnectionHandler.Location.remote);
         UserTable  table = new UserTable("facebookId = '105390519812878'", 1);
-        table.load(connection);
+        try {
+            table.load(connection);
+        } catch (DatabaseException e) {
+            assertTrue(false);
+        }
 
         User user = table.getNext();
 

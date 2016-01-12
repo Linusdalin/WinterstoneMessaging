@@ -60,7 +60,7 @@ public class SendEngine {
 
 
         ActionTable allActions = new ActionTable(connection);
-        allActions.load(connection, " and status = 'PENDING' and timestamp >= date(date_sub(current_date(), interval "+ backTrackDays+" day))");
+        allActions.loadAndRetry(connection, " and status = 'PENDING' and timestamp >= date(date_sub(current_date(), interval "+ backTrackDays+" day))", "ASC", -1);
         ActionInterface action = allActions.getNext();
         int actionCount = 0;
         int skipCount = 0;

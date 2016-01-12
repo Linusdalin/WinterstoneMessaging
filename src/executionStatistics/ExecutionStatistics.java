@@ -2,6 +2,8 @@ package executionStatistics;
 
 import action.ActionInterface;
 import campaigns.CampaignInterface;
+import campaigns.CampaignRepository;
+import statistics.Display;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
 
 public class ExecutionStatistics {
 
-    CampaignStatistics[] campaignStatistics;              // statistics per campaign
+    CampaignStatistics[][] campaignStatistics;              // statistics per campaign
     private List<CampaignInterface> activeCampaigns;
 
     private int[] totalPlayerOutcome = {0, 0, 0, 0, 0};
@@ -36,7 +38,9 @@ public class ExecutionStatistics {
     /****************************************************************
      *
      *
-     *              Create
+     *              Create.
+     *
+     *              For each campaign we allow for 100 message ids.
      *
      * @param activeCampaigns  - campaigns in use
      *
@@ -46,7 +50,15 @@ public class ExecutionStatistics {
     public ExecutionStatistics(List<CampaignInterface> activeCampaigns) {
 
         this.activeCampaigns = activeCampaigns;
-        campaignStatistics = new CampaignStatistics[activeCampaigns.size()];
+        campaignStatistics = new CampaignStatistics[activeCampaigns.size()][100];
+
+        int index = 0;
+
+        for (CampaignStatistics[] campaignStatistic : campaignStatistics) {
+
+            campaignStatistic[0] = new CampaignStatistics(CampaignRepository.activeCampaigns.get(index++).getName(), 0);
+        }
+
 
     }
 
@@ -62,14 +74,15 @@ public class ExecutionStatistics {
     public void registerSelected(ActionInterface selectedAction) {
 
         int campaignIndex = getCampaignIndex(selectedAction.getCampaign());
+        int messageId = selectedAction.getMessageId();
 
-        if(campaignStatistics[campaignIndex] == null)
-            campaignStatistics[campaignIndex] = new CampaignStatistics(selectedAction.getCampaign());
+        if(campaignStatistics[campaignIndex][messageId] == null)
+            campaignStatistics[campaignIndex][messageId] = new CampaignStatistics(selectedAction.getCampaign(), messageId);
 
         if(selectedAction.isLive())
-            campaignStatistics[campaignIndex].countFired(selectedAction.getType());
+            campaignStatistics[campaignIndex][messageId].countFired(selectedAction.getType());
         else
-            campaignStatistics[campaignIndex].countPotential();
+            campaignStatistics[campaignIndex][messageId].countPotential();
 
     }
 
@@ -85,11 +98,12 @@ public class ExecutionStatistics {
     public void registerOverrun(ActionInterface action) {
 
         int campaignIndex = getCampaignIndex(action.getCampaign());
+        int messageId = action.getMessageId();
 
-        if(campaignStatistics[campaignIndex] == null)
-            campaignStatistics[campaignIndex] = new CampaignStatistics(action.getCampaign());
+        if(campaignStatistics[campaignIndex][messageId] == null)
+            campaignStatistics[campaignIndex][messageId] = new CampaignStatistics(action.getCampaign(), messageId);
 
-        campaignStatistics[campaignIndex].countOverrun();
+        campaignStatistics[campaignIndex][messageId].countOverrun();
 
     }
 
@@ -97,17 +111,17 @@ public class ExecutionStatistics {
 
         int campaignIndex = getCampaignIndex(campaign.getName());
 
-        if(campaignStatistics[campaignIndex] == null)
-            campaignStatistics[campaignIndex] = new CampaignStatistics(campaign.getName());
+        if(campaignStatistics[campaignIndex][0] == null)
+            campaignStatistics[campaignIndex][0] = new CampaignStatistics(campaign.getName(), 0);
 
-        campaignStatistics[campaignIndex].countCoolDown();
+        campaignStatistics[campaignIndex][0].countCoolDown();
 
     }
 
     public void registerOutcome(int reason){
 
 
-        System.out.println("Adding a total to reason " + reason);
+        //System.out.println("Adding a total to reason " + reason);
 
         totalPlayerOutcome[ reason ]++;
 
@@ -140,24 +154,37 @@ public class ExecutionStatistics {
     public String toString(){
 
         StringBuilder out = new StringBuilder();
-        for (CampaignStatistics statisticsForCampaign : campaignStatistics) {
+        for (CampaignStatistics[] statisticsForCampaign : campaignStatistics) {
 
             if(statisticsForCampaign != null)
-                out.append(statisticsForCampaign.getName() + ":" + statisticsForCampaign.toString() + "\n");
+                out.append(statisticsForCampaign[0].getName() + ":\n");
 
+            for (CampaignStatistics statisticsForMessage : statisticsForCampaign) {
+
+                if(statisticsForMessage != null && statisticsForMessage.getId() != 0)
+                    out.append(statisticsForMessage.toString() + "\n");
+
+            }
         }
 
-        out.append("Reached:   " + totalPlayerOutcome[ REACHED ] + " (Sending to today)\n");
-        out.append("Exposed:   " + totalPlayerOutcome[ EXPOSED ] + " (Cant reach because the player exposure limit)\n");
-        out.append("GivenUp:   " + totalPlayerOutcome[ GIVEUP ]  + " (No point - no answer)\n");
-        out.append("Cool down: " + totalPlayerOutcome[ COOLDOWN ]+ " (Cant reach because all campaigns are cooling down.\n");
-        out.append("Missed:    " + totalPlayerOutcome[ MISSED ] + "  (No campaign appropriate for the player)\n");
+        out.append("\n*******************************************\nPlayer Demographics statistics:\n\n");
+        out.append("No data compiled\n\n");
 
-        //for (int i = 6; i < strikeCount.length; i++) {
-        //    out.append(" - Strikeout: " + i + ": " + strikeCount[i] + "\n");
-        //}
 
-        out.append("\nCompletely overlooked pretty active players: " + overLooked + "\n");
+        out.append("\n*******************************************\nPlayer Exposure statistics:\n\n");
+        out.append("No data compiled\n\n");
+
+
+        out.append("\n*******************************************\nReach statistics:\n\n");
+
+
+        out.append(" - Reached:   " + Display.fixedLengthRight(totalPlayerOutcome[ REACHED ], 4) + " (Sending to today)\n");
+        out.append(" - Exposed:   " + Display.fixedLengthRight(totalPlayerOutcome[ EXPOSED ], 4) + " (Cant reach because the player exposure limit)\n");
+        out.append(" - GivenUp:   " + Display.fixedLengthRight(totalPlayerOutcome[ GIVEUP  ], 4) + " (No point - no answer)\n");
+        out.append(" - Cool down: " + Display.fixedLengthRight(totalPlayerOutcome[ COOLDOWN], 4) + " (Cant reach because all campaigns are cooling down.\n");
+        out.append(" - Missed:    " + Display.fixedLengthRight(totalPlayerOutcome[ MISSED  ], 4) + " (No campaign appropriate for the player)\n");
+
+        out.append("\n - Completely overlooked pretty active players: " + overLooked + "\n");
 
 
         /*

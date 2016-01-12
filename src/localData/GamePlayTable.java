@@ -1,5 +1,6 @@
 package localData;
 
+import dbManager.DatabaseException;
 import remoteData.dataObjects.GenericTable;
 
 import java.sql.Connection;
@@ -81,7 +82,7 @@ public class GamePlayTable extends GenericTable {
      */
 
 
-    public GamePlay getGamesForUser(String facebookId, String game) {
+    public GamePlay getGamesForUser(String facebookId, String game) throws DatabaseException {
 
         load(connection, "and playerId= '" + facebookId + "' and game='" + game + "'");
         GamePlay gamePlay = getNext();

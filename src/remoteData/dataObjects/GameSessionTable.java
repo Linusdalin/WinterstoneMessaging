@@ -1,5 +1,7 @@
 package remoteData.dataObjects;
 
+import dbManager.DatabaseException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +97,7 @@ public class GameSessionTable extends GenericTable{
 
     public List<GameSession> getSessionsForUser(User user, Connection connection) {
 
-        load(connection, "and users.facebookId = '"+ user.facebookId+"'");
+        loadAndRetry(connection, "and users.facebookId = '" + user.facebookId + "'", "ASC", -1);
         List<GameSession> sessionsForUser = getAll();
         System.out.println("Found " + sessionsForUser.size() + " sessions for user " + user.name);
         return sessionsForUser;
@@ -132,7 +134,11 @@ public class GameSessionTable extends GenericTable{
         String sql = getRemoteSQL(from, records);
         System.out.println(" -- Retrieving remote data with " + sql );
 
-        loadFromDB(connection, sql);
+        try {
+            loadFromDB(connection, sql);
+        } catch (DatabaseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     public String getRemoteSQL(Timestamp fromTime, int maxRecords) {

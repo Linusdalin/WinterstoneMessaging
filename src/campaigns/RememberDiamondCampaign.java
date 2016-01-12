@@ -1,7 +1,6 @@
 package campaigns;
 
 import action.ActionInterface;
-import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
@@ -22,7 +21,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
     private static final String Name = "Remember Diamond";
     private static final int CoolDown_Days = 9;
     private static final int[] MessageIds = {   2,   3,   4,
-                                              202, 203, 204
+                                               32,  33,  34
     };
 
 
@@ -102,17 +101,14 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
         // Last session was Between 24 and 42 hours ago and diamond pick is correct. Send the message
 
-        System.out.println("    -- Campaign " + Name + " fire notification" );
 
         if(playerInfo.getUsageProfile().isMobilePlayer()){
 
-            //TODO: Remove Diamond reminder om mobile when it is implemented client side
-            messageId += 200;
-
-            return new MobilePushAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
-                    user, executionTime, getPriority(), getTag(), Name, messageId, getState(), responseFactor);
+            System.out.println("    -- Campaign " + Name + " not firing for mobile player. This is handled automatically" );
+            return null;
         }
 
+        System.out.println("    -- Campaign " + Name + " fire notification" );
         return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
                 user, executionTime, getPriority(), getTag(), Name, messageId, getState(), responseFactor);
 

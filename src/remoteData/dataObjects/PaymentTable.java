@@ -1,5 +1,7 @@
 package remoteData.dataObjects;
 
+import dbManager.DatabaseException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +82,7 @@ public class PaymentTable extends GenericTable {
 
     public List<Payment> getPaymentsForUser(User user, Connection connection) {
 
-        load(connection, "sessions.playerId= '"+ user.facebookId+"'");
+        loadAndRetry(connection, "sessions.playerId= '" + user.facebookId + "'", order, maxLimit);
         List<Payment> paymentsForUser = getAll();
         System.out.println("Found " + paymentsForUser.size() + " payments for user " + user.name);
         return paymentsForUser;
@@ -125,7 +127,11 @@ public class PaymentTable extends GenericTable {
         String sql = getRemoteSQL(from, records);
         System.out.println(" -- Retrieving remote data with " + sql );
 
-        loadFromDB(connection, sql);
+        try {
+            loadFromDB(connection, sql);
+        } catch (DatabaseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
 

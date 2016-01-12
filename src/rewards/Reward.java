@@ -12,7 +12,7 @@ public class Reward {
     private final int coins;
     private boolean active;
 
-    Reward(String name, String code, int coins, boolean isActive){
+    public Reward(String name, String code, int coins, boolean isActive){
 
 
         this.name = name;

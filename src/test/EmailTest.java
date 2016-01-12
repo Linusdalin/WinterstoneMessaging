@@ -1,9 +1,7 @@
 package test;
 
 
-import campaigns.FirstPaymentCampaign;
-import campaigns.GettingStartedCampaign;
-import campaigns.MobileCrossPromotionCampaign;
+import campaigns.*;
 import email.NotificationEmail;
 import email.ReleaseEmail;
 import org.junit.Test;
@@ -207,6 +205,22 @@ public class EmailTest {
 
             assertThat("Should work", success, is(true) );
 
+
+            handler = new EmailHandler()
+                    .withEmail(NewYearGiftCampaign.newYearEmail(user, "test-1", RewardRepository.newYearFree))
+                    .toRecipient(user.facebookId);
+
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
+
+            handler = new EmailHandler()
+                    .withEmail(TryNewGameVideoPokerCampaign.gameActivationEmail(user))
+                    .toRecipient(user.facebookId);
+
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
 
         }catch(DeliveryException e){
 

@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
@@ -21,7 +22,11 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
     // Campaign config data
     private static final String Name = "LevelUp";
     private static final int CoolDown_Days = 11;      // This should really be once per level. Especially when players are not playing too much
-    private static final int[] MessageIds = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    private static final int[] MessageIds = { 0, 1, 2, 3, 4, 5, 6, 7,
+
+                                             30, 31, 32, 33, 34, 35, 36, 37         // Mobile
+
+    };
 
 
     // Trigger specific config data
@@ -119,8 +124,20 @@ LevelUpCampaign(int priority, CampaignState activation){
         else{
 
 
-                System.out.println("    -- Campaign " + Name + " firing message for level " + user.level + " with message " + message + 1  );
-                NotificationAction action =  new NotificationAction(messages[message], user, executionTime, getPriority(), getTag(),  Name, (message + 1), getState(), responseFactor);
+             System.out.println("    -- Campaign " + Name + " firing message for level " + user.level + " with message " + message + 1  );
+
+            ActionInterface action;
+             if(playerInfo.getUsageProfile().isMobileExclusive()){
+
+                 return new MobilePushAction(messages[message], user, executionTime, getPriority(), getTag(), Name,  (message + 31), getState(), responseFactor);
+             }
+             else{
+
+                 action =  new NotificationAction(messages[message], user, executionTime, getPriority(), getTag(),  Name, (message + 1), getState(), responseFactor);
+
+             }
+
+
 
             if(message == 7){
 

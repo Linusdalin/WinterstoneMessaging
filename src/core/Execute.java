@@ -22,7 +22,7 @@ import transfer.Transfer;
  *              *  - Check resent click to add allowed messages
  *              *  - Big weekend test
  *              *  - Unclaimed reward reminder
- *               - Store all actions in database - not in memory to allow for one pass
+ *              *  - Store all actions in database - not in memory - to allow for one pass
  *               - Test night players click through
  *               - Complete scheduling of multiple runs, multiple sending with replace action and three batches over 24 hours
  *
@@ -32,12 +32,12 @@ import transfer.Transfer;
 public class Execute {
 
         private static final int     Threshold              = 50;
-        private static final int     Send_Cap               = 7000;
-        private static final int     User_Cap               = 1000;
-        private static final boolean DRY_RUN                = true;
+        private static final int     Send_Cap               = 10000;
+        private static final int     User_Cap               = 10000;
+        private static final boolean DRY_RUN                = false;
         private static final boolean OVERRIDE_TIME_CONSTR   = true;
         private static final String  UserScrapeStart        = "0000-00-00";
-        private static final String  TEST_USER              = null;                           // "627716024";          // Tina:     "105390519812878";
+        private static final String  TEST_USER              = null;                            // "627716024";          // Tina:     "105390519812878";
 
         private static final boolean SEND_EMAIL             = true;
         private static final int     BatchSize              = 50000;

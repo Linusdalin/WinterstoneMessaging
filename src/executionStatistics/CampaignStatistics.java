@@ -1,6 +1,7 @@
 package executionStatistics;
 
 import action.ActionType;
+import statistics.Display;
 
 /*******************************************************************************
  *
@@ -11,6 +12,8 @@ import action.ActionType;
 
 public class CampaignStatistics {
 
+    private int messageId;
+
     private int timesFiredNotification = 0;
     private int timesFiredPush = 0;
     private int timesFiredEmail = 0;
@@ -20,9 +23,10 @@ public class CampaignStatistics {
 
     private String name;
 
-    public CampaignStatistics(String name){
+    public CampaignStatistics(String name, int messageId){
 
         this.name = name;
+        this.messageId = messageId;
     }
 
 
@@ -41,11 +45,17 @@ public class CampaignStatistics {
 
     public String toString(){
 
-        return "Fired: ( N:" + timesFiredNotification + " + MP:" + timesFiredPush + " + E:" + timesFiredEmail+ " ) Cooling Down: "+ timesCoolingDown+", Overrun: " + timesOverrun + (timesPotential > 0 ? " Potential (if live): " + timesPotential : "");
+        return " -- id: "+ Display.fixedLengthLeft(messageId, 2) +" Fired: ( N:" + Display.fixedLengthLeft(timesFiredNotification, 3) + " + MP:" + Display.fixedLengthLeft(timesFiredPush, 3) +
+                " + E:" + Display.fixedLengthLeft(timesFiredEmail, 3)+ " ) Cooling Down: "+ Display.fixedLengthLeft(timesCoolingDown, 4)+", Overrun: " + Display.fixedLengthLeft(timesOverrun, 3) + (timesPotential > 0 ? " Potential (if live): " + timesPotential : "");
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getId(){
+
+        return messageId;
     }
 
     public void countPotential() {

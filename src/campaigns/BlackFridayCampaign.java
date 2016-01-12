@@ -18,11 +18,13 @@ public class BlackFridayCampaign extends AbstractCampaign implements CampaignInt
     // Campaign config data
     private static final String Name = "BlackFriday";
     private static final int CoolDown_Days = 2;            // Send out multiple times during the weekend
-    private static final int[] MessageIds = { 1, 2 };
+    private static final int[] MessageIds = {
+            1, 2,                                       // Black friday
+            3, 4 };                                     // Christmas sale
 
 
     // Trigger specific config data
-    private static final int MAX_INACTIVITY = 20;
+    private static final int MAX_INACTIVITY = 15;
     private int percentage;
 
     BlackFridayCampaign(int priority, CampaignState activation, int percentage){
@@ -73,8 +75,8 @@ public class BlackFridayCampaign extends AbstractCampaign implements CampaignInt
                 // Very active player - entice to buy...   TEST
 
                 System.out.println("    -- Sending a BlackFriday offer to active free player" );
-                return new NotificationAction("Black Friday ‘3-for-1’-coin Sale continues all through the weekend on SlotAmerica. Enter and grab your chance!",
-                        user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor);
+                return new NotificationAction("New Year ‘3-for-1’-coin Sale is still ongoing here on SlotAmerica. Enter and grab your chance!",
+                        user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
 
             }
 
@@ -89,8 +91,8 @@ public class BlackFridayCampaign extends AbstractCampaign implements CampaignInt
             // Paying payer
 
             System.out.println("    -- Sending a happy hour reminder to paying payer" );
-            return new NotificationAction("Black Friday ‘3-for-1’-coin Sale continues all through the weekend on SlotAmerica. Enter and grab your chance!",
-                    user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
+            return new NotificationAction("New Year ‘3-for-1’-coin Sale is still ongoing here on SlotAmerica. Enter and grab your chance!",
+                    user, executionTime, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
 
 
         }

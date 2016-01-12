@@ -1,6 +1,7 @@
 package action;
 
 import campaigns.CampaignInterface;
+import rewards.Reward;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -20,6 +21,7 @@ public interface ActionInterface {
 
     ActionParameter getParameters();
     public String getCampaign();
+    int getMessageId();
 
     boolean isFiredBy(CampaignInterface campaign);
     ActionInterface attach(ActionInterface action);
@@ -37,5 +39,13 @@ public interface ActionInterface {
     void updateAsExecuted(Connection connection);
 
     int getSchedulingTime();
+    ActionInterface getNext();
 
+    String getReward();
+
+    ActionInterface forceAction();
+    boolean isForced();
+
+    ActionInterface withReward(String s);
+    ActionInterface withReward(Reward reward);
 }

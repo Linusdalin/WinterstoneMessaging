@@ -3,9 +3,7 @@ package campaigns;
 import action.ActionInterface;
 import action.NotificationAction;
 import core.PlayerInfo;
-import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
-import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
@@ -33,7 +31,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
     private static final int INACTIVITY_LIMIT   = 90;     // This set very high to test out potential
     private static final int MIN_ACTIVITY   = 20;           // This set very high to test out potential
 
-    private static final int DAILY_CAP   = 100;         // Max per day
+    private static final int DAILY_CAP   = 500;         // Max per day
     private int count = 0;
 
 

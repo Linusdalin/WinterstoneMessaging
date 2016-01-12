@@ -13,7 +13,7 @@ public class GiveAwayHandler {
 
 
     private String overrideUserId = null;
-    private int amount = 0;
+    private long amount = 0;
     private String recipient;
 
     public GiveAwayHandler(String override) {
@@ -21,7 +21,7 @@ public class GiveAwayHandler {
         this.overrideUserId = override;
     }
 
-    public GiveAwayHandler withAmount(int amount) {
+    public GiveAwayHandler withAmount(long amount) {
 
         this.amount = amount;
         return this;
@@ -77,7 +77,7 @@ public class GiveAwayHandler {
 
             if(response != null){
                 System.out.println("   -> Got Response: " + response);
-                return  (response.contains("ok"));
+                return  (response.indexOf("ok") >= 0);
 
             }
             else{

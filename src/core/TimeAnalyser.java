@@ -1,6 +1,7 @@
 package core;
 
 import action.ActionInterface;
+import action.GiveCoinAction;
 import campaigns.CampaignInterface;
 import localData.ExposureTable;
 import localData.ResponseTable;
@@ -36,15 +37,17 @@ public class TimeAnalyser {
      *
      *          //TODO: Add a back-off when overall response goes down
      *
+     *
      * @param campaignExposures     - campaign exposures
      * @param handler               - handler for all responses to lookup response frequency
      * @return                      - percentage value as threshold
      */
 
 
-    public int eligibilityForCommunication(ExposureTable campaignExposures, ResponseHandler handler, double responseFactor){
+    public int eligibilityForCommunication(ExposureTable campaignExposures, ResponseHandler handler, ActionInterface action){
 
         ResponseStat response = handler.getOverallResponse();
+        double responseFactor = action.getResponseFactor();
         System.out.println("      Got response " + response.toString() + " for user.");
 
         int exposures = campaignExposures.getUserExposure(playerInfo.getUser().facebookId, Personal_CoolOff);
@@ -55,6 +58,14 @@ public class TimeAnalyser {
             System.out.println("  The user has responded to the campaign previously ("+ responseFactor+") so we increase the limit ");
             limit++;
         }
+
+        // If the action is give coin, we add one to the limit to make sure we execute it
+        if(action.getNext() != null && action.getNext() instanceof GiveCoinAction)
+            limit += 2;
+
+        // Add one for an action with reward
+        if(action.getReward() != null )
+            limit += 1;
 
         if(playerInfo.getUser().payments > 0)
             limit++;

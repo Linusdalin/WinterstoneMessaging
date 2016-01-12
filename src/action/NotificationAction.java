@@ -150,12 +150,12 @@ public class NotificationAction extends Action implements ActionInterface{
     }
 
 
-    public NotificationAction withReward(String reward) {
+    public ActionInterface withReward(String reward) {
         this.reward = reward;
         return this;
     }
 
-    public NotificationAction withReward(Reward reward) {
+    public ActionInterface withReward(Reward reward) {
 
         this.reward = reward.getCode();
         return this;
@@ -190,6 +190,12 @@ public class NotificationAction extends Action implements ActionInterface{
 
         super.store(connection, data);
 
+    }
+
+
+    @Override
+    public String getReward() {
+        return reward;
     }
 
 

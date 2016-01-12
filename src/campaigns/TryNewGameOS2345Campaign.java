@@ -1,8 +1,11 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
+import email.EmailInterface;
+import email.NotificationEmail;
 import recommendation.GameRecommender;
 import remoteData.dataObjects.User;
 import rewards.Reward;
@@ -20,18 +23,21 @@ import java.sql.Timestamp;
 public class TryNewGameOS2345Campaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Game = "os2345x";
+    private static final String Game = "os2x3x4x5x";
     private static final String GameName = "Old School 2x3x4x5x";
     private static final String Name = "TryNewGame"+Game;
     private static final int CoolDown_Days = 9999;            // Just once per game
-    private int[] MessageIds = {1, 2};
+    private int[] MessageIds = {1, 2, 3,
+                                10
+    };
 
 
     // Trigger specific config data
-    private static final int Min_Sessions = 30;
-    private static final int Min_Inactivity = 5;
-    private static final int Max_Inactivity = 32;
-    private static final int SwitchToEmail = 9999;   //TODO: Optimize this
+    private static final int Min_Sessions = 15;
+    private static final int Min_Inactivity1 = 5;                          // Active players
+    private static final int Min_Inactivity2 = 15;                         // Lapsing players
+    private static final int Min_Inactivity3 = 60;                         // Lapsed players
+    private static final int Max_Inactivity = 120;
 
     TryNewGameOS2345Campaign(int priority, CampaignState active){
 
@@ -73,9 +79,9 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
         }
         int inactivity = getDaysBetween(lastSession, executionDay);
 
-        if(inactivity <  Min_Inactivity){
+        if(inactivity <  Min_Inactivity1){
 
-            System.out.println("    -- Campaign " + Name + " not firing. User is active (" + inactivity + " >" + Min_Inactivity + ")" );
+            System.out.println("    -- Campaign " + Name + " not firing. User is active (" + inactivity + " >" + Min_Inactivity1 + ")" );
             return null;
         }
 
@@ -101,44 +107,44 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
 
         Reward reward = decideReward(playerInfo.getUser());
 
-        if(!RewardRepository.hasClaimed(user, reward)){
+        if(playerInfo.hasClaimed(reward)){
 
-            System.out.println("    -- Campaign " + Name + " not firing. Player already claimed freespin reward for " + Game );
+            System.out.println("    -- Campaign " + Name + " not firing. Player already claimed the reward " + Game );
             return null;
-
         }
 
 
-         if(inactivity < SwitchToEmail){
+        if(inactivity > Min_Inactivity3 && inactivity<= Max_Inactivity){
 
-            System.out.println("    -- Sending freespin offer for game " + Game + "\n" );
-            return new NotificationAction("We have added " + reward.getCoins() + " free spins for you in the game " + GameName + " click here to claim and play for free!",
-                    user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
-                    .withGame(Game)
-                    .withReward(reward);
+            return new EmailAction(gameActivationEmail(user, reward), user, executionTime, getPriority(), getTag(), 10, getState(), responseFactor);
 
         }
-        else{
 
-            // Sending a mail instead
+        int messageId = 2;
+        if(inactivity > Min_Inactivity2 && inactivity <= Min_Inactivity3){
 
-            System.out.println("    -- NO EMAIL IMPLEMENTED for freespin offer \"" + Game + "\n" );
-            return null;
-
-
+            messageId = 3;
         }
+
+        System.out.println("    -- Sending freespin offer for game " + Game + "\n" );
+        return new NotificationAction("We have added " + reward.getCoins() + " free spins for you in our favourite game " + GameName + ". click here to claim and try it out for free!",
+                user, executionTime, getPriority(), getTag(),  Name, messageId, getState(), responseFactor)
+                .withGame(Game)
+                .withReward(reward);
 
     }
 
-    /*
 
-    private EmailInterface gameActivationEmail(User user, GameRecommendation recommendation) {
-        return new NotificationEmail("we have a recommendation for you", "<p>Don't miss out the new game we released here at Slot America. We think you will like it...</p>" +
-                "<p> Check out <a href=\"https://apps.facebook.com/slotAmerica/?game="+recommendation.getCode()+"promocode=EGameActivation-2\">"+ recommendation.getRecommendation()+"</a></p>",
-                "Hello "+ user.name+" Don't miss out the new game we released here at Slot America. We think you will like it...");
+
+    public static EmailInterface gameActivationEmail(User user, Reward reward) {
+
+        return new NotificationEmail("We have a recommendation for you", "<p>Don't miss out one of the most liked games at SlotAmerica. It is the original Old School game 2x3x4x5x, with multiple bonuses.  " +
+                "We really think you will like it. We have added "+ reward.getCoins()+" free spins for you to try it out!</p>" +
+                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game=os2x3x4x5&xpromocode="+ Name+"&reward="+reward.getCode()+"\"> to claim your spins</a></p>",
+                "Hello "+ user.name+" Don't miss out the Old School 2x3x4x5x game we released here at Slot America. We think you will like it...");
     }
 
-*/
+
 
 
     /*********************************************************************
@@ -150,6 +156,12 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
      */
 
     public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+
+        String specificWeekDay = isSpecificDay(executionTime, false, "måndag");
+
+        if(specificWeekDay != null)
+            return specificWeekDay;
+
 
         return isTooEarly(executionTime, overrideTime);
 
