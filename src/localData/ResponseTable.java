@@ -2,9 +2,7 @@ package localData;
 
 import remoteData.dataObjects.GenericTable;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,18 +22,42 @@ public class ResponseTable extends GenericTable {
             "      -RESTRICTION-  -LIMIT-";
 
     private Connection connection;
-
+    //ConnectionPool connectionPool = new ConnectionPool();
+    private PreparedStatement stmt;
 
     public ResponseTable(String restriction, int limit, Connection connection){
 
         super(getRemote, restriction, limit);
         maxLimit = limit;
         this.connection = connection;
+
+        /*
+        try {
+
+            String query = "select sum(count) from response where user = ? and campaign = ?";
+            stmt = connection.prepareStatement(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+          */
     }
 
     public ResponseTable(Connection connection){
 
+
         this( "", -1, connection);
+        String query = "select sum(count) from response where user = ? and campaign = ?";
+
+        /*
+        try {
+
+            stmt = connection.prepareStatement(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        */
     }
 
     public Response getNext(){
@@ -88,6 +110,8 @@ public class ResponseTable extends GenericTable {
         return getResponses(userId, null, -1);
     }
 
+
+
     public int getResponses(String userId, String campaign, int messageId){
 
         String query = "select sum(count) from response where user = '"+ userId+"'"+(campaign != null ? " and campaign = '"+ campaign+"'" : "");
@@ -96,30 +120,69 @@ public class ResponseTable extends GenericTable {
             query += " and messageId = " + messageId;
         }
 
+        int responses = 0;
+
         try{
 
-            Statement statement = connection.createStatement();
+            statement  = connection.createStatement();
             resultSet = statement.executeQuery(query);
 
-            if(resultSet == null)
-                return 0;
+            if(resultSet != null){
 
-            if(!resultSet.next())
-                return 0;
-
-            return resultSet.getInt( 1 );
+                if(resultSet.next())
+                    responses =  resultSet.getInt( 1 );
+            }
 
         }catch(SQLException e){
 
-            System.out.println("Error accessing data in database with the query:\n" + query);
+            System.out.println("Error accessing data in database with the prepared query");
             e.printStackTrace();
         }
+        finally{
 
+            close();
+        }
 
-        return 0;
+        return responses;
 
     }
 
+    public void closePrepared() {
+
+        try {
+
+            if(resultSet != null)
+                resultSet.close();
+
+            if(stmt != null)
+                stmt.close();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+
+    public void closeAndReturn(Connection c) {
+
+        try {
+
+            if(resultSet != null)
+                resultSet.close();
+
+            if(stmt != null)
+                stmt.close();
+
+            //if(c != null)
+            //    c.close();
+
+            //connectionPool.returnConnectionToPool(c);
+
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
 
 }

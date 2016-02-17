@@ -4,6 +4,8 @@ import action.ActionInterface;
 import core.FailActionException;
 import core.PlayerInfo;
 import localData.Exposure;
+import response.ResponseStat;
+
 import java.sql.Timestamp;
 
 /************************************************************
@@ -17,7 +19,8 @@ import java.sql.Timestamp;
  */
 public interface CampaignInterface {
 
-    ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) throws FailActionException;
+    ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor,
+                             ResponseStat response) throws FailActionException;
     String getName();
     String getShortName();
     String getTag();

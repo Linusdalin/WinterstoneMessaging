@@ -3,6 +3,7 @@ package core;
 import action.ActionInterface;
 import action.GiveCoinAction;
 import campaigns.CampaignInterface;
+import executionStatistics.ExecutionStatistics;
 import localData.ExposureTable;
 import localData.ResponseTable;
 import remoteData.dataObjects.User;
@@ -22,8 +23,9 @@ public class TimeAnalyser {
 
     private PlayerInfo playerInfo;
     private Connection connection;
-    private static final int Personal_CoolOff = 7;
+    private static final int Personal_CoolOff = 7;          // Six days to rotate over the weeks
     private static final double RESPONSE_FACTOR = 2.0;      // This will make a 60 x 65 above 100
+    private static final int BASE_LIMIT = 2;
 
     public TimeAnalyser(PlayerInfo playerInfo, Connection connection) {
 
@@ -38,21 +40,23 @@ public class TimeAnalyser {
      *          //TODO: Add a back-off when overall response goes down
      *
      *
+     *
      * @param campaignExposures     - campaign exposures
      * @param handler               - handler for all responses to lookup response frequency
+     * @param executionStatistics
      * @return                      - percentage value as threshold
      */
 
 
-    public int eligibilityForCommunication(ExposureTable campaignExposures, ResponseHandler handler, ActionInterface action){
+    public int eligibilityForCommunication(ExposureTable campaignExposures, ResponseHandler handler, ActionInterface action, ExecutionStatistics executionStatistics){
 
         ResponseStat response = handler.getOverallResponse();
         double responseFactor = action.getResponseFactor();
         System.out.println("      Got response " + response.toString() + " for user.");
 
-        int exposures = campaignExposures.getUserExposure(playerInfo.getUser().facebookId, Personal_CoolOff);
+        int exposures = campaignExposures.getUserExposure(playerInfo.getUser().facebookId, null, Personal_CoolOff);
 
-        int limit = 1;
+        int limit = BASE_LIMIT;
 
         if(responseFactor > 1.0){
             System.out.println("  The user has responded to the campaign previously ("+ responseFactor+") so we increase the limit ");
@@ -78,13 +82,19 @@ public class TimeAnalyser {
         if(exposures > limit){
 
             System.out.println("Already "+ exposures+" messages this week. (limit= "+ limit+") Not sending any more");
+            executionStatistics.registerOverExposure(exposures, limit);
             return 0;
         }
-
-        if(exposures == limit ){
+        else if(exposures == limit ){
 
             System.out.println("Already "+ exposures+" message this week. Only high priority messages");
+            executionStatistics.registerExposureWarning(exposures, limit);
             return 65;
+        }else{
+
+            System.out.println("Found Exposure level " + exposures + " limit = " + limit );
+            executionStatistics.registerExposureOk(exposures, limit);
+
         }
 
         return 100;
@@ -95,6 +105,7 @@ public class TimeAnalyser {
 
         ResponseTable responseTable = new ResponseTable(connection);
         int responses = responseTable.getResponses(user.facebookId, campaign);
+        responseTable.close();
 
         return (responses > 0);
     }

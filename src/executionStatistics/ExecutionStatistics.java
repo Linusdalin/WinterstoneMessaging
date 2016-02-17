@@ -24,6 +24,15 @@ public class ExecutionStatistics {
 
     private int[] strikeCount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+    private int[] receptivityDay = { 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+    private int[][] exposure = {
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                 // OK
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                 // Warning
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}                  // Over
+
+    };
+
 
     // Index for the different outcomes for messaging (indexing the totalPlayerOutcome)
 
@@ -50,7 +59,7 @@ public class ExecutionStatistics {
     public ExecutionStatistics(List<CampaignInterface> activeCampaigns) {
 
         this.activeCampaigns = activeCampaigns;
-        campaignStatistics = new CampaignStatistics[activeCampaigns.size()][100];
+        campaignStatistics = new CampaignStatistics[activeCampaigns.size()][400];
 
         int index = 0;
 
@@ -168,21 +177,53 @@ public class ExecutionStatistics {
         }
 
         out.append("\n*******************************************\nPlayer Demographics statistics:\n\n");
-        out.append("No data compiled\n\n");
+        out.append("    Monday Players: " + receptivityDay[1] + "\n");
+        out.append("   Tuesday Players: " + receptivityDay[2] + "\n");
+        out.append(" Wednesday Players: " + receptivityDay[3] + "\n");
+        out.append("  Thursday Players: " + receptivityDay[4] + "\n");
+        out.append("    Friday Players: " + receptivityDay[5] + "\n");
+        out.append("  Saturday Players: " + receptivityDay[6] + "\n");
+        out.append("    Sunday Players: " + receptivityDay[0] + "\n");
+        out.append("         (unknown): " + receptivityDay[8] + "\n");
 
 
         out.append("\n*******************************************\nPlayer Exposure statistics:\n\n");
-        out.append("No data compiled\n\n");
+
+
+        int[] exposures = exposure[0];
+        out.append("\n --   OK:");
+
+        for (int e : exposures) {
+
+            out.append( Display.fixedLengthRight(e, 5)  + " ");
+        }
+
+        exposures = exposure[1];
+        out.append("\n -- Warn:");
+
+        for (int e : exposures) {
+
+            out.append( Display.fixedLengthRight(e, 5)  + " ");
+        }
+        exposures = exposure[2];
+        out.append("\n -- OVER:");
+
+        for (int e : exposures) {
+
+            out.append( Display.fixedLengthRight(e, 5)  + " ");
+        }
+
+        out.append("\n\n");
 
 
         out.append("\n*******************************************\nReach statistics:\n\n");
 
 
-        out.append(" - Reached:   " + Display.fixedLengthRight(totalPlayerOutcome[ REACHED ], 4) + " (Sending to today)\n");
-        out.append(" - Exposed:   " + Display.fixedLengthRight(totalPlayerOutcome[ EXPOSED ], 4) + " (Cant reach because the player exposure limit)\n");
-        out.append(" - GivenUp:   " + Display.fixedLengthRight(totalPlayerOutcome[ GIVEUP  ], 4) + " (No point - no answer)\n");
-        out.append(" - Cool down: " + Display.fixedLengthRight(totalPlayerOutcome[ COOLDOWN], 4) + " (Cant reach because all campaigns are cooling down.\n");
-        out.append(" - Missed:    " + Display.fixedLengthRight(totalPlayerOutcome[ MISSED  ], 4) + " (No campaign appropriate for the player)\n");
+        out.append(" - Reached:   " + Display.fixedLengthRight(totalPlayerOutcome[ REACHED ], 6) + " (Sending to today)\n");
+        out.append(" - Exposed:   " + Display.fixedLengthRight(totalPlayerOutcome[ EXPOSED ], 6) + " (Cant reach because the player exposure limit)\n");
+        out.append(" - GivenUp:   " + Display.fixedLengthRight(totalPlayerOutcome[ GIVEUP  ], 6) + " (No point - no answer)\n");
+        out.append(" - Cool down: " + Display.fixedLengthRight(totalPlayerOutcome[ COOLDOWN], 6) + " (Cant reach because all campaigns are cooling down.\n");
+        out.append(" - Missed:    " + Display.fixedLengthRight(totalPlayerOutcome[ MISSED  ], 6) + " (No campaign appropriate for the player)\n");
 
         out.append("\n - Completely overlooked pretty active players: " + overLooked + "\n");
 
@@ -218,4 +259,39 @@ public class ExecutionStatistics {
 
 
     }
+
+    public void registerReceptivity(int day){
+
+        if(day == -1)
+            day = 8;
+
+        receptivityDay[day]++;
+
+    }
+
+
+    public void registerExposureOk(int exposures, int limit) {
+
+        if(exposures > 8)
+            exposures = 8;
+
+        exposure[0][exposures]++;
+    }
+
+    public void registerOverExposure(int exposures, int limit) {
+
+        if(exposures > 8)
+            exposures = 8;
+
+        exposure[2][exposures]++;
+    }
+
+    public void registerExposureWarning(int exposures, int limit) {
+
+        if(exposures > 8)
+            exposures = 8;
+
+        exposure[1][exposures]++;
+    }
+
 }

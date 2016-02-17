@@ -5,6 +5,7 @@ import action.MobilePushAction;
 import core.PlayerInfo;
 import core.UsageProfileClassification;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.Reward;
 
 import java.sql.Timestamp;
@@ -44,7 +45,7 @@ public class MobileConversionWelcomeCampaign extends AbstractMobileCampaign impl
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
         Timestamp executionDay = getDay(executionTime);
@@ -108,7 +109,7 @@ public class MobileConversionWelcomeCampaign extends AbstractMobileCampaign impl
 
         Reward reward = getRewardForUser(user);
 
-        MobilePushAction action =  new MobilePushAction("Happy to see you playing SlotAmerica on mobile. Here are your " + reward.getCoins() + " coins for testing it out", user, executionTime, getPriority(), getTag(), Name,  1, getState(), responseFactor)
+        MobilePushAction action =  new MobilePushAction("Happy to see you playing SlotAmerica on mobile. Here are your " + reward.getCoins() + " coins for testing it out", user, executionTime, getPriority(), getTag(), Name,  301, getState(), responseFactor)
                     .withReward(reward);
 
         return action;

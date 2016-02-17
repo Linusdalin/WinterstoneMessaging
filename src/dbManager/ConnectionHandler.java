@@ -26,23 +26,31 @@ public class ConnectionHandler {
             switch (location) {
 
                 case local:
-                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/slotamerica", "root", "12Twatwaommwl!");
-                    if(connection == null)
-                        throw new RuntimeException("Could not open connection to database");
-                    System.out.println(" -- Connected to local database!");
-                    break;
+
+                    if(connection == null || connection.isClosed()){
+
+                        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/slotamerica", "root", "12Twatwaommwl!");
+                        if(connection == null)
+                            throw new RuntimeException("Could not open connection to database");
+                    }
+
+                    //System.out.println(" -- Connected to local database!");
+                    return connection;
 
                 case remote:
-                    connection = DriverManager.getConnection("jdbc:mysql://db.slot-america.com:3306/slotamerica?zeroDateTimeBehavior=convertToNull", "linus", "KqgiC84Jwf$#");
-                    if(connection == null)
-                        throw new RuntimeException("Could not open connection to database");
-                    System.out.println(" -- Connected to remote database!");
-                    break;
 
-                case dummy:
-                    connection = null;
-                    System.out.println(" -- Using dummy database");
-                    break;
+                    if(connection == null || connection.isClosed()){
+
+                        connection = DriverManager.getConnection("jdbc:mysql://db.slot-america.com:3306/slotamerica?zeroDateTimeBehavior=convertToNull", "linus", "KqgiC84Jwf$#");
+                        if(connection == null)
+                            throw new RuntimeException("Could not open connection to database");
+                    }
+
+                    System.out.println(" -- Connected to remote database!");
+                    return connection;
+
+                default:
+                    throw new RuntimeException("Could not open " + location.name() + " to database");
             }
 
         }catch(Exception e){
@@ -50,7 +58,8 @@ public class ConnectionHandler {
             e.printStackTrace();
 
         }
-        return connection;
+
+        return null;
     }
 
 }

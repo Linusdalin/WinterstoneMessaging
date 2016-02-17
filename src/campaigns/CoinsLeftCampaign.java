@@ -7,6 +7,7 @@ import core.PlayerInfo;
 import email.EmailInterface;
 import email.NotificationEmail;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -57,7 +58,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
         Timestamp executionDay = getDay(executionTime);
@@ -95,8 +96,8 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                     System.out.println("    -- Campaign " + Name + " firing for high spender with balance " + user.balance );
                     return new NotificationAction("SlotAmerica is open for business. You have "+ user.balance+" coins left on your account. Click here to enjoy them in the Casino ",
                             user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)
-                    .attach(new EmailAction(coinLeftEmail(user),
-                            user, executionTime, getPriority(), Name, 1, getState(), responseFactor));
+                    .attach(new EmailAction(coinLeftEmail(user, createPromoCode(201)),
+                            user, executionTime, getPriority(), Name, 201, getState(), responseFactor));
 
                 }
                 else
@@ -111,7 +112,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
                     System.out.println("    -- Campaign " + Name + " firing for low spender with balance " + user.balance );
                     return new NotificationAction("SlotAmerica is open for business. You have "+ user.balance+" coins left on your account. Click here to enjoy them in the Casino ",
                             user, executionTime, getPriority(), getTag(), Name, 2, getState(), responseFactor)
-                            .attach(new EmailAction(coinLeftEmail(user),
+                            .attach(new EmailAction(coinLeftEmail(user, createPromoCode(202)),
                                     user, executionTime, getPriority(), Name, 2, getState(), responseFactor));
 
                 }
@@ -141,9 +142,10 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
     }
 
-    private EmailInterface coinLeftEmail(User user) {
+    private EmailInterface coinLeftEmail(User user, String promoCode) {
+
         return new NotificationEmail("there is more fun awaiting you", "<p>Did you know you have <b>"+ user.balance+"</b> coins left on your account? It would be a shame to let them go to waste, right?</p>" +
-                "<p> There are some new and fabulous new games you can try out with it! Like <a href=\"https://apps.facebook.com/slotAmerica/?game=wild_cherries&promocode=coinsLeftEmail-1\">Wild Cherries</a>. Welcome back to test it out :-) </p>",
+                "<p> There are some new and fabulous games you can try out with it! Like <a href=\"https://apps.facebook.com/slotAmerica/?game=clockworks&promocode="+ promoCode +"\">Clockwork</a>. Welcome back to test it out :-) </p>",
                 "You have "+ user.balance+ " coins left on your account.There are some fabulous new games you can try out with it.");
     }
 

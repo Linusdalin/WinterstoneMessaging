@@ -37,7 +37,7 @@ public class Transfer {
 
         paymentTransfer();
         sessionTransfer();
-        close();
+        //close();
 
 
     }

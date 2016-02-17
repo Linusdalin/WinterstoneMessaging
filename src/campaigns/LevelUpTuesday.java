@@ -5,6 +5,7 @@ import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -54,7 +55,7 @@ public class LevelUpTuesday extends AbstractCampaign implements CampaignInterfac
      */
 
 
-    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();

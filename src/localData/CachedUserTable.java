@@ -85,13 +85,16 @@ public class CachedUserTable extends GenericTable {
     public void store(CachedUser user, Connection connection) {
 
         String firstMobile = null;
+        String lastMobile = null;
 
         if(user.firstMobileSession != null)
             firstMobile = "'" + user.firstMobileSession.toString() + "'";
+        if(user.lastMobileSession != null)
+            firstMobile = "'" + user.lastMobileSession.toString() + "'";
 
 
         String insertQuery = "INSERT INTO user VALUES ('" + user.facebookId + "', '" + user.lastSession.toString() +"', "+ user.failMail+", "+ user.failNotification+ ", " +
-                user.failPush +", "+ user.desktopSessions +", "+ user.iosSessions+", "+ firstMobile + ", " + user.level + ", " + user.level +")";
+                user.failPush +", "+ user.desktopSessions +", "+ user.iosSessions+", "+ firstMobile + ", " + lastMobile + ", " + user.level + ", " + user.level +")";
 
         try{
 

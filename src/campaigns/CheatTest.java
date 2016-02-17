@@ -6,6 +6,7 @@ import core.PlayerInfo;
 import core.UsageProfileClassification;
 import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -50,7 +51,7 @@ public class CheatTest extends AbstractCampaign implements CampaignInterface {
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         User user = playerInfo.getUser();
 

@@ -18,7 +18,7 @@ import java.sql.Timestamp;
  */
 public class ActionTests {
 
-    private static final User user       = new User("627716024", "Linus",     "linusdalin@gmail.com", "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male");
+    private static final User user       = new User("627716024", "Linus",     "linusdalin@gmail.com", "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
     Timestamp actionTime= new Timestamp(1015, 8, 1, 15, 10, 0, 0);
     Connection connection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
 

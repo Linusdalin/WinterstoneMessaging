@@ -7,6 +7,7 @@ import email.EmailInterface;
 import email.NotificationEmail;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -22,7 +23,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
     // Campaign config data
     private static final String Name = "FirstPayment";
     private static final int CoolDown_Days = 365000;            // Only once
-    private int[] MessageIds = { 2 };
+    private int[] MessageIds = { 20 };
 
 
     // Trigger specific config data
@@ -48,7 +49,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
      */
 
 
-    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         User user = playerInfo.getUser();
 
@@ -82,7 +83,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
             // Sending a mail instead
 
             System.out.println("    -- Sending an nice VIP welcome EMAIL to new paying players\n" );
-            return new EmailAction(firstDepositEmail(user, payment), user, executionTime, getPriority(), getTag(), 2, getState(), responseFactor);
+            return new EmailAction(firstDepositEmail(user, payment, createPromoCode( 201 )), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
 
 
 
@@ -94,7 +95,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
     }
 
 
-    public static EmailInterface firstDepositEmail(User user, Payment payment) {
+    public static EmailInterface firstDepositEmail(User user, Payment payment, String promoCode) {
 
         return new NotificationEmail("welcome to the SlotAmerica family!", "<p> Thank you for your coin purchase. " +
 
@@ -110,6 +111,9 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
                 ) +
                 "<p> Sometimes things go wrong! If there is any problem, please let us know. You can always email support@slot-america.com and we will do our " +
                     "best to help you out. We are of course also interested to hear what you think about the games and other functionality. Just send an email to support.</p>",
+
+                // Clear text
+
                 "Hello "+ user.name+" Thank you for your coin purchase. " +
                 "This is what keeps us working long days and nights bringing you the best slot games on facebook. You are now part of supporting this!\n\n" +
                 "We always strive to give you the best and most genuine slot experience possible. That's why we do not offend our " +

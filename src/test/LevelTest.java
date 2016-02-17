@@ -2,10 +2,14 @@ package test;
 
 
 import campaigns.CampaignState;
+import campaigns.LevelUpCampaign;
 import campaigns.LevelUpTuesdayReward;
 import org.junit.Test;
 
+import java.sql.Timestamp;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 /*****************************************************************************''
@@ -33,6 +37,35 @@ public class LevelTest {
         assertThat(campaign.getCoinsForLevel(82), is(11550));
         assertThat(campaign.getCoinsForLevel(100), is(14600));
         assertThat(campaign.getCoinsForLevel(110), is(16700));
+
+    }
+
+    @Test
+    public void levelUpWeekend(){
+
+        LevelUpCampaign campaign = new LevelUpCampaign(100, CampaignState.ACTIVE);
+        Timestamp executionTime = Timestamp.valueOf("2016-01-21 00:00:00");
+
+        String message = campaign.testFailCalendarRestriction(executionTime, true);
+        System.out.println("Got message: " + message);
+
+        assertNotNull(message);
+
+        executionTime = Timestamp.valueOf("2016-01-22 00:00:00");
+
+        message = campaign.testFailCalendarRestriction(executionTime, true);
+        System.out.println("Got message: " + message);
+
+        assertNotNull(message);
+
+
+        executionTime = Timestamp.valueOf("2016-01-23 00:00:00");
+
+        message = campaign.testFailCalendarRestriction(executionTime, true);
+        System.out.println("Got message: " + message);
+
+        assertThat(message, is((String)null));
+
 
     }
 

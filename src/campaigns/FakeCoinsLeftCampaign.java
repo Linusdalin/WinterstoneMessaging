@@ -5,6 +5,7 @@ import action.ManualAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -55,7 +56,7 @@ public class FakeCoinsLeftCampaign extends AbstractCampaign implements CampaignI
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();

@@ -45,8 +45,10 @@ public class CampaignStatistics {
 
     public String toString(){
 
-        return " -- id: "+ Display.fixedLengthLeft(messageId, 2) +" Fired: ( N:" + Display.fixedLengthLeft(timesFiredNotification, 3) + " + MP:" + Display.fixedLengthLeft(timesFiredPush, 3) +
-                " + E:" + Display.fixedLengthLeft(timesFiredEmail, 3)+ " ) Cooling Down: "+ Display.fixedLengthLeft(timesCoolingDown, 4)+", Overrun: " + Display.fixedLengthLeft(timesOverrun, 3) + (timesPotential > 0 ? " Potential (if live): " + timesPotential : "");
+        return " -- id: "+ Display.fixedLengthLeft(messageId, 3) +
+                " Fired: ( N:" + Display.fixedLengthLeft(timesFiredNotification, 6) + " + MP:" + Display.fixedLengthLeft(timesFiredPush, 6) +
+                " + E:" + Display.fixedLengthLeft(timesFiredEmail, 6)+ " ) Cooling Down: "+ Display.fixedLengthLeft(timesCoolingDown, 6)+
+                ", Overrun: " + Display.fixedLengthLeft(timesOverrun, 6) + (timesPotential > 0 ? " Potential (if live): " + timesPotential : "");
     }
 
     public String getName() {

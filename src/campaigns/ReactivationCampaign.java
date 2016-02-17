@@ -4,6 +4,7 @@ import action.ActionInterface;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -15,7 +16,6 @@ import java.sql.Timestamp;
  *                  This is a one shot campaign addressing all our old
  *                  paying and active players with appropriate bonuses
  *
- *                  //TODO: It would be nice to know if the user has claimed a bonus or not to be able to schedule n messages for reminder
  *
  */
 
@@ -28,10 +28,10 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT   = 90;     // This set very high to test out potential
-    private static final int MIN_ACTIVITY   = 20;           // This set very high to test out potential
+    private static final int INACTIVITY_LIMIT   = 60;     // This set very high to test out potential
+    private static final int MIN_ACTIVITY   = 10;           // This set very high to test out potential
 
-    private static final int DAILY_CAP   = 500;         // Max per day
+    private static final int DAILY_CAP   = 1000;         // Max per day
     private int count = 0;
 
 
@@ -55,7 +55,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         if(count > DAILY_CAP){
 
@@ -63,6 +63,15 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
             return null;
 
         }
+
+        if(playerInfo.getUsageProfile().isAnonymousMobile()){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Not for mobile players" );
+            return null;
+
+        }
+
+
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
@@ -102,7 +111,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
                 count++;
                 return new NotificationAction("You have 20,000 free coins to play for! We haven't seen you in a while. There are some fabulous new games to try out. ",
                         user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)
-                        .withGame("wild_cherries")
+                        .withGame("clockwork")
                         .withReward("cac6b086-189f-4ee6-bb30-7bcfb2a0ecfa");
 
 
@@ -112,7 +121,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
                 count++;
                 return new NotificationAction("You have 10,000 free coins to play for. We haven't seen you in a while. There are some fabulous new games to try out. ",
                         user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor)
-                        .withGame("wild_cherries")
+                        .withGame("clockwork")
                         .withReward("93f00dac-26cf-46e4-8bde-1eb59dd13032");
 
             }else if(user.sessions > MIN_ACTIVITY){
@@ -121,7 +130,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
                 count++;
                 return new NotificationAction("You have got 3,000 extra free coins! We haven't seen you in a while and there are some fabulous new games to try out. Click here to claim ",
                         user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor)
-                        .withGame("wild_cherries")
+                        .withGame("clockwork")
                         .withReward("363526a3-1fb1-499d-bb33-66dd9dcb9259");
 
             }

@@ -21,30 +21,34 @@ import java.sql.Timestamp;
  *
  */
 
-public class TryNewGameOS2345Campaign extends AbstractCampaign implements CampaignInterface {
+public class TryNewGameAbsoluteSevenCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Game = "os2x3x4x5x";
-    private static final String GameName = "Old School 2x3x4x5x";
+    private static final String Game = "absolute_sevens";
+    private static final String GameName = "Absolute Sevens";
     private static final String Name = "TryNewGame"+Game;
     private static final int CoolDown_Days = 9999;            // Just once per game
     private int[] MessageIds = {1, 2, 3,
                                 20
     };
 
+    private static final int DailyCap = 500;            // Just once per game
+
+    private int count = 0;
+
 
     // Trigger specific config data
-    private static final int Min_Sessions    =  40;
-    private static final int Min_Inactivity1 =   4;                          // Active players
-    private static final int Min_Inactivity2 =  15;                         // Lapsing players
-    private static final int Min_Inactivity3 =  50;                         // Lapsed players
-    private static final int Max_Inactivity  = 150;
-    private String day;
+    private static final int Min_Sessions = 40;
+    private static final int Min_Inactivity1 = 4;                          // Active players
+    private static final int Min_Inactivity2 = 15;                         // Lapsing players
+    private static final int Min_Inactivity3 = 50;                         // Lapsed players
+    private static final int Max_Inactivity = 150;
+    private String dayRestriction;
 
-    TryNewGameOS2345Campaign(int priority, CampaignState active, String day){
+    TryNewGameAbsoluteSevenCampaign(int priority, CampaignState active, String dayRestriction){
 
         super(Name, priority, active);
-        this.day = day;
+        this.dayRestriction = dayRestriction;
         setCoolDown(CoolDown_Days);
         registerMessageIds( MessageIds );
     }
@@ -65,6 +69,12 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
+
+        if(count >= DailyCap){
+
+            System.out.println("    -- Campaign " + Name + " not applicable. Daily Count reach (" + DailyCap + ")" );
+            return null;
+        }
 
 
         if(playerInfo.getUsageProfile().isMobilePlayer()){
@@ -124,6 +134,7 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
         }
 
 
+
         if(inactivity > Min_Inactivity3 && inactivity<= Max_Inactivity){
 
             return new EmailAction(gameActivationEmail(user, reward, createPromoCode(201)), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
@@ -137,6 +148,7 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
         }
 
         System.out.println("    -- Sending freespin offer for game " + Game + "\n" );
+        count++;
         return new NotificationAction("We have added " + reward.getCoins() + " free spins for you in our favourite game " + GameName + ". click here to claim and try it out for free!",
                 user, executionTime, getPriority(), getTag(),  Name, messageId, getState(), responseFactor)
                 .withGame(Game)
@@ -148,10 +160,10 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
 
     public static EmailInterface gameActivationEmail(User user, Reward reward, String promoCode) {
 
-        return new NotificationEmail("We have a recommendation for you", "<p>Don't miss out one of the most liked games at SlotAmerica. It is the original Old School game 2x3x4x5x, with multiple bonuses.  " +
+        return new NotificationEmail("We have a recommendation for you", "<p>Don't miss out one of the new hits here at SlotAmerica. It is called <b>Absolute Sevens</b> with five really <i>mechanical</i> reels and that true sound of the local casino." +
                 "We really think you will like it. We have added "+ reward.getCoins()+" free spins for you to try it out!</p>" +
-                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+Game+"&promocode="+ promoCode+"&reward="+reward.getCode() + "\"> to claim your spins</a></p>",
-                "Hello "+ user.name+" Don't miss out the Old School 2x3x4x5x game we released here at Slot America. We think you will like it...");
+                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+ Game+"&promocode="+ promoCode+"&reward="+reward.getCode()+"\"> to claim your spins</a></p>",
+                "Hello "+ user.name+" Don't miss out the game "+ GameName+" we released here at Slot America. We think you will like it...");
     }
 
 
@@ -167,7 +179,7 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
 
     public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
 
-        String specificWeekDay = isSpecificDay(executionTime, false, day);
+        String specificWeekDay = isSpecificDay(executionTime, false, dayRestriction);
 
         if(specificWeekDay != null)
             return specificWeekDay;
@@ -180,15 +192,15 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
     protected Reward decideReward(User user) {
 
         if(isHighSpender(user))
-            return RewardRepository.OS2345High;
+            return RewardRepository.AbsoluteHigh;
 
         if(isPaying(user))
-            return RewardRepository.OS2345Paying;
+            return RewardRepository.AbsolutePaying;
 
         if(isFrequent(user))
-            return RewardRepository.OS2345Frequent;
+            return RewardRepository.AbsoluteFrequent;
 
-        return RewardRepository.OS2345Rest;
+        return RewardRepository.AbsoluteRest;
     }
 
 

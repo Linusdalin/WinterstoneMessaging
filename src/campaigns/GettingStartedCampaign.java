@@ -8,6 +8,7 @@ import core.PlayerInfo;
 import email.EmailInterface;
 import email.NotificationEmail;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.RewardRepository;
 
 import java.sql.Timestamp;
@@ -24,7 +25,7 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
     // Campaign config data
     private static final String Name = "GettingStarted";
-    private static final int CoolDown_Days = 1;   // No real cool down. This will anyway only trigger once per message
+    private static final int CoolDown_Days = 2;   // No real cool down. This will anyway only trigger once per message
     private static final int[] MessageIds = { 1, 3, 8, 16, 12 };
 
 
@@ -47,7 +48,7 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
         //System.out.println("Registration Date: " + getDay(user.created).toString());
@@ -56,81 +57,106 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
         if( user.amount == 0 && (user.lastgamePlayed== null || user.lastgamePlayed.equals(""))){
 
-            if(playerInfo.getUsageProfile().isMobileExclusive() && !playerInfo.fallbackFromMobile()){
 
-                return new MobilePushAction("Remember you get an extra diamond pick for every day in a row you are playing. The games are waiting. Click here for your free bonus!",
-                        user, executionTime, getPriority(), getTag(), Name, 31, getState(), responseFactor);
-            }
+            int age = getDaysBetween(user.created, executionDay );
 
 
-            if(daysBefore(user.created, executionDay, 1 )){
+            if(age == 1 || age == 2){
 
                 System.out.println("    -- Campaign " + Name + " Running message 1 for " + user.name );
+
+
+                if(playerInfo.getUsageProfile().isMobilePlayer()){
+
+                    if(playerInfo.fallbackFromMobile()){
+
+                        //TODO: Is there a point in adding an email here?
+                        System.out.println("    -- Campaign " + Name + " not firing. No mobile communication." );
+                        return null;
+                    }
+
+                    return new MobilePushAction("An extra diamond for every day in a row you are playing!",
+                            user, executionTime, getPriority(), getTag(), Name, 301, getState(), responseFactor);
+                }
+
+
+                if(randomize4(user, 0) || randomize4(user, 1)){
+
+                        return new NotificationAction("The free diamond coins are here! Remember you get an extra diamond pick for every day in a row you are playing.",
+                            user, executionTime, getPriority(), getTag() , Name, 91, getState(), responseFactor);
+                }
+
                 return new NotificationAction("Remember you get an extra diamond pick for every day in a row you are playing. The games are waiting. Click here for your free bonus!",
                         user, executionTime, getPriority(), getTag() , Name, 1, getState(), responseFactor);
 
             }
 
-            /*
 
-            if(daysBefore(user.created, executionDay, 2 )){
 
-                System.out.println("    -- Campaign " + Name + " Running message 2 for " + user.name );
-                return new NotificationAction("You have friends here at Slot America waiting for you to really get going. Click here to collect your free coins.", user, 90, "GettingStarted1", "GettingStarted1", Name);
-
-            }
-
-            */
-
-            if(daysBefore(user.created, executionDay, 3 )){
+            if(age == 3 || age == 4){
 
                 System.out.println("    -- Campaign " + Name + " Running message 3 for " + user.name );
 
-                if(playerInfo.getUsageProfile().isMobileExclusive() && !playerInfo.fallbackFromMobile()){
+                if(playerInfo.getUsageProfile().isMobilePlayer() && !playerInfo.fallbackFromMobile()){
 
                     return new MobilePushAction("We here at SlotAmerica are missing you! The thrilling slot machines are awaiting and you can use the FREE bonus to find your favorite game! Click here to get started",
-                            user, executionTime, getPriority(), getTag(), Name, 32, getState(), responseFactor);
+                            user, executionTime, getPriority(), getTag(), Name, 302, getState(), responseFactor);
                 }
+
+                if(state == CampaignState.REDUCED){
+
+                    System.out.println("    -- Campaign " + Name + " not firing. Reduced mode remove low priority messages" );
+                    return null;
+
+                }
+
 
                 return new NotificationAction("We here at SlotAmerica are missing you! The thrilling slot machines are awaiting and you can use the FREE bonus to find your favorite game! Click here to get started",
                         user, executionTime, getPriority(), getTag(), Name, 2, getState(), responseFactor);
 
             }
+            if(age == 5 || age == 6 ){
 
-            if(daysBefore(user.created, executionDay, 6 )){
+                return new EmailAction(gettingStartedEmail1(user, createPromoCode(207)), user, executionTime, getPriority(), getTag(), 207, getState(), responseFactor);
 
-                if(playerInfo.getUsageProfile().isMobileExclusive() && !playerInfo.fallbackFromMobile()){
+            }
 
-                    return new MobilePushAction("Remember you get an extra diamond pick for every day in a row you are playing. The games are waiting. Click here for your free bonus!",
-                        user, executionTime, getPriority(), getTag(), Name, 33, getState(), responseFactor);
+
+
+            if(age == 7 || age == 8){
+
+                if(playerInfo.getUsageProfile().isMobilePlayer() && !playerInfo.fallbackFromMobile()){
+
+                    return new MobilePushAction("The games are waiting. Click here for your free bonus!",
+                        user, executionTime, getPriority(), getTag(), Name, 303, getState(), responseFactor);
                 }
             }
 
-            if(daysBefore(user.created, executionDay, 8 )){
+            if(age == 9 || age == 10){
 
-                if(playerInfo.getUsageProfile().isMobileExclusive() && !playerInfo.fallbackFromMobile()){
+                if(playerInfo.getUsageProfile().isMobilePlayer() && !playerInfo.fallbackFromMobile()){
 
                     System.out.println("    -- Campaign " + Name + " Pushing 8 day getting started message for " + user.name );
-                    return new MobilePushAction("Don't miss out on the new game releases here at Slot America. Use your free bonus to try it out?",
-                            user, executionTime, getPriority(), getTag(), Name, 34, getState(), responseFactor);
+                    return new MobilePushAction("New game releases here at Slot America. Use your free bonus to try it out?",
+                            user, executionTime, getPriority(), getTag(), Name, 304, getState(), responseFactor);
                 }
 
                 System.out.println("    -- Campaign " + Name + " Emailing 8 day getting started message for " + user.name );
-                return new EmailAction(gettingStartedEmail1(user), user, executionTime, getPriority(), getTag(), 24, getState(), responseFactor);
+                return new EmailAction(gettingStartedEmail1(user, createPromoCode(204)), user, executionTime, getPriority(), getTag(), 204, getState(), responseFactor);
 
             }
 
-            if(daysBefore(user.created, executionDay, 12 )){
+            if(age == 11 || age == 12){
 
                 System.out.println("    -- Campaign " + Name + " Emailing 12 day getting started message for " + user.name );
-                return new EmailAction(gettingStartedEmail1(user), user, executionTime, getPriority(), getTag(), 25, getState(), responseFactor);
+                return new EmailAction(gettingStartedEmail1(user, createPromoCode(205)), user, executionTime, getPriority(), getTag(), 205, getState(), responseFactor);
 
             }
 
-            if(daysBefore(user.created, executionDay, 16 )){
+            if(age == 15 || age == 16){
 
                 System.out.println("    -- Campaign " + Name + " Emailing 16 day getting started message for " + user.name );
-                return new EmailAction(gettingStartedEmail2(user), user, executionTime, getPriority(), getTag(), 26, getState(), responseFactor);
+                return new EmailAction(gettingStartedEmail2(user, createPromoCode(206)), user, executionTime, getPriority(), getTag(), 206, getState(), responseFactor);
 
             }
 
@@ -147,20 +173,28 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
     }
 
-    public static EmailInterface gettingStartedEmail1(User user) {
+    public static EmailInterface gettingStartedEmail0(User user, String promoCode) {
 
-            return new NotificationEmail("the fun still awaits you!", "<p>Don't miss out on the new game releases here at Slot America. We try to put out a new prime game for you every week and there is a new games for you to check out now!</p>" +
-                    "<p> Why don't you come in and use your free bonus to try it out? Just click <a href=\"https://apps.facebook.com/slotAmerica/?promocode=EGettingStarted-12\">here</a> to play now :-) </p>",
-                    "Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out." +
+            return new NotificationEmail("the real deal", "<p>SlotAmerica games are the real deal. This is the old School Vegas casino fun. No fake facebook games as you may find at other places. Sometimes it is fun, sometimes it hurts, but it is <b>always thrilling!</b> :-)</p>" +
+                    "<p> Why don't you come in and use your free bonus to try it out? Just click <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+ promoCode+"\">here</a> to play now :-) </p>",
+                    "SlotAmerica games are the real deal. This is the old School Vegas casino fun. No fake facebook games as you may find at other places. Sometimes it is fun, sometimes it hurts, but it is <b>always thrilling!" +
                             "Why don't you come in and use four free bonus to try them?");
 
     }
 
+    public static EmailInterface gettingStartedEmail1(User user, String promoCode) {
 
-    public static EmailInterface gettingStartedEmail2(User user) {
+        return new NotificationEmail("the fun still awaits you!", "<p>Don't miss out on the new game releases here at Slot America. We try to put out a new prime game for you every week and there is a new games for you to check out now!</p>" +
+                "<p> Why don't you come in and use your free bonus to try it out? Just click <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+ promoCode+"\">here</a> to play now :-) </p>",
+                "Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out." +
+                        "Why don't you come in and use four free bonus to try them?");
 
-        return new NotificationEmail("the fun still awaits you!", "<p>Did you know Slot America has the most loyal players on facebook? It is true! And the new games are truly amazing!</p>" +
-                "<p> To allow you to try it out again, we added <b>1000 coins EXTRA</b> free bonus to try it out! Just click <a href=\"https://apps.facebook.com/slotAmerica/?promocode=EGettingStarted-16&reward="+ RewardRepository.freeCoinAcitivationFree.getCode()+"\">here</a> to play now :-) </p>",
+    }
+
+    public static EmailInterface gettingStartedEmail2(User user, String promoCode) {
+
+        return new NotificationEmail("join the family!", "<p>Did you know Slot America has the most loyal players on facebook? It is true! And the new games are truly amazing!</p>" +
+                "<p> To allow you to try it out again, we added <b>1000 coins EXTRA</b> free bonus to try it out! Just click <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+promoCode+"&reward="+ RewardRepository.freeCoinAcitivationFree.getCode()+"\">here</a> to play now :-) </p>",
                 "Did you know Slot America has the most loyal players on facebook? It is true! We added 1000 coins EXTRA free bonus to your account to try it out");
 
     }

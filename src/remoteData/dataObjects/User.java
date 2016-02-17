@@ -30,9 +30,10 @@ public class User {
     public int level;
     public String group;
     public String sex;
+    public Timestamp lastActivity;
 
     public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed, Timestamp created,
-                int payments, int amount, int sessions, int totalWager, int balance, int nextNumberOfPicks, int userCategory, int level, String group, String sex){
+                int payments, int amount, int sessions, int totalWager, int balance, int nextNumberOfPicks, int userCategory, int level, String group, String sex, Timestamp lastActivity){
 
 
         this.facebookId = facebookId;
@@ -45,6 +46,7 @@ public class User {
         this.level = level;
         this.group = group;
         this.sex = sex;
+        this.lastActivity = lastActivity;
 
         if(created != null)
             this.created = created;

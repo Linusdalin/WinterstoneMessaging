@@ -276,11 +276,11 @@ public class ReceptivityProfile {
             factor = 1.7;
 
         // Now check if the day with the most hits is significant
-        // We use a simple formula saying that the number of sessions should be twice the average
+        // We use a simple formula saying that the number of sessions should be 6 times the average
 
         int threshold = (int)((factor * (totalSessions - worstDaySessions)) / 6);
 
-        if(bestDaySessions > threshold){
+        if(threshold >= 2 && bestDaySessions > threshold){
 
             return bestDay;
         }

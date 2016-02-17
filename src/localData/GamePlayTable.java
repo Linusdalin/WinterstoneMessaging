@@ -103,6 +103,7 @@ public class GamePlayTable extends GenericTable {
 
             Statement statement = connection.createStatement();
             statement.execute(update);
+            statement.close();
 
         }catch(SQLException e){
 

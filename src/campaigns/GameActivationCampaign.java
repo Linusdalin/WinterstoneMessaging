@@ -9,6 +9,7 @@ import email.NotificationEmail;
 import recommendation.GameRecommendation;
 import recommendation.GameRecommender;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -52,7 +53,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
      */
 
 
-    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
@@ -110,7 +111,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
             // Sending a mail instead
 
             System.out.println("    -- Sending an EMAIL  game recommendation \"" + gameRecommendation.getRecommendation() + "\n" );
-            return new EmailAction(gameActivationEmail(user, gameRecommendation), user, executionTime, getEmailPriority(), getTag(), 2, getState(), responseFactor);
+            return new EmailAction(gameActivationEmail(user, gameRecommendation), user, executionTime, getEmailPriority(), getTag(), 201, getState(), responseFactor);
 
 
 
@@ -120,7 +121,7 @@ public class GameActivationCampaign extends AbstractCampaign implements Campaign
 
     private EmailInterface gameActivationEmail(User user, GameRecommendation recommendation) {
         return new NotificationEmail("we have a recommendation for you", "<p>Don't miss out the new game we released here at Slot America. We think you will like it...</p>" +
-                "<p> Check out <a href=\"https://apps.facebook.com/slotAmerica/?game="+recommendation.getCode()+"promocode=EGameActivation-2\">"+ recommendation.getRecommendation()+"</a></p>",
+                "<p> Check out <a href=\"https://apps.facebook.com/slotAmerica/?game="+recommendation.getCode()+"promocode=GameActivation-201\">"+ recommendation.getRecommendation()+"</a></p>",
                 "Hello "+ user.name+" Don't miss out the new game we released here at Slot America. We think you will like it...");
     }
 

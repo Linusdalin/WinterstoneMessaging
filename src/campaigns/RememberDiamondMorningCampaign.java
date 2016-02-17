@@ -3,11 +3,11 @@ package campaigns;
 import action.ActionInterface;
 import action.NotificationAction;
 import core.PlayerInfo;
+import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.User;
 import response.ResponseStat;
 
 import java.sql.Timestamp;
-
 
 
 /************************************************************************'
@@ -16,25 +16,22 @@ import java.sql.Timestamp;
  *              Sending message to players between min and max diamonds. (inclusive)
  */
 
-public class RememberDiamondCampaign extends AbstractCampaign implements CampaignInterface {
+public class RememberDiamondMorningCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "Remember Diamond";
+    private static final String Name = "RememberDiamondMorning";
     private static final int CoolDown_Days = 6;
-    private static final int[] MessageIds = {   2,   3,   4,
-                                               32,  33,  34
-    };
-
+    private static final int[] MessageIds = {  };
 
     // Trigger specific config data
-    private static final int MIN_DIAMONDS = 5;
+    private static final int MIN_DIAMONDS = 8;             // Only testing with high frequency clickthrough (many diamonds)
     private static final int MAX_DIAMONDS = 14;
 
     private static final int MIN_SESSIONS = 10;
 
 
 
-    RememberDiamondCampaign(int priority, CampaignState activation){
+    RememberDiamondMorningCampaign(int priority, CampaignState activation){
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
@@ -54,6 +51,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
     public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         User user = playerInfo.getUser();
+        //System.out.println(" --- Responses: " + response.toString());
 
         if(user.sessions < MIN_SESSIONS){
 
@@ -85,6 +83,8 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
         }
 
 
+        // Last session was Between 37 and 42 hours ago and diamond pick is correct. Send the message
+
         if(!hoursBefore(lastSession, executionTime, 37) || hoursBefore(lastSession, executionTime, 44)) {
 
             System.out.println("    -- Campaign " + Name + " not firing. Not in time range." );
@@ -93,21 +93,26 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
         }
 
-        int messageId = 3;
-
-        if(user.nextNumberOfPicks < 8)
-            messageId = 2;
-        if(user.nextNumberOfPicks > 10)
-            messageId = 4;
-
-        // Last session was Between 24 and 42 hours ago and diamond pick is correct. Send the message
-
-
         if(playerInfo.getUsageProfile().isMobilePlayer()){
 
             System.out.println("    -- Campaign " + Name + " not firing for mobile player. This is handled automatically" );
             return null;
         }
+
+        int messageId = 1;       // Default (no specific time of day)
+
+        if(user.nextNumberOfPicks > 10)
+            messageId = 2;
+
+        if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.SPECIFIC) == ReceptivityProfile.DAY)
+            messageId += 10;
+        if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.SPECIFIC) == ReceptivityProfile.EVENING)
+            messageId += 20;
+        if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.SPECIFIC) == ReceptivityProfile.NIGHT)
+            messageId += 30;
+
+
+
 
         System.out.println("    -- Campaign " + Name + " fire notification" );
         return new NotificationAction("Don't forget your diamond pick today, it will soon expire! The 15 day bonus is waiting! Click here to claim it",
@@ -127,17 +132,10 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
 
     public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
 
-        /*
-        String specificWeekDay = isSpecificDay(executionTime, dryRun, "måndag");
 
-        if(specificWeekDay != null)
-            return specificWeekDay;
+        String timeCheck = isTooLate(executionTime, overrideTime);
 
-        */
-
-        String tooEarlyCheck = isTooEarly(executionTime, overrideTime);
-
-        return tooEarlyCheck;
+        return timeCheck;
 
     }
 

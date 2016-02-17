@@ -26,8 +26,9 @@ import static org.junit.Assert.assertTrue;
 
 public class EmailTest {
 
-    private static final User user       = new User("627716024", "Linus",     "linusdalin@gmail.com", "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male");
-    private static final User wrongUsesr = new User("1111111", "Mr avreggad", "linusdalin@gmail.com", "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male");
+    private static final User user       = new User("627716024", "Linus",     "linusdalin@gmail.com", "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
+    private static final User wrongUsesr = new User("1111111", "Mr avreggad", "linusdalin@gmail.com", "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
+    private static final User jocke      = new User("10153350400581763",  "Junior",      "rolfarth@gmail.com",   "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
 
     private static final NotificationEmail testMail = new NotificationEmail(
             " this is a message for you!",
@@ -182,7 +183,7 @@ public class EmailTest {
             EmailHandler handler;
 
             handler = new EmailHandler()
-                    .withEmail(FirstPaymentCampaign.firstDepositEmail(user, payment))
+                    .withEmail(FirstPaymentCampaign.firstDepositEmail(user, payment, "test-1"))
                     .toRecipient(user.facebookId);
 
             success = handler.send();
@@ -190,7 +191,7 @@ public class EmailTest {
             assertThat("Should work", success, is(true) );
 
             handler = new EmailHandler()
-                    .withEmail(GettingStartedCampaign.gettingStartedEmail1(user))
+                    .withEmail(GettingStartedCampaign.gettingStartedEmail1(user, "test-1"))
                     .toRecipient(user.facebookId);
 
             success = handler.send();
@@ -215,7 +216,7 @@ public class EmailTest {
             assertThat("Should work", success, is(true) );
 
             handler = new EmailHandler()
-                    .withEmail(TryNewGameVideoPokerCampaign.gameActivationEmail(user))
+                    .withEmail(TryNewGameVideoPokerCampaign.gameActivationEmail(user, "test-1"))
                     .toRecipient(user.facebookId);
 
             success = handler.send();
@@ -227,9 +228,112 @@ public class EmailTest {
             assertTrue(false);
         }
 
+    }
 
+    @Test
+    public void crossPromotionMails(){
+
+        try{
+
+            boolean success;
+            EmailHandler handler;
+
+            handler = new EmailHandler()
+                    .withEmail(MobileCrossPromotionCampaign.tryMobile2(user, "tag", RewardRepository.mobileTest))
+                    .toRecipient(user.facebookId);
+
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
+
+            handler = new EmailHandler()
+                    .withEmail(ReactivationEmailCampaign.comebackEmail(user, 1000, "code"))
+                    .toRecipient(user.facebookId);
+
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
 
     }
 
+    @Test
+    public void mobileGameLaunchMails(){
+
+        try{
+
+            boolean success;
+            EmailHandler handler;
+
+            handler = new EmailHandler()
+                    .withEmail(MobileGameNotification.gameEmail("os_crystal", user, "tag"))
+                    .toRecipient(user.facebookId);
+
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
+
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
+
+    }
+
+
+    @Test
+    public void seventeenMail(){
+
+        try{
+
+            boolean success;
+            EmailHandler handler;
+
+            handler = new EmailHandler()
+                    .withEmail(SeventeenEmailCampaign.loyaltyEmail(user, "testTag-1", null))
+                    .toRecipient(user.facebookId);
+
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
+
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
+
+    }
+
+
+
+    @Test
+    public void mobileMail(){
+
+        try{
+
+            boolean success;
+            EmailHandler handler;
+
+            handler = new EmailHandler()
+                    .withEmail(MobilePokeNotification.getMail7(user, "testTag-1"))
+                    .toRecipient(user.facebookId);
+
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
+
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
+
+    }
 
 }

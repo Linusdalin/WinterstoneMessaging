@@ -24,7 +24,7 @@ public class GenericTable {
     private String restriction = "";
     protected int maxLimit = -1;
     protected String order = "DESC";
-    private Statement statement;
+    protected Statement statement;
 
     public GenericTable(String getSQL, String restriction, int limit) {
 
@@ -102,9 +102,13 @@ public class GenericTable {
 
         try{
 
+            if(statement != null && !statement.isClosed())
+                statement.close();
+
             //System.out.println("Query: " + queryString);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(queryString);
+            //statement.close();
 
         }catch(SQLException e){
 
@@ -151,8 +155,12 @@ public class GenericTable {
 
         try {
 
-            resultSet.close();
-            statement.close();
+            if(resultSet != null)
+                resultSet.close();
+
+            if(statement != null)
+                statement.close();
+
 
         } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

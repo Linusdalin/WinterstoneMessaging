@@ -4,6 +4,7 @@ import action.ActionInterface;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -52,7 +53,7 @@ public class PersonalBonusCampaign extends AbstractCampaign implements CampaignI
      */
 
 
-    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         count++;
 

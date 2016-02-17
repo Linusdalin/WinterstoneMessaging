@@ -49,12 +49,15 @@ public class ReceptivityTest {
 
             profile = new ReceptivityProfile("user", new int[] {6, 5, 3, 6, 5, 10, 11 });
                     day = profile.getFavouriteDay(ReceptivityProfile.SignificanceLevel.GENERAL);
-            assertThat("Expecting Sunday", day, is( SATURDAY ));
+            assertThat("Expecting Saturday", day, is( SATURDAY ));
 
             profile = new ReceptivityProfile("user", new int[] {20, 19, 20, 18, 21, 19, 0});
             day = profile.getFavouriteDay(ReceptivityProfile.SignificanceLevel.GENERAL);
             assertThat("No significance", day, is( NO_DAY ));
 
+            profile = new ReceptivityProfile("user", new int[] {0, 0, 1, 0, 0, 0, 1});
+            day = profile.getFavouriteDay(ReceptivityProfile.SignificanceLevel.GENERAL);
+            assertThat("No significance", day, is( NO_DAY ));
 
 
         }catch(Exception e){

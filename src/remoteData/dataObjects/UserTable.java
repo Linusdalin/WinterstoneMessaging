@@ -40,7 +40,7 @@ public class UserTable extends GenericTable {
             return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(28), resultSet.getString(35), resultSet.getTimestamp(29),
                     resultSet.getInt(27), resultSet.getInt(26), resultSet.getInt(30),
                     resultSet.getInt(13),resultSet.getInt(8),resultSet.getInt(36), resultSet.getInt(34), resultSet.getInt(40),
-                    resultSet.getString(31), resultSet.getString(25));
+                    resultSet.getString(31), resultSet.getString(25), resultSet.getTimestamp(10));
 
 
         } catch (SQLException e) {

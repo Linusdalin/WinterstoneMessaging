@@ -9,6 +9,7 @@ import constraints.MinSessionsConstraint;
 import core.PlayerInfo;
 import core.Yesterday;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -64,7 +65,7 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         User user = playerInfo.getUser();
         ConstraintInterface fail = getFailConstraint();
@@ -127,7 +128,7 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
 
                             return new MobilePushAction("Really Bad luck yesterday... Slots should be fun so we have added " + compensation + " coins to your account. Click here to try again!",
                                     user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)
-                                    .attach(new GiveCoinAction(compensation, user, executionTime, getPriority(), Name, 201, getState(), responseFactor));
+                                    .attach(new GiveCoinAction(compensation, user, executionTime, getPriority(), Name, 301, getState(), responseFactor));
 
                         }
 

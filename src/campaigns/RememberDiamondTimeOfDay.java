@@ -5,6 +5,7 @@ import action.NotificationAction;
 import core.PlayerInfo;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -48,7 +49,7 @@ public class RememberDiamondTimeOfDay extends AbstractCampaign implements Campai
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         User user = playerInfo.getUser();
 
@@ -82,7 +83,7 @@ public class RememberDiamondTimeOfDay extends AbstractCampaign implements Campai
         }
 
 
-        if(!hoursBefore(lastSession, executionTime, 24) || hoursBefore(lastSession, executionTime, 44)) {
+        if(!hoursBefore(lastSession, executionTime, 34) || hoursBefore(lastSession, executionTime, 44)) {
 
             System.out.println("    -- Campaign " + Name + " not firing. Not in time range." );
             return null;

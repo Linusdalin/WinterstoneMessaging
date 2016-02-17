@@ -1,11 +1,11 @@
 package campaigns;
 
 import action.ActionInterface;
-import action.EmailAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.Reward;
 
 import java.sql.Timestamp;
@@ -59,7 +59,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
         //System.out.println("Registration Date: " + getDay(user.created).toString());
@@ -68,16 +68,11 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
 
         // First generate a generic email action
 
-        ActionInterface emailAction = null;
-
-        if(email != null)
-            emailAction = new EmailAction(email, user, executionTime, getPriority(), Name,  1, getState(), responseFactor);
-
 
         if(user.sessions < ACTIVITY_MIN){
 
             System.out.println("    -- Campaign " + Name + " not active. Player has not been active enough ("+ user.sessions +" sessions <  " + ACTIVITY_MIN);
-            return emailAction;
+            return null;
 
         }
 
@@ -85,7 +80,7 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
         if(lastSession == null){
 
             System.out.println("    -- Campaign " + Name + " not firing. No sessions for user" );
-            return emailAction;
+            return null;
 
         }
         int inactivity = getDaysBetween(lastSession, executionDay);
@@ -93,14 +88,14 @@ public class GameNotification extends AbstractCampaign implements CampaignInterf
         if(user.payments == 0 && inactivity > INACTIVITY_LIMIT_FREE){
 
             System.out.println("    -- Campaign " + Name + " not active. Free player is inactive. ("+ inactivity+" days >  " + INACTIVITY_LIMIT_FREE);
-            return emailAction;
+            return null;
 
         }
 
         if(user.payments > 0 && inactivity > INACTIVITY_LIMIT_PAYING){
 
             System.out.println("    -- Campaign " + Name + " not active. Paying player is inactive. ("+ inactivity+" days >  " + INACTIVITY_LIMIT_PAYING);
-            return emailAction;
+            return null;
 
         }
 

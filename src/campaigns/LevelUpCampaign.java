@@ -1,10 +1,14 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.EmailAction;
 import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
+import email.EmailInterface;
+import email.NotificationEmail;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -32,6 +36,7 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
     // Trigger specific config data
 
     private static final int Level_up_started       = 10;
+    private static final int Level_up_20            = 20;
     private static final int Level_up_close         = 23;
     private static final int Level_up_2500          = 25;
     private static final int Level_up_50            = 48;
@@ -42,7 +47,7 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
 
     private static final String[] messages = {
             "You are moving up the levels. Already at 10! Don't forget to check out the bonuses you get by levelling up at Slot America! Click here!",
-            "",  // Deprecated
+            "You reached level 20! Click here for a surprise free coin reward",
             "You are getting close to the level 50 bonus! The diamond bonus baseline will give you more free coins. Click here for a final push...",
             "You are getting close to the level 100 bonus with a personal permanent coin discount Click here for a final push...",
             "You are getting close to the level 150 bonus! The new diamond bonus baseline will give you even more free coins. Click here for a final push...",
@@ -53,7 +58,7 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
 
 
 
-LevelUpCampaign(int priority, CampaignState activation){
+public LevelUpCampaign(int priority, CampaignState activation){
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
@@ -75,7 +80,7 @@ LevelUpCampaign(int priority, CampaignState activation){
      */
 
 
-    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
         User user = playerInfo.getUser();
@@ -83,6 +88,8 @@ LevelUpCampaign(int priority, CampaignState activation){
 
         if(user.level == Level_up_started){
             message = 0;
+        }else if(user.level == Level_up_20){
+            message = 1;
         }else if(user.level == Level_up_close){
             message = 6;
         }else if(user.level == Level_up_2500){
@@ -127,9 +134,15 @@ LevelUpCampaign(int priority, CampaignState activation){
              System.out.println("    -- Campaign " + Name + " firing message for level " + user.level + " with message " + message + 1  );
 
             ActionInterface action;
-             if(playerInfo.getUsageProfile().isMobileExclusive()){
+             if(playerInfo.getUsageProfile().isMobilePlayer()){
 
-                 return new MobilePushAction(messages[message], user, executionTime, getPriority(), getTag(), Name,  (message + 31), getState(), responseFactor);
+                 if(playerInfo.fallbackFromMobile() && message != 7){
+
+                     return new EmailAction(getLevelUpEmail(messages[message], user.level), user, executionTime, getPriority(), getTag(), (message + 201), getState(), responseFactor);
+                 }
+
+
+                 return new MobilePushAction(messages[message], user, executionTime, getPriority(), getTag(), Name,  (message + 301), getState(), responseFactor);
              }
              else{
 
@@ -139,6 +152,10 @@ LevelUpCampaign(int priority, CampaignState activation){
 
 
 
+            if(message == 1){
+
+                action.withReward("0fcb000c-c417-429f-bf2b-4d9a5f5ccff7");
+            }
             if(message == 7){
 
                 action.withReward("9282b539-40b0-4744-a793-2e022bfd85a8");
@@ -148,15 +165,28 @@ LevelUpCampaign(int priority, CampaignState activation){
         }
     }
 
-    /*********************************************************************
-     *
-     *              Campaign timing restrictions
-     *
-     * @param executionTime     - time of execution
-     * @return                  - messgage or null if ok.
-     */
+    public static EmailInterface getLevelUpEmail(String message, int level) {
+
+        return new NotificationEmail("Congratulation, you reached level " + level, "<p>"+ message+"</p>",
+                message);
+    }
+
+        /*********************************************************************
+        *
+        *              Campaign timing restrictions
+        *
+        *              - Adding special restriction of thursday and friday
+        *
+        * @param executionTime     - time of execution
+        * @return                  - messgage or null if ok.
+        */
 
     public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+
+
+        if(isSpecificDay(executionTime, false, "torsdag") == null || isSpecificDay(executionTime, false, "fredag") == null)
+            return "Ignoring for the weekend release";
+
 
         return isTooEarly(executionTime, overrideTime);
 

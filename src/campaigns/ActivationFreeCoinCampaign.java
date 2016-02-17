@@ -4,6 +4,7 @@ import action.ActionInterface;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.RewardRepository;
 
 import java.sql.Timestamp;
@@ -58,7 +59,7 @@ public class ActivationFreeCoinCampaign extends AbstractCampaign implements Camp
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
         if(count > DAILY_CAP){

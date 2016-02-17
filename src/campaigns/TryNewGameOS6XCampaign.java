@@ -21,11 +21,11 @@ import java.sql.Timestamp;
  *
  */
 
-public class TryNewGameOS2345Campaign extends AbstractCampaign implements CampaignInterface {
+public class TryNewGameOS6XCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Game = "os2x3x4x5x";
-    private static final String GameName = "Old School 2x3x4x5x";
+    private static final String Game = "os6x";
+    private static final String GameName = "Old School 6X";
     private static final String Name = "TryNewGame"+Game;
     private static final int CoolDown_Days = 9999;            // Just once per game
     private int[] MessageIds = {1, 2, 3,
@@ -41,7 +41,7 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
     private static final int Max_Inactivity  = 150;
     private String day;
 
-    TryNewGameOS2345Campaign(int priority, CampaignState active, String day){
+    TryNewGameOS6XCampaign(int priority, CampaignState active, String day){
 
         super(Name, priority, active);
         this.day = day;
@@ -148,10 +148,10 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
 
     public static EmailInterface gameActivationEmail(User user, Reward reward, String promoCode) {
 
-        return new NotificationEmail("We have a recommendation for you", "<p>Don't miss out one of the most liked games at SlotAmerica. It is the original Old School game 2x3x4x5x, with multiple bonuses.  " +
+        return new NotificationEmail("We have a recommendation for you", "<p>Don't miss out one of the most liked games at SlotAmerica. It is the very successful "+ GameName+", with big multipliers giving massive jackpot wins.  " +
                 "We really think you will like it. We have added "+ reward.getCoins()+" free spins for you to try it out!</p>" +
                 "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+Game+"&promocode="+ promoCode+"&reward="+reward.getCode() + "\"> to claim your spins</a></p>",
-                "Hello "+ user.name+" Don't miss out the Old School 2x3x4x5x game we released here at Slot America. We think you will like it...");
+                "Hello "+ user.name+" Don't miss out the "+ GameName+" game we released here at Slot America. We think you will like it...");
     }
 
 
@@ -180,15 +180,15 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
     protected Reward decideReward(User user) {
 
         if(isHighSpender(user))
-            return RewardRepository.OS2345High;
+            return RewardRepository.OS6XHigh;
 
         if(isPaying(user))
-            return RewardRepository.OS2345Paying;
+            return RewardRepository.OS6XPaying;
 
         if(isFrequent(user))
-            return RewardRepository.OS2345Frequent;
+            return RewardRepository.OS6XFrequent;
 
-        return RewardRepository.OS2345Rest;
+        return RewardRepository.OS6XRest;
     }
 
 

@@ -2,10 +2,10 @@ package campaigns;
 
 import action.ActionInterface;
 import action.ManualAction;
-import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -52,7 +52,7 @@ public class EngagementCampaign extends AbstractCampaign implements CampaignInte
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
         Timestamp executionDay = getDay(executionTime);

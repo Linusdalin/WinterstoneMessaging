@@ -26,7 +26,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
     private String name;
     private int priority;         // Campaign base priority before persoal or situational adjustments
     private int coolDown;
-    private final CampaignState state;
+    protected final CampaignState state;
     private String shortName;
     private int[] messageIds = { 0 };  // Default is to not distinguish between any different message ids. All messages are grouped into one
     private List<ConstraintInterface> constraints = new ArrayList<>();
@@ -90,8 +90,17 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     public static int getDaysBetween(Timestamp test, Timestamp reference) {
 
-
         long between = reference.getTime() - test.getTime();
+
+        // special case for handling yesterday
+
+        if(between > 13*3600*1000 && between < 24*3600*1000){
+
+            // Between 13 and 24 hours ago. This is typically yesterday, even if it is not a full day
+
+            return 1;
+        }
+
 
         between /= 24*3600*1000;
 
@@ -174,20 +183,36 @@ public abstract class AbstractCampaign implements CampaignInterface{
     }
 
 
-    protected String isTooEarly(Timestamp executionTime, boolean overrideTime) {
+    protected String isTooLate(Timestamp executionTime, boolean overrideTime) {
 
-       if(executionTime.getHours() < 16)
+       if(executionTime.getHours() > 12)
            if(!overrideTime)
-               return "No point in sending messages before 16:00";
+               return "No morning messages after 12";
            else{
 
-               //System.out.println("        (Dry run ignoring too early restriction for campaign "+ getName()+")");
                return null;
 
            }
 
         return null;
     }
+
+    protected String isTooEarly(Timestamp executionTime, boolean overrideTime) {
+
+        if(executionTime.getHours() < 14)
+            if(!overrideTime)
+                return "No point in sending messages before 14:00";
+            else{
+
+                //System.out.println("        (Dry run ignoring too early restriction for campaign "+ getName()+")");
+                return null;
+
+            }
+
+        return null;
+    }
+
+
 
     protected String isSpecificDay(Timestamp executionTime, boolean overrideTime, String dayOfWeek) {
 
@@ -242,7 +267,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     protected int getInactivity(PlayerInfo info, Timestamp executionTime) {
 
-        Timestamp lastSession = info.getLastSession();
+        Timestamp lastSession = info.getLastSessionLocalCache();
         return getDaysBetween(lastSession, executionTime);
 
     }
@@ -394,5 +419,8 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return null;  //TODO: Not implemented
     }
 
+    protected String createPromoCode(int messageId) {
+        return name.replaceAll(" ", "") + "-" + messageId;
+    }
 
 }

@@ -41,7 +41,7 @@ public class SpecificUserTest {
         System.out.println("user:" + user.toString());
 
         DataCache dbCache = new DataCache(cacheConnection, "2015-01-01", -1);
-        PlayerInfo playerInfo = new PlayerInfo(user, dbCache);
+        PlayerInfo playerInfo = new PlayerInfo(user, dbCache, cacheConnection);
 
         Timestamp lastSession = playerInfo.getLastSession();
 

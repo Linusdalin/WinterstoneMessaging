@@ -5,6 +5,7 @@ import action.GiveCoinAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.Reward;
 import rewards.RewardRepository;
 
@@ -58,7 +59,7 @@ public class LevelUpTuesdayReward extends AbstractCampaign implements CampaignIn
      */
 
 
-    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();

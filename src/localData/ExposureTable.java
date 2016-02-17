@@ -86,17 +86,45 @@ public class ExposureTable extends GenericTable {
      * @param personal_CoolOff
      * @return
      *
-     *
+     *                  //TODO: This could be done with SQL count()
      */
 
 
-    public int getUserExposure(String facebookId, int personal_CoolOff) {
+    public int getUserExposure(String facebookId, String campaignName, int personal_CoolOff) {
 
-        loadAndRetry(connection, "and user= '"+ facebookId+"' and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)", "ASC", -1);
+        loadAndRetry(connection, "and user= '"+ facebookId+"' "+ (campaignName != null ? "and campaignName = '" + campaignName +"'" : "")+" and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)", "ASC", -1);
         List<Exposure> exposuresForUser = getAll();
-        System.out.println("Found " + exposuresForUser.size() + " exposures for user " + facebookId);
+        //System.out.println("Found " + exposuresForUser.size() + " exposures for user " + facebookId + "(in " + personal_CoolOff + " days)");
+
+        int emailExposure = 0;
+        int notificationExposure = 0;
+        int pushExposure = 0;
+
+        for (Exposure exposure : exposuresForUser) {
+
+            if(exposure.type.equals("EMAIL"))
+                 emailExposure++;
+
+            if(exposure.type.equals("NOTIFICATION"))
+                notificationExposure++;
+
+            if(exposure.type.equals("PUSH"))
+                pushExposure++;
+
+        }
+
+        if(emailExposure + notificationExposure +pushExposure == 0)
+            return 0;
+
+        int exposureLevel = ((emailExposure * 1) + (notificationExposure * 3) +(pushExposure * 2)) / (3 * (emailExposure + notificationExposure +pushExposure));
+
+        // Reduce one for combined exposures
+
+        if(pushExposure > 0 && notificationExposure > 0 && exposureLevel > 0)
+            exposureLevel -=1;
+
         close();
-        return exposuresForUser.size();
+        return exposureLevel;
 
     }
 
@@ -113,6 +141,17 @@ public class ExposureTable extends GenericTable {
 
     }
 
+    public Exposure getLastExposure(User user){
+
+        loadAndRetry(connection, "and user= '"+ user.facebookId+"'", "DESC", 1);
+        Exposure exposure = getNext();
+
+        close();
+
+        return exposure;
+
+
+    }
 
 
 }

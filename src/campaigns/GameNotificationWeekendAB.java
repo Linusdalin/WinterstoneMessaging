@@ -5,6 +5,7 @@ import action.NotificationAction;
 import core.PlayerInfo;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.Reward;
 
 import java.sql.Timestamp;
@@ -12,12 +13,7 @@ import java.sql.Timestamp;
 
 /************************************************************************'
  *
- *                  This is a AB test for sending the notification on the correct day
- *
- *                   - All the thursday players will get the message on thursday ( 7 )
- *                   - half the friday, saturday and sunday players will get the message on the correct day ( 8, 9, 10 )
- *                   - The other half of the players will get the message on thursday (as a reference) ( 11 )
- *                   - All other players will get the message randomly on friday - sunday to test the days themselves and a reference to group 8, 9, 10 ( 12, 13, 14 )
+ *                             Thursday:    All Thursday players and players with an undefined day
  *
  */
 
@@ -25,8 +21,11 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
 
     // Campaign config data
     private static final String Name = "GameNotification";
-    private static final int CoolDown_Days = 5;     // Avoid duplicate runs
-    private static final int[] MessageIds = { 1, 2, 3, 4, 5 , 6, 7, 8, 9, 10, 11, 12, 13};
+    private static final int CoolDown_Days = 4;     // Avoid duplicate runs     TODO: Should be 5
+    private static final int[] MessageIds = { };
+
+    private static final int DAILY_CAP   = 4000;         // Max per execution
+    private int count = 0;
 
 
     private static final String Day1 = "torsdag";   // Swedish due to locale on test computer
@@ -35,14 +34,15 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
     private static final String Day4 = "söndag";   // Swedish due to locale on test computer
 
 
-    private static final int INACTIVITY_LIMIT_FREE      = 17;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 90;   // Max days inactivity to get message
-    private static final int ACTIVITY_MIN   = 12;               // Min sessions to be active
+    private static final int INACTIVITY_LIMIT_FREE      =  1;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    =  30;   // Max days inactivity to get message      TODO: Should be 50
+    private static final int ACTIVITY_MIN   = 100;               // Min sessions to be active               TODO: Should be 35
 
     private String gameCode;
     private Reward reward;
     private String message;
 
+    int messageIdBase = 0;      // Distinguish with and without reward
 
     GameNotificationWeekendAB(int priority, CampaignState activation, String game_code, String message, Reward reward){
 
@@ -65,7 +65,14 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
+
+        if(count > DAILY_CAP){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Daily cap reached for campaign." );
+            return null;
+
+        }
 
 
         //System.out.println("Registration Date: " + getDay(user.created).toString());
@@ -102,8 +109,12 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
 
         if(reward != null){
 
-            maxInactivityFree += 20;
-            maxInactivityPaying += 10;
+            if(state != CampaignState.REDUCED){
+
+                maxInactivityFree += 1;
+                maxInactivityPaying += 10;
+            }
+            messageIdBase = 50;
 
         }
 
@@ -153,8 +164,16 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
 
             // It is another day
 
+            if(state == CampaignState.REDUCED && user.payments == 0){
+
+                System.out.println("    -- Campaign (Sat/Sun)" + Name + " not firing. (Only paying players for reduced mode)");
+                return null;
+            }
+
+
             System.out.println("    -- Campaign (Sat/Sun)" + Name + " firing. (Sending a notification on a regular day)");
-            action = new NotificationAction(message, user, executionTime, getPriority(), getTag(), Name,  1, getState(), responseFactor)
+            count++;
+            action = new NotificationAction(message, user, executionTime, getPriority(), getTag(), Name,  1 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
 
@@ -182,10 +201,10 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
     private NotificationAction handleThursday(PlayerInfo playerInfo, int favouriteDay, double responseFactor, Timestamp executionTime) {
 
 
-        if(favouriteDay == ReceptivityProfile.Not_significant ){
+        if(favouriteDay == ReceptivityProfile.Not_significant && (playerInfo.getUser().group.equals("A") || playerInfo.getUser().group.equals("B"))){
 
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a Thursday to a player without specific day"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  2, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  2 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
         }
@@ -193,13 +212,13 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
         if(favouriteDay == 4){
 
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on thursday for thursday players " + playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime,  getPriority(), getTag(), Name,  3, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime,  getPriority(), getTag(), Name,  3 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
         }
         else{
 
-            System.out.println("    -- Campaign (weekend)" + Name + " not firing. On a Thursday we only send messages to Thursday players (and some weekend players for reference) "+ favouriteDay+ "  " +playerInfo.getReceptivityForPlayer().toString());
+            System.out.println("    -- Campaign (weekend)" + Name + " not firing. On a Thursday we only send messages to Thursday players (and undefined) "+ favouriteDay+ "  " +playerInfo.getReceptivityForPlayer().toString());
             return null;
 
         }
@@ -214,7 +233,7 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
      *
      *
      * @param playerInfo
-     * @param favouriteDay
+     * @param favouriteDay                 - for player
      * @param responseFactor
      * @param executionTime
      * @return
@@ -223,10 +242,10 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
     private NotificationAction handleFriday(PlayerInfo playerInfo, int favouriteDay, double responseFactor, Timestamp executionTime) {
 
 
-        if(favouriteDay == ReceptivityProfile.Not_significant ){
+        if(favouriteDay == ReceptivityProfile.Not_significant && (playerInfo.getUser().group.equals("C"))){
 
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a Friday to a player without specific day"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  4, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  4 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
         }
@@ -235,7 +254,7 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
         if(favouriteDay == 1  || favouriteDay == 2  || favouriteDay == 3 ){
 
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a friday to a weekday player"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  5, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  5 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
         }
@@ -244,7 +263,7 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
         if(favouriteDay == 5){
 
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a friday to a friday player"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  6, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  6 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
         }
@@ -252,15 +271,15 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
         if(favouriteDay == 4){
 
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a friday to a MISSED thursday player"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  7, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  7 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
         }
 
-        if(favouriteDay == 6){
+        if(favouriteDay == 6 && (playerInfo.getUser().group.equals("A"))){
 
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a friday to a saturday player"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  8, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  8 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
         }
@@ -283,10 +302,18 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
 
     private NotificationAction handleSaturday(PlayerInfo playerInfo, int favouriteDay, double responseFactor, Timestamp executionTime) {
 
-        if(favouriteDay == ReceptivityProfile.Not_significant ){
+        if(favouriteDay == ReceptivityProfile.Not_significant && (playerInfo.getUser().group.equals("D"))){
 
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a Saturday to a player without specific day"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  9, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  9 + messageIdBase, getState(), responseFactor)
+                    .withGame(gameCode);
+
+        }
+
+        if(favouriteDay == 6 ){
+
+            System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a saturday to a saturday player"+ "  " +playerInfo.getReceptivityForPlayer().toString());
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  14 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
         }
@@ -303,16 +330,15 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
 
         if(favouriteDay == 0 ){
 
-            // The other half
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a sunday to sunday player"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  10, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  10 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
 
         }
 
         System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification to ANY player not addressed yet "+ favouriteDay+")"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-        return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  11, getState(), responseFactor)
+        return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  11 + messageIdBase, getState(), responseFactor)
                 .withGame(gameCode);
 
 
@@ -324,14 +350,14 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
 
             // The other half
             System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification on a saturday to a saturday player"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  12, getState(), responseFactor)
+            return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  12 + messageIdBase, getState(), responseFactor)
                     .withGame(gameCode);
 
 
         }
 
         System.out.println("    -- Campaign (weekend)" + Name + " firing. (Sending a notification to a saturday to ANY player not addressed yet "+ favouriteDay+")"+ "  " +playerInfo.getReceptivityForPlayer().toString());
-        return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  13, getState(), responseFactor)
+        return new NotificationAction(message, playerInfo.getUser(), executionTime, getPriority(), getTag(), Name,  13 + messageIdBase, getState(), responseFactor)
                 .withGame(gameCode);
 
 

@@ -59,7 +59,7 @@ public class CachedUser {
 
     public boolean fallbackFromMobile(){
 
-        return(failPush > 1 && iosSessions > desktopSessions * 2);
+        return(failPush > 1 && iosSessions > 0);
 
     }
 

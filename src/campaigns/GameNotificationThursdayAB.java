@@ -5,6 +5,7 @@ import action.NotificationAction;
 import core.PlayerInfo;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.Reward;
 
 import java.sql.Timestamp;
@@ -66,7 +67,7 @@ public class GameNotificationThursdayAB extends AbstractCampaign implements Camp
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
         //System.out.println("Registration Date: " + getDay(user.created).toString());

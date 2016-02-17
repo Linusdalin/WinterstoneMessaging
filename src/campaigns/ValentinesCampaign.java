@@ -14,24 +14,20 @@ import java.sql.Timestamp;
  *              For ongoing happy hour campaigns send info to paying players
  */
 
-public class BlackFridayCampaign extends AbstractCampaign implements CampaignInterface {
+public class ValentinesCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "BlackFriday";
-    private static final int CoolDown_Days = 2;            // Send out multiple times during the weekend
-    private static final int[] MessageIds = {
-            1, 2,                                       // Black friday
-            3, 4 };                                     // Christmas sale
+    private static final String Name = "Valentines";
+    private static final int CoolDown_Days = 20;            // Send out multiple times during the weekend
+    private static final int[] MessageIds = { };
 
 
     // Trigger specific config data
-    private static final int MAX_INACTIVITY = 15;
-    private int percentage;
+    private static final int MAX_INACTIVITY = 9;
 
-    BlackFridayCampaign(int priority, CampaignState activation, int percentage){
+    ValentinesCampaign(int priority, CampaignState activation){
 
         super(Name, priority, activation);
-        this.percentage = percentage;
         setCoolDown(CoolDown_Days);
         registerMessageIds( MessageIds );
     }
@@ -71,13 +67,13 @@ public class BlackFridayCampaign extends AbstractCampaign implements CampaignInt
 
         if(user.payments == 0){
 
-            if(user.sessions > 40 ){
+            if(user.sessions > 100 && inactivity < 2){
 
                 // Very active player - entice to buy...   TEST
 
                 System.out.println("    -- Sending a BlackFriday offer to active free player" );
-                return new NotificationAction("New Year ‘3-for-1’-coin Sale is still ongoing here on SlotAmerica. Enter and grab your chance!",
-                        user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
+                return new NotificationAction("Happy Valentines Sale! 100% extra on all purchases now. Click here to enter!",
+                        user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor);
 
             }
 
@@ -92,8 +88,8 @@ public class BlackFridayCampaign extends AbstractCampaign implements CampaignInt
             // Paying payer
 
             System.out.println("    -- Sending a happy hour reminder to paying payer" );
-            return new NotificationAction("New Year ‘3-for-1’-coin Sale is still ongoing here on SlotAmerica. Enter and grab your chance!",
-                    user, executionTime, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
+            return new NotificationAction("Happy Valentines Sale! 100% extra on all purchases now. Click here to enter!",
+                    user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
 
 
         }

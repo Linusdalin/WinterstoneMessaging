@@ -1,15 +1,17 @@
 package rewards;
 
-import output.DeliveryException;
-import output.RequestHandler;
-import remoteData.dataObjects.User;
-
 /*********************************************************************************'
  * Created with IntelliJ IDEA.
  * User: Linus
  * Date: 2015-09-16
  * Time: 14:01
  * To change this template use File | Settings | File Templates.
+ *
+ *
+ *              TODO:
+ *                      - Favourite game email with screen shots
+ *                      - 17% prostitution email  (freespin and coin rewards) "three strike out"
+ *
  */
 
 public class RewardRepository {
@@ -26,6 +28,9 @@ public class RewardRepository {
     public static final Reward hohoho10             = new Reward("HOHOHO",          "4c7eca6e-963a-47fd-af22-5d3644a178fd", 10, true);    //100
     public static final Reward burningSevens12      = new Reward("Burning",         "5431fc11-ac4c-4bde-b313-6821a7d396c1", 12, true);    //250
     public static final Reward doublePay12          = new Reward("Double Pay",      "12ecb802-9e2a-4a54-916c-30753e8886c8", 12, true);    //250
+    public static final Reward bonusBonanza10       = new Reward("Bonus Bonanza",   "0bcd4ea2-e2b2-4cd6-8661-3d965d9dc049", 10, true);    //250
+    public static final Reward eightX8              = new Reward("Eight Times Pay", "9999cec8-d3d4-4686-941e-e706c121d4b3", 8, true);     //250
+    public static final Reward president            = new Reward("President",       "5629e78e-f67f-43f5-a8f5-7b6e6df1ff12", 10, true);     //250
 
     public static final Reward mobileTest           = new Reward("Mobile T",        "ce48dc8c-4bc3-4835-8e41-27510285f857", 7777, true);
     public static final Reward mobile1              = new Reward("Mobile 1",        "ac805f4b-630f-41a2-b73d-addd750b1c11", 5000, true);
@@ -49,9 +54,32 @@ public class RewardRepository {
     public static final Reward SonicFrequent       = new Reward("Sonic Frequent",     "eca15263-d3bc-49d4-8309-2b2566713486", 10, true);    //250
     public static final Reward SonicRest           = new Reward("Sonic Rest",         "cfa54e21-3753-490e-a385-255444f68088", 10, true);    //100
 
+    public static final Reward AbsoluteHigh           = new Reward("Absolute High",         "c5d345af-7885-42aa-b169-f09e55daaca6", 25, true);    //500
+    public static final Reward AbsolutePaying         = new Reward("Absolute Paying",       "52c54892-2a17-41da-9cf0-ec167e19e94a", 15, true);    //250
+    public static final Reward AbsoluteFrequent       = new Reward("Absolute Frequent",     "68244e09-fede-4a14-8290-74e3746bdf5c", 10, true);    //250
+    public static final Reward AbsoluteRest           = new Reward("Absolute Rest",         "42552327-0630-4191-b989-a4e4ca23a7e7", 10, true);    //100
+
+
+    public static final Reward OS6XHigh           = new Reward("O6S High",         "b0f9cdf8-1f02-45dc-adbc-f6e405cfc1f7", 25, true);      //500
+    public static final Reward OS6XPaying         = new Reward("OS6 Paying",       "c72ec377-57e4-41ec-af61-f49d350d0382", 15, true);      //250
+    public static final Reward OS6XFrequent       = new Reward("OS6 Fequent",      "1c4896b9-5455-4b3c-8f86-f86b1217d722", 10, true);      //250
+    public static final Reward OS6XRest           = new Reward("OS6 Rest",         "f6704811-14c7-4ef3-9a88-e27a324f104c", 10, true);      //100
+
+    public static final Reward M_OS6XHigh           = new Reward("O6S High",         "58ccaf1c-0cab-4461-b011-2aaee28c2cd1", 8000, true);
+    public static final Reward M_OS6XPaying         = new Reward("OS6 Paying",       "fea7d7cc-8e32-4336-8b3b-70e35e720535", 6000, true);
+    public static final Reward M_OS6XFrequent       = new Reward("OS6 Fequent",      "3cc546c1-3576-436e-acc9-ebe53cb4ec89", 4000, true);
+    public static final Reward M_OS6XRest           = new Reward("OS6 Rest",         "3d980abf-f321-4335-89ab-26a396ee0bd5", 2000, true);
 
     public static final Reward newYearPaying        = new Reward("NewYear1",        "0338c05d-066e-454a-87ad-fde52ece0d79",  5000, true);
     public static final Reward newYearFree          = new Reward("NewYear2",        "bc9d1bd9-08f6-48ab-b623-917c5593b4cd",  3000, true);
+
+    public static final Reward mysteryMonday1       = new Reward("MysteryMonday1",        "a78e5d46-2fc8-4197-82d6-31968ae8834c",  2000, true);
+    public static final Reward mysteryMonday2       = new Reward("MysteryMonday2",        "9088446c-7c8a-456c-9205-233e53046783",  3333, true);
+
+    public static final Reward loyaltyMystery1       = new Reward("LoyaltyMystery1",      "af8759d0-40a8-41e1-bd57-46b865c029af",  2000, true);
+    public static final Reward loyaltyMystery2       = new Reward("LoyaltyMystery2",      "af8759d0-40a8-41e1-bd57-46b865c029af",  20, true);
+
+    public static final Reward valentineCoins       = new Reward("Valentine",      "170d3ce3-c8c9-4b30-b795-011e31f6f319",  10000, true);
 
 
     /****************************
@@ -68,38 +96,5 @@ public class RewardRepository {
      */
 
 
-    /***************************************
-     *
-     *          Claimed rewards
-
-
-     http://slot-america-magic-box.elasticbeanstalk.com/api/players/858808397491713/claimed-rewards
-
-     {"rewardIds":["baf9b578-7011-4df0-8fb3-24d8bd39ba24","aad91e9a-2b30-4bbd-ac6c-034e78531799"]}
-     */
-
-
-    // TODO: Improve this. Cache locally as this is now requested multiple times for all campaigns
-
-
-    public static boolean hasClaimed(User user, Reward reward){
-
-        try {
-
-            RequestHandler requestHandler = new RequestHandler("https://data-warehouse.slot-america.com/api/players/"+user.facebookId+"/claimed-rewards/")
-                    .withBasicAuth("5b09eaa11e4bcd80800200c", "X");
-            String response = requestHandler.executeGet();
-
-            System.out.println(" - Checking: " + reward.getCode());
-            System.out.println(" - Got: " + response);
-            return(response.indexOf(reward.getCode()) >= 0);
-
-        } catch (DeliveryException e) {
-
-            e.printStackTrace();
-            return false;
-        }
-
-    }
 
 }

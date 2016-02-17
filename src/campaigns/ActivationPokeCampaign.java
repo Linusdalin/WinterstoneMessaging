@@ -7,6 +7,7 @@ import action.NotificationAction;
 import core.PlayerInfo;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 
 import java.sql.Timestamp;
 
@@ -31,7 +32,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
     private static final int Max_Age = 20;
     private int[] MessageIds = {2, 3, 4, 5,
 
-                                31};
+                                31, 32, 33};
 
     ActivationPokeCampaign(int priority, CampaignState active){
 
@@ -52,7 +53,7 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
@@ -94,13 +95,12 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
             if(playerInfo.getUsageProfile().isMobileExclusive()){
 
-                return new MobilePushAction("Don't miss the level up bonuses on SlotAmerica! Open the app to get going!", user, executionTime, getPriority(), getTag(), Name,  31, getState(), responseFactor);
+                return new MobilePushAction("Don't miss the level up bonuses on SlotAmerica! Open the app to get going!", user, executionTime, getPriority(), getTag(), Name,  302, getState(), responseFactor);
 
             }
 
             return new NotificationAction("You haven't missed the level up bonuses at SlotAmerica, have you? Check out the rewards by clicking on the level bar.!",
                     user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
-
 
         }
 
@@ -110,13 +110,20 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
             if(playerInfo.getUsageProfile().isMobileExclusive()){
 
-                return new MobilePushAction("Let's start climbing the reward stairs at SlotAmerica! Touch here to get started with your daily bonus!", user, executionTime, getPriority(), getTag(), Name,  32, getState(), responseFactor);
+                return new MobilePushAction("Let's start climbing the reward stairs at SlotAmerica! Touch here to get started with your daily bonus!", user, executionTime, getPriority(), getTag(), Name,  304, getState(), responseFactor);
+
+            }
+
+
+            if(state == CampaignState.REDUCED){
+
+                System.out.println("    -- Campaign " + Name + " not firing. Reduced mode remove low priority messages" );
+                return null;
 
             }
 
             return new NotificationAction("Let's start climbing the reward stairs at SlotAmerica! Click here to get started with your daily bonus!",
                     user, executionTime, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
-
 
         }
 
@@ -126,7 +133,14 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
             System.out.println("    -- Sending a seven day activation poke" );
             if(playerInfo.getUsageProfile().isMobileExclusive()){
 
-                return new MobilePushAction("Let's start climbing the reward stairs at SlotAmerica! Touch here to get started with your daily bonus!", user, executionTime, getPriority(), getTag(), Name,  33, getState(), responseFactor);
+                return new MobilePushAction("Let's start climbing the reward stairs at SlotAmerica! Touch here to get started with your daily bonus!", user, executionTime, getPriority(), getTag(), Name,  303, getState(), responseFactor);
+
+            }
+
+            if(state == CampaignState.REDUCED){
+
+                System.out.println("    -- Campaign " + Name + " not firing. Reduced mode remove low priority messages" );
+                return null;
 
             }
 
@@ -154,14 +168,14 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
             if(playerInfo.getUsageProfile().isMobileExclusive()){
 
                 System.out.println("    -- Sending a seven day activation poke" );
-                return new MobilePushAction(user.name + ", you have got 6,000 coins extra to check out the cool level bonus system.", user, executionTime, getPriority(), getTag(), Name,  33, getState(), responseFactor)
+                return new MobilePushAction(user.name + ", you have got 6,000 coins extra to check out the cool level bonus system.", user, executionTime, getPriority(), getTag(), Name,  305, getState(), responseFactor)
                         .attach(new GiveCoinAction(6000, user, executionTime, getPriority(), Name, 33, getState(), responseFactor));
 
             }
 
             return new NotificationAction(user.name + ", you have got 6,000 coins extra to check out the cool level bonus system. Check out the rewards by clicking on the level bar.!",
                     user, executionTime, getPriority(), getTag(),  Name, 5, getState(), responseFactor)
-                    .attach(new GiveCoinAction(6000, user, executionTime, getPriority(), Name, 6, getState(), responseFactor));
+                    .attach(new GiveCoinAction(6000, user, executionTime, getPriority(), Name, 5, getState(), responseFactor));
 
 
         }

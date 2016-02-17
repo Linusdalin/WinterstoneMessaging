@@ -113,12 +113,15 @@ public class DataCache {
     }
 
 
-    public CachedUser getCachedUser(User user) {
+    public CachedUser getCachedUser(User user, Connection connection) {
 
         CachedUserTable userTable = new CachedUserTable();
         userTable.loadAndRetry(connection, "and facebookId='" + user.facebookId + "'", "ASC", 1);
 
-        return userTable.getNext();
+        CachedUser cachedUser = userTable.getNext();
+        userTable.close();
+
+        return cachedUser;
 
     }
 

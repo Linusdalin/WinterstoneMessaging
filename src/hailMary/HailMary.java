@@ -17,7 +17,7 @@ import java.sql.Timestamp;
  */
 public class HailMary extends HailMaryUsers {
 
-    private static final String Name = "HaleMary";
+    private static final String Name = "HailMary";
 
     public HailMary(){
 
@@ -29,7 +29,7 @@ public class HailMary extends HailMaryUsers {
 
         for (String lostUser : lostUsers) {
 
-            User user = new User(lostUser, "", "", "", "", null, 0, 0, 0, 0, 0, 0, 0, 0, "A", "M");
+            User user = new User(lostUser, "", "", "", "", null, 0, 0, 0, 0, 0, 0, 0, 0, "A", "M", Timestamp.valueOf("2016-01-01 00:00:00"));
 
             ActionInterface action = new NotificationAction( "Hello, We have added "+ RewardRepository.freeCoinAcitivation.getCoins()+" free coins for you to play with on your account. Click here to collect and play!",
                     user, executionTime, 60, Name,  Name, 1, CampaignState.ACTIVE, 1.0)

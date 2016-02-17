@@ -8,6 +8,7 @@ import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
 import rewards.Reward;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -36,15 +37,19 @@ public class PlayerInfo {
 
     private String claimedRewards = null;
 
-    public PlayerInfo(User user, DataCache dbCache){
+    public PlayerInfo(User user, DataCache dbCache, Connection connection){
 
         this.user = user;
         this.dbCache = dbCache;
 
-        cachedUser = dbCache.getCachedUser(this.user);
+        cachedUser = dbCache.getCachedUser(this.user, connection);
 
         if(cachedUser != null)
             checkLevelUp(user, cachedUser);
+
+        if(receptivityProfile == null)
+            receptivityProfile = dbCache.getReceptivityProfileForPlayer(user.facebookId);
+
 
     }
 
@@ -95,9 +100,29 @@ public class PlayerInfo {
         return userPayments;
     }
 
+    public Timestamp getLastSession(){
+
+        if(lastSession != null)
+            return lastSession;
+
+        if(user.sessions == 0)
+            return null;
+
+        lastSession = user.lastActivity;
+
+        if(lastSession == null){
+
+            System.out.println(" -- Found no sessions for user " + user.name);
+            return null;
+        }
+
+        System.out.println(" -- Got last session @" + lastSession.toString() + " for user " + user.name);
+        return lastSession;
+
+    }
 
 
-    public Timestamp getLastSession() {
+    public Timestamp getLastSessionLocalCache() {
 
         if(lastSession != null)
             return lastSession;
@@ -115,7 +140,6 @@ public class PlayerInfo {
 
         System.out.println(" -- Got last session @" + lastSession.toString() + " for user " + user.name);
         return lastSession;
-
 
     }
 
@@ -192,7 +216,7 @@ public class PlayerInfo {
 
     public UsageProfileClassification getUsageProfile(){
 
-        if(user.facebookId.startsWith("ap_"))
+        if(user.facebookId.startsWith("ap_") || user.facebookId.startsWith("go_"))
             return UsageProfileClassification.ANONYMOUS;
 
 
@@ -223,6 +247,9 @@ public class PlayerInfo {
     }
 
     public Timestamp getFirstMobileSession(){
+
+        if(cachedUser == null)
+            return null;
 
         return cachedUser.firstMobileSession;
 

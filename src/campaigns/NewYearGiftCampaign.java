@@ -9,6 +9,7 @@ import core.UsageProfileClassification;
 import email.EmailInterface;
 import email.NotificationEmail;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.Reward;
 import rewards.RewardRepository;
 
@@ -55,7 +56,7 @@ public class NewYearGiftCampaign extends AbstractMobileCampaign implements Campa
      */
 
 
-    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
         Timestamp executionDay = getDay(executionTime);
@@ -97,7 +98,7 @@ public class NewYearGiftCampaign extends AbstractMobileCampaign implements Campa
 
             System.out.println("    -- Campaign " + Name + " firing for mobil )");
             return  new MobilePushAction("2015 is coming to a close! Here is a final " + reward.getCoins() + " free coins before we move into 2016!",
-                    user, executionTime, getPriority(), getTag(), Name,  31, getState(), responseFactor)
+                    user, executionTime, getPriority(), getTag(), Name,  301, getState(), responseFactor)
                     .withReward(reward);
 
         }
@@ -125,7 +126,7 @@ public class NewYearGiftCampaign extends AbstractMobileCampaign implements Campa
             }
             else{
 
-                return new EmailAction(newYearEmail(user, getTag() + "-" + 21, reward), user, executionTime, getPriority(), getTag(), 21, getState(), responseFactor);
+                return new EmailAction(newYearEmail(user, createPromoCode(201), reward), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
 
             }
 

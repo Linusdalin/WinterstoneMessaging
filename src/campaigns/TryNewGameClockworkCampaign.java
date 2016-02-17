@@ -8,6 +8,7 @@ import email.EmailInterface;
 import email.NotificationEmail;
 import recommendation.GameRecommender;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.Reward;
 import rewards.RewardRepository;
 
@@ -28,20 +29,22 @@ public class TryNewGameClockworkCampaign extends AbstractCampaign implements Cam
     private static final String Name = "TryNewGame"+Game;
     private static final int CoolDown_Days = 9999;            // Just once per game
     private int[] MessageIds = {1, 2, 3,
-                                10
+                                20
     };
 
 
     // Trigger specific config data
-    private static final int Min_Sessions = 15;
-    private static final int Min_Inactivity1 = 5;                          // Active players
-    private static final int Min_Inactivity2 = 15;                         // Lapsing players
-    private static final int Min_Inactivity3 = 60;                         // Lapsed players
-    private static final int Max_Inactivity = 120;
+    private static final int Min_Sessions       =  40;
+    private static final int Min_Inactivity1    =   4;                          // Active players
+    private static final int Min_Inactivity2    =  15;                         // Lapsing players
+    private static final int Min_Inactivity3    =  50;                         // Lapsed players
+    private static final int Max_Inactivity     = 150;
+    private String dayRestriction;
 
-    TryNewGameClockworkCampaign(int priority, CampaignState active){
+    TryNewGameClockworkCampaign(int priority, CampaignState active, String dayRestriction){
 
         super(Name, priority, active);
+        this.dayRestriction = dayRestriction;
         setCoolDown(CoolDown_Days);
         registerMessageIds( MessageIds );
     }
@@ -58,10 +61,17 @@ public class TryNewGameClockworkCampaign extends AbstractCampaign implements Cam
      */
 
 
-    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
+
+
+        if(playerInfo.getUsageProfile().isMobilePlayer()){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Not for mobile players");
+            return null;
+        }
 
         if(user.sessions < Min_Sessions){
 
@@ -81,7 +91,7 @@ public class TryNewGameClockworkCampaign extends AbstractCampaign implements Cam
 
         if(inactivity <  Min_Inactivity1){
 
-            System.out.println("    -- Campaign " + Name + " not firing. User is active (" + inactivity + " >" + Min_Inactivity1 + ")" );
+            System.out.println("    -- Campaign " + Name + " not firing. User is active (" + inactivity + " <" + Min_Inactivity1 + ")" );
             return null;
         }
 
@@ -114,18 +124,10 @@ public class TryNewGameClockworkCampaign extends AbstractCampaign implements Cam
         }
 
 
-        if(RewardRepository.hasClaimed(user, reward)){
-
-            System.out.println("    -- Campaign " + Name + " not firing. Player already claimed freespin reward for " + Game );
-            return null;
-
-        }
-
-
 
         if(inactivity > Min_Inactivity3 && inactivity<= Max_Inactivity){
 
-            return new EmailAction(gameActivationEmail(user, reward), user, executionTime, getPriority(), getTag(), 10, getState(), responseFactor);
+            return new EmailAction(gameActivationEmail(user, reward, createPromoCode(201)), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
 
         }
 
@@ -145,11 +147,11 @@ public class TryNewGameClockworkCampaign extends AbstractCampaign implements Cam
 
 
 
-    public static EmailInterface gameActivationEmail(User user, Reward reward) {
+    public static EmailInterface gameActivationEmail(User user, Reward reward, String promoCode) {
 
         return new NotificationEmail("We have a recommendation for you", "<p>Don't miss out one of the most liked games at SlotAmerica. It is called <b>Clockwork</b>. with auto nudges and free spin rounds. " +
                 "We really think you will like it. We have added "+ reward.getCoins()+" free spins for you to try it out!</p>" +
-                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+ Game+"&xpromocode="+ Name+"&reward="+reward.getCode()+"\"> to claim your spins</a></p>",
+                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+ Game+"&promocode="+ promoCode+"&reward="+reward.getCode()+"\"> to claim your spins</a></p>",
                 "Hello "+ user.name+" Don't miss out the game "+ GameName+" we released here at Slot America. We think you will like it...");
     }
 
@@ -166,7 +168,7 @@ public class TryNewGameClockworkCampaign extends AbstractCampaign implements Cam
 
     public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
 
-        String specificWeekDay = isSpecificDay(executionTime, false, "måndag");
+        String specificWeekDay = isSpecificDay(executionTime, false, dayRestriction);
 
         if(specificWeekDay != null)
             return specificWeekDay;

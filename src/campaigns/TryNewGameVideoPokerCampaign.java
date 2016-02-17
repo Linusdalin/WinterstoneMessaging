@@ -7,6 +7,7 @@ import email.EmailInterface;
 import email.NotificationEmail;
 import recommendation.GameRecommender;
 import remoteData.dataObjects.User;
+import response.ResponseStat;
 import rewards.Reward;
 import rewards.RewardRepository;
 
@@ -27,25 +28,27 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
     private static final String Name = "TryNewGame"+Game;
     private static final int CoolDown_Days = 9999;            // Just once per game
     private int[] MessageIds = {1, 2, 3,
-                                10
+                                20
     };
 
     private static final int DailyCap = 1000;            // Just once per game
 
 
     // Trigger specific config data
-    private static final int Min_Sessions = 15;
-    private static final int Min_Inactivity1 = 5;                          // Active players
-    private static final int Min_Inactivity2 = 15;                         // Lapsing players
-    private static final int Min_Inactivity3 = 60;                         // Lapsed players
-    private static final int Max_Inactivity = 200;
+    private static final int Min_Sessions       =  40;
+    private static final int Min_Inactivity1    =   4;                          // Active players
+    private static final int Min_Inactivity2    =  15;                         // Lapsing players
+    private static final int Min_Inactivity3    =  50;                         // Lapsed players
+    private static final int Max_Inactivity     = 150;
 
 
     private int count = 0;
+    private String day;
 
-    TryNewGameVideoPokerCampaign(int priority, CampaignState active){
+    TryNewGameVideoPokerCampaign(int priority, CampaignState active, String day){
 
         super(Name, priority, active);
+        this.day = day;
         setCoolDown(CoolDown_Days);
         registerMessageIds( MessageIds );
     }
@@ -62,7 +65,7 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
      */
 
 
-    public ActionInterface  evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor) {
+    public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
@@ -73,6 +76,13 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
             System.out.println("    -- Campaign " + Name + " not applicable. Daily Count reach (" + DailyCap + ")" );
             return null;
         }
+
+        if(playerInfo.getUsageProfile().isMobilePlayer()){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Not for mobile players");
+            return null;
+        }
+
 
         if(user.sessions < Min_Sessions){
 
@@ -121,11 +131,12 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
         }
 
 
-        if(inactivity > Min_Inactivity3 && inactivity<= Max_Inactivity){
+
+        if(inactivity > Min_Inactivity2 && inactivity<= Max_Inactivity){
 
 
             count++;
-            return new EmailAction(gameActivationEmail(user), user, executionTime, getPriority(), getTag(), 10, getState(), responseFactor);
+            return new EmailAction(gameActivationEmail(user, createPromoCode(201)), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
 
         }
 
@@ -149,7 +160,7 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
 
 
 
-    public static EmailInterface gameActivationEmail(User user) {
+    public static EmailInterface gameActivationEmail(User user, String promoCode) {
 
         return new NotificationEmail("Have you tried our Video Poker?", "<p>Just for fun, there is a Jacks or better Video Poker at SlotAmerica. It is with a real classic style, bringing you back to down town Vegas.</p>" +
                 "<p>When playing video poker it is good to understand the strategy. In some cases, the game suggests which cards to hold but in others you have to select it manually. " +
@@ -160,7 +171,7 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
                 "<li>Hold two or more high suited cards. (Hope to get the straight flush)</li>" +
                 "<li>Hold one high card. (Hoping to make a high pair</li>" +
                 "<p>With just these simple rules, you will play fairly well in the Video Poker game. </p>" +
-                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+ Game +"&xpromocode="+ Name+"\"> to test out your new skills</a></p>",
+                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+ Game +"&xpromocode="+ promoCode+"\"> to test out your new skills</a></p>",
                 "Just for fun, there is a Jacks or better Video Poker at SlotAmerica. It is with a real classic style, bringing you back to down town Vegas");
     }
 
@@ -177,7 +188,7 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
 
     public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
 
-        String specificWeekDay = isSpecificDay(executionTime, false, "måndag");
+        String specificWeekDay = isSpecificDay(executionTime, false, day);
 
         if(specificWeekDay != null)
             return specificWeekDay;

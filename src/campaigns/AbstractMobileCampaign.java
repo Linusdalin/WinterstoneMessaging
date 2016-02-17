@@ -13,6 +13,12 @@ public abstract class AbstractMobileCampaign extends AbstractCampaign{
 
     protected static final String GameLink = "https://app.adjust.com/drl7ga?deep_link=slotamerica://&campaign=";
 
+    protected static final String LaunchLink = "http://smarturl.it/launch_slotamerica?promoCode=";
+    protected static final String UpgradeLink = "http://smarturl.it/slotamerica";
+
+    protected static final String imageURL = "d24xsy76095nfe.cloudfront.net/email/";
+
+
     public AbstractMobileCampaign(String name, int priority, CampaignState state) {
 
         super(name, priority, state);

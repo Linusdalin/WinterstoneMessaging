@@ -157,11 +157,21 @@ public class ResponseHandler {
 
     public ResponseStat getOverallResponse() {
 
-        int responses = getResponses(connection);
-        int exposures = getExposures(connection);
+        int responses = getResponses(connection, null);
+        int exposures = getExposures(connection, null);
         return new ResponseStat(exposures, responses);
 
     }
+
+    public ResponseStat getCampaignResponse(String campaignName) {
+
+        int responses = getResponses(connection, campaignName);
+        int exposures = getExposures(connection, campaignName);
+        return new ResponseStat(exposures, responses);
+
+    }
+
+
 
     /*********************************************************************************
      *
@@ -174,18 +184,18 @@ public class ResponseHandler {
      */
 
 
-    private int getExposures(Connection connection) {
+    private int getExposures(Connection connection, String campaignName) {
 
         ExposureTable table = new ExposureTable(connection);
-        int responses = table.getUserExposure(userId, 150);  // Look 150 days back for exposures
+        int responses = table.getUserExposure(userId, campaignName, 150);  // Look 150 days back for exposures
         return responses;
 
     }
 
-    private int getResponses(Connection connection) {
+    private int getResponses(Connection connection, String campaignName) {
 
         ResponseTable table = new ResponseTable(connection);
-        int responses = table.getResponses(userId);
+        int responses = table.getResponses(userId, campaignName);
         return responses;
 
     }
