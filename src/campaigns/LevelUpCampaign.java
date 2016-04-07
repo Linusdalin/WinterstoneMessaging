@@ -26,12 +26,6 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
     // Campaign config data
     private static final String Name = "LevelUp";
     private static final int CoolDown_Days = 11;      // This should really be once per level. Especially when players are not playing too much
-    private static final int[] MessageIds = { 0, 1, 2, 3, 4, 5, 6, 7,
-
-                                             30, 31, 32, 33, 34, 35, 36, 37         // Mobile
-
-    };
-
 
     // Trigger specific config data
 
@@ -62,7 +56,6 @@ public LevelUpCampaign(int priority, CampaignState activation){
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds);
     }
 
 
@@ -128,41 +121,40 @@ public LevelUpCampaign(int priority, CampaignState activation){
             return null;
 
         }
+
+
+            System.out.println("    -- Campaign " + Name + " firing message for level " + user.level + " with message " + message + 1  );
+
+        ActionInterface action;
+        if(playerInfo.getUsageProfile().isMobilePlayer()){
+
+             if(playerInfo.fallbackFromMobile() && message != 7){
+
+                 return new EmailAction(getLevelUpEmail(messages[message], user.level), user, executionTime, getPriority(), getTag(), (message + 201), getState(), responseFactor);
+             }
+
+
+             return new MobilePushAction(messages[message], user, executionTime, getPriority(), getTag(), Name,  (message + 301), getState(), responseFactor);
+        }
         else{
 
+             action =  new NotificationAction(messages[message], user, executionTime, getPriority(), getTag(),  Name, (message + 1), getState(), responseFactor);
 
-             System.out.println("    -- Campaign " + Name + " firing message for level " + user.level + " with message " + message + 1  );
-
-            ActionInterface action;
-             if(playerInfo.getUsageProfile().isMobilePlayer()){
-
-                 if(playerInfo.fallbackFromMobile() && message != 7){
-
-                     return new EmailAction(getLevelUpEmail(messages[message], user.level), user, executionTime, getPriority(), getTag(), (message + 201), getState(), responseFactor);
-                 }
-
-
-                 return new MobilePushAction(messages[message], user, executionTime, getPriority(), getTag(), Name,  (message + 301), getState(), responseFactor);
-             }
-             else{
-
-                 action =  new NotificationAction(messages[message], user, executionTime, getPriority(), getTag(),  Name, (message + 1), getState(), responseFactor);
-
-             }
-
-
-
-            if(message == 1){
-
-                action.withReward("0fcb000c-c417-429f-bf2b-4d9a5f5ccff7");
-            }
-            if(message == 7){
-
-                action.withReward("9282b539-40b0-4744-a793-2e022bfd85a8");
-            }
-
-            return action;
         }
+
+
+
+        if(message == 1){
+
+            action.withReward("0fcb000c-c417-429f-bf2b-4d9a5f5ccff7");
+        }
+        if(message == 7){
+
+            action.withReward("9282b539-40b0-4744-a793-2e022bfd85a8");
+        }
+
+        return action;
+
     }
 
     public static EmailInterface getLevelUpEmail(String message, int level) {
@@ -181,15 +173,11 @@ public LevelUpCampaign(int priority, CampaignState activation){
         * @return                  - messgage or null if ok.
         */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
-
-        if(isSpecificDay(executionTime, false, "torsdag") == null || isSpecificDay(executionTime, false, "fredag") == null)
-            return "Ignoring for the weekend release";
-
+        // No time restriction here. Send both morning and evening
 
         return isTooEarly(executionTime, overrideTime);
-
     }
 
 

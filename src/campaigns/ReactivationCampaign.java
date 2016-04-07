@@ -24,8 +24,6 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
     // Campaign config data
     private static final String Name = "Reactivation";
     private static final int CoolDown_Days = 36500;     // Only once per player
-    private static final int[] MessageIds = { 1, 2, 3 };
-
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 60;     // This set very high to test out potential
@@ -33,13 +31,15 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
     private static final int DAILY_CAP   = 1000;         // Max per day
     private int count = 0;
+    private String dayRestriction;
 
 
-    ReactivationCampaign(int priority, CampaignState activation){
+    ReactivationCampaign(int priority, CampaignState activation, String days){
 
         super(Name, priority, activation);
+        this.dayRestriction = days;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
+
     }
 
 
@@ -64,14 +64,12 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
         }
 
-        if(playerInfo.getUsageProfile().isAnonymousMobile()){
+        if(playerInfo.getUsageProfile().isMobilePlayer()){
 
             System.out.println("    -- Campaign " + Name + " not firing. Not for mobile players" );
             return null;
 
         }
-
-
 
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
@@ -128,10 +126,22 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
                 System.out.println("    -- Campaign " + Name + " firing message3. Creating bonus for player" );
                 count++;
+
+                if(randomize2(user, 0)){
+
+                    return new NotificationAction("You have got 10,000 extra free coins! We haven't seen you in a while and there are some fabulous new games to try out. Click here to claim ",
+                            user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor)
+                            .withGame("clockwork")
+                            .withReward("93f00dac-26cf-46e4-8bde-1eb59dd13032");
+
+                }
+
                 return new NotificationAction("You have got 3,000 extra free coins! We haven't seen you in a while and there are some fabulous new games to try out. Click here to claim ",
-                        user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor)
+                        user, executionTime, getPriority(), getTag(),  Name, 83, getState(), responseFactor)
                         .withGame("clockwork")
                         .withReward("363526a3-1fb1-499d-bb33-66dd9dcb9259");
+
+
 
             }
 
@@ -153,7 +163,13 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
+
+        String specificWeekDay = isSpecificDay(executionTime, false, dayRestriction);
+
+        if(specificWeekDay != null)
+            return specificWeekDay;
+
 
         return isTooEarly(executionTime, overrideTime);
 

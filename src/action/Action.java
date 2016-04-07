@@ -33,6 +33,7 @@ public abstract class Action implements ActionInterface{
     private int messageId;
     protected final CampaignState state;
     protected String promoCode;
+    protected boolean useStage = false;
 
     protected ActionParameter actionParameter;
     private int timeSlot;
@@ -318,6 +319,11 @@ public abstract class Action implements ActionInterface{
 
         throw new RuntimeException("cannot assign reward to incompatible action");
 
+    }
+
+    @Override
+    public void useStage() {
+        this.useStage = true;
     }
 
 }

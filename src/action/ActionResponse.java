@@ -25,4 +25,8 @@ public class ActionResponse {
         return status;
     }
 
+    public String toString(){
+
+        return status.name() + ":\"" + message + "\"";
+    }
 }

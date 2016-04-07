@@ -48,4 +48,6 @@ public interface ActionInterface {
 
     ActionInterface withReward(String s);
     ActionInterface withReward(Reward reward);
+
+    void useStage();
 }

@@ -170,7 +170,7 @@ public class SeventeenEmailCampaign extends AbstractMobileCampaign implements Ca
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         return isTooEarly(executionTime, overrideTime);
 

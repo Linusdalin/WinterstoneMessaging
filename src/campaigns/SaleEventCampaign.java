@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
@@ -14,24 +15,24 @@ import java.sql.Timestamp;
  *              For ongoing happy hour campaigns send info to paying players
  */
 
-public class HappyHourCampaign extends AbstractCampaign implements CampaignInterface {
+public class SaleEventCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "Happy Hour";
-    private static final int CoolDown_Days = 9;            // A bit more than a week to avoid getting it every day
-    private static final int[] MessageIds = { 1, 2, 3, 4, 5, 6, 7 };
+    private static final String Name = "SaleEvent";
+    private static final int CoolDown_Days = 6;            // Never more than one happy hour per week
 
 
     // Trigger specific config data
-    private static final int MAX_INACTIVITY = 30;
-    private int percentage;
+    private static final int MAX_INACTIVITY = 180;
+    private static final int Min_Sessions = 10;
 
-    HappyHourCampaign(int priority, CampaignState activation, int percentage){
+    private String message;
+
+    SaleEventCampaign(int priority, CampaignState activation, String message){
 
         super(Name, priority, activation);
-        this.percentage = percentage;
+        this.message = message;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
     /********************************************************************
@@ -50,6 +51,14 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
         User user = playerInfo.getUser();
 
 
+        if(user.sessions < Min_Sessions){
+
+            System.out.println("    -- Campaign " + Name + " not applicable. User is not frequent enough (" + user.sessions + " < " + Min_Sessions + ")" );
+            return null;
+
+        }
+
+
         Timestamp lastSession = playerInfo.getLastSession();
         if(lastSession == null){
 
@@ -58,16 +67,19 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
 
         }
         int inactivity = getDaysBetween(lastSession, executionDay);
+        int age = getDaysBetween(user.created, executionDay);
 
 
         if(inactivity > MAX_INACTIVITY){
 
+            // Previously active player
+            // This is resurrection
+
             if(user.payments > 0 && user.sessions > 50 && inactivity < MAX_INACTIVITY + 10 ){
 
-                // Previously active player
 
-                System.out.println("    -- Sending a happy hour reminder to previously highly active player" );
-                return new NotificationAction("Hello, It is now happy hour at SlotAmerica with "+ this.percentage+"% extra on all purchases. A perfect time to try the real Vegas feeling. Click here to get going!!",
+                System.out.println("    -- Sending a sale message to previously highly active player" );
+                return new NotificationAction(message,
                         user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor);
 
             }
@@ -77,18 +89,47 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
 
         }
 
+        // Active mobile players
+
+
+        if(playerInfo.getUsageProfile().isMobilePlayer()){
+
+            if(user.sessions > 20 && inactivity < 5 ){
+
+                System.out.println("    -- Sending a sale message to mobile" );
+                return new MobilePushAction(message, user, executionTime, getPriority(), getTag(),  Name, 301, getState(), responseFactor);
+            }
+        }
+
+
         if(user.payments == 0){
 
-            if(user.sessions > 300 && inactivity < 1 ){
+            if(user.sessions > 100 && inactivity < 1 ){
 
                 // Very active player - entice to buy...   TEST
 
-                System.out.println("    -- Sending a happy hour reminder to active free player" );
-                return new NotificationAction("Hello, It is now happy hour at SlotAmerica with extra coins on all purchases. A perfect time to try the real Vegas feeling. Click here to get going!!",
+                System.out.println("    -- Sending a sale message to active free player" );
+                return new NotificationAction(message,
                         user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
 
 
             }
+
+            // New players this week that has played on average 3 game sessions per day
+            // This is for conversion
+
+            if(user.sessions > 3*age && age < 7 && inactivity < 2 ){
+
+                // Very active player - entice to buy...   TEST
+
+                System.out.println("    -- Sending a happy hour reminder to new active player" );
+                return new NotificationAction(message,
+                        user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor);
+
+
+            }
+
+
 
             System.out.println("    -- Campaign " + Name + " not firing. Only real money players (or very active)" );
             return null;
@@ -96,17 +137,17 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
 
         if(user.payments > 0 && inactivity <= 2){
 
-            if(user.payments > 20){
+            if(user.payments > 15){
 
                 System.out.println("    -- Sending a happy hour reminder to repeat payer" );
-                return new NotificationAction("Hello, It is now happy hour at SlotAmerica with "+this.percentage+"% extra on all coin purchases for a limited time. A perfect time to level up. Click here to get going!!",
+                return new NotificationAction(message,
                         user, executionTime, getPriority(), getTag(),  Name, 5, getState(), responseFactor);
 
 
             }
 
             System.out.println("    -- Sending a happy hour reminder to not so frequent payer" );
-            return new NotificationAction("Hello, It is now happy hour at SlotAmerica with "+this.percentage+"% extra on all coin purchases for a limited time. A perfect time to level up. Click here to get going!!",
+            return new NotificationAction(message,
                     user, executionTime, getPriority(), getTag(),  Name, 4, getState(), responseFactor);
 
 
@@ -125,7 +166,7 @@ public class HappyHourCampaign extends AbstractCampaign implements CampaignInter
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         /*
         String specificWeekDay = isSpecificDay(executionTime, dryRun, "måndag");

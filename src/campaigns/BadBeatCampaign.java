@@ -182,9 +182,9 @@ public class BadBeatCampaign extends AbstractCampaign implements CampaignInterfa
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
-        return null;
+        return isTooEarly(executionTime, overrideTime);
 
     }
 

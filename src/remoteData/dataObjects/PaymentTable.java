@@ -1,6 +1,7 @@
 package remoteData.dataObjects;
 
 import dbManager.DatabaseException;
+import transfer.PaymentAnalyser;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class PaymentTable extends GenericTable {
             if(!resultSet.next())
                 return null;
 
-            return new Payment(resultSet.getString(1), resultSet.getInt(2),resultSet.getString(3),resultSet.getTimestamp(4));
+            return new Payment(resultSet.getString(1), resultSet.getInt(2),resultSet.getString(3),resultSet.getTimestamp(4) , 0, 0, 0);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,6 +62,23 @@ public class PaymentTable extends GenericTable {
 
         return null;
     }
+
+    public Payment getNextLocal(){
+
+        try {
+            if(!resultSet.next())
+                return null;
+
+            return new Payment(resultSet.getString(1), resultSet.getInt(2),resultSet.getString(3),resultSet.getTimestamp(4) , resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
 
     public List<Payment> getAll(){
 
@@ -128,14 +146,40 @@ public class PaymentTable extends GenericTable {
         System.out.println(" -- Retrieving remote data with " + sql );
 
         try {
+
             loadFromDB(connection, sql);
+
         } catch (DatabaseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
 
+    public int getAverage(Connection connection, String playerId) {
+        String sql = "select avg(amount) from payment where playerId = '" + playerId + "'";
 
+        try{
 
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
 
+            if(!rs.next())
+                return 0;  // There are no entries in the database
+
+            return rs.getInt(1);
+
+        }catch(SQLException e){
+
+            System.out.println("Error accessing data in database");
+            e.printStackTrace();
+        }
+        return 0;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public List<Payment> getUnAnalysedPayments(Connection connection) {
+
+        loadAndRetry(connection, "and behaviour= '" + PaymentAnalyser.UNKNOWN_BEHAVIOUR + "'", order, maxLimit);
+        List<Payment> payments = getAll();
+        return payments;
+    }
 }

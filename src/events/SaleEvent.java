@@ -7,14 +7,14 @@ package events;
  */
 
 
-public class HappyHourEvent extends AbstractEvent implements EventInterface {
+public class SaleEvent extends AbstractEvent implements EventInterface {
 
     private final double coinMultiplier;
 
-    public HappyHourEvent(String expiry, double coinMultiplier) {
+    public SaleEvent(String name, String code, String expiry, double coinMultiplier) {
 
+        super(name, code, expiry);
         this.coinMultiplier = coinMultiplier;
-        setExpiry(expiry);
 
     }
 

@@ -1,6 +1,7 @@
 package email;
 
 import net.sf.json.JSONObject;
+import remoteData.dataObjects.User;
 
 /*************************************************************
  * Created with IntelliJ IDEA.
@@ -19,4 +20,6 @@ public interface EmailInterface {
     String getTemplate();
 
     JSONObject toJSON();
+
+    void addContentBoxes(User user, int nax);
 }

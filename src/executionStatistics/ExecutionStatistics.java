@@ -25,6 +25,7 @@ public class ExecutionStatistics {
     private int[] strikeCount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     private int[] receptivityDay = { 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private int[] receptivityTime = { 0, 0, 0, 0};
 
     private int[][] exposure = {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                 // OK
@@ -33,6 +34,7 @@ public class ExecutionStatistics {
 
     };
 
+    private int lost = 0;
 
     // Index for the different outcomes for messaging (indexing the totalPlayerOutcome)
 
@@ -185,7 +187,11 @@ public class ExecutionStatistics {
         out.append("  Saturday Players: " + receptivityDay[6] + "\n");
         out.append("    Sunday Players: " + receptivityDay[0] + "\n");
         out.append("         (unknown): " + receptivityDay[8] + "\n");
-
+        out.append("\n\n");
+        out.append("        Day Players: " + receptivityTime[0] + "\n");
+        out.append("    Evening Players: " + receptivityTime[1] + "\n");
+        out.append("      Night Players: " + receptivityTime[2] + "\n");
+        out.append("          (unknown): " + receptivityTime[3] + "\n");
 
         out.append("\n*******************************************\nPlayer Exposure statistics:\n\n");
 
@@ -226,6 +232,7 @@ public class ExecutionStatistics {
         out.append(" - Missed:    " + Display.fixedLengthRight(totalPlayerOutcome[ MISSED  ], 6) + " (No campaign appropriate for the player)\n");
 
         out.append("\n - Completely overlooked pretty active players: " + overLooked + "\n");
+        out.append("\n - Lost and given up: " + lost + "\n");
 
 
         /*
@@ -260,7 +267,7 @@ public class ExecutionStatistics {
 
     }
 
-    public void registerReceptivity(int day){
+    public void registerReceptivityDay(int day){
 
         if(day == -1)
             day = 8;
@@ -268,6 +275,16 @@ public class ExecutionStatistics {
         receptivityDay[day]++;
 
     }
+
+    public void registerReceptivityTime(int timeOfDay){
+
+        if(timeOfDay == -1)
+            timeOfDay = 3;
+
+        receptivityTime[timeOfDay]++;
+
+    }
+
 
 
     public void registerExposureOk(int exposures, int limit) {
@@ -294,4 +311,7 @@ public class ExecutionStatistics {
         exposure[1][exposures]++;
     }
 
+    public void registerLostPlayer() {
+        lost++;
+    }
 }

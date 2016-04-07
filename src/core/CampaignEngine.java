@@ -47,6 +47,7 @@ public class CampaignEngine {
     private boolean overrideTime;
     private boolean sendEmail;
     private boolean sendNotification;
+    private boolean sendEventTrigger;
     private int analysis_cap;
     private int batchSize;
     private boolean purge;
@@ -55,7 +56,9 @@ public class CampaignEngine {
     private Outbox manualActionOutbox;          // Manual messages
     private Outbox coinActionOutbox;          // Manual messages
     private Outbox emailOutbox;
+    private Outbox eventTriggerOutbox;
 
+    private int giveUp = 0;
 
     /******************************************************''
      *
@@ -71,31 +74,33 @@ public class CampaignEngine {
      *
      */
 
-    CampaignEngine(ConnectionHandler.Location dataSource, int threshold, boolean dryRun, boolean overrideTime, boolean sendEmail, boolean sendNotification, int send_cap, int analysis_cap, String testUser, int batchSize, boolean purge){
+    CampaignEngine(ConnectionHandler.Location dataSource, int threshold, boolean dryRun, boolean overrideTime, boolean sendEmail, boolean sendNotification, boolean sendEventTrigger, int send_cap, int analysis_cap, String testUser, int batchSize, boolean purge){
 
         this.threshold = threshold;
         this.dryRun = dryRun;
         this.overrideTime = overrideTime;
         this.sendEmail = sendEmail;
         this.sendNotification = sendNotification;
+        this.sendEventTrigger = sendEventTrigger;
         this.analysis_cap = analysis_cap;
         this.batchSize = batchSize;
         this.purge = purge;
 
         try{
 
-            dbConnection    = ConnectionHandler.getConnection(dataSource);
+            dbConnection    = ConnectionHandler.getConnection(ConnectionHandler.Location.remote);
             cacheConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
             localConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
 
 
             // Create an outbox for all messages
 
-            notificationOutbox  = new Outbox(send_cap, dryRun,                  testUser, localConnection);
-            pushOutbox          = new Outbox(send_cap, dryRun,                  testUser, localConnection);
-            manualActionOutbox  = new Outbox(send_cap, dryRun,                  testUser, localConnection);
-            coinActionOutbox    = new Outbox(send_cap, dryRun,                  testUser, localConnection);
-            emailOutbox         = new Outbox(send_cap, (dryRun || !sendEmail),  testUser, localConnection);
+            notificationOutbox  = new Outbox(send_cap, dryRun,                  testUser);
+            eventTriggerOutbox  = new Outbox(send_cap, dryRun,                  testUser);
+            pushOutbox          = new Outbox(send_cap, dryRun,                  testUser);
+            manualActionOutbox  = new Outbox(send_cap, dryRun,                  testUser);
+            coinActionOutbox    = new Outbox(send_cap, dryRun,                  testUser);
+            emailOutbox         = new Outbox(send_cap, (dryRun || !sendEmail),  testUser);
 
         }catch(Exception e){
 
@@ -161,12 +166,66 @@ public class CampaignEngine {
             }catch(Exception e){
 
                 e.printStackTrace();
+                SoundPlayer.playSound(SoundPlayer.FailBeep);
+                return;
             }
 
         } while(userCount != -1);
 
-        // Execute Hail Mary actions on the lost group of players. This is just a temporary test
-        //hailMary(executionTime, dbCache, executionStatistics, localConnection);
+
+        while(!selectAndProceed(executionStatistics));
+
+
+
+        // Check if we want an immediate purge or separatey executing the actions in the database
+        if(purge){
+
+            Connection connection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
+
+
+            System.out.println(" ******************************************\n * Coin Actions ");
+
+            coinActionOutbox.purge(executionTime, connection);
+
+            System.out.println(" ******************************************\n * Purging Event Triggers ");
+
+            if(sendEventTrigger)
+                eventTriggerOutbox.purge(executionTime, connection);
+            else
+                System.out.println(" -- supressed!");
+
+
+            System.out.println(" ******************************************\n * Purging Notifications ");
+
+            if(sendNotification)
+                notificationOutbox.purge(executionTime, connection);
+            else
+                System.out.println(" -- supressed!");
+
+            System.out.println(" ******************************************\n * Purging Mobile Push Notifications");
+
+            //notificationOutbox.listRecepients();
+            pushOutbox.purge(executionTime, connection);
+
+            System.out.println(" ******************************************\n * Purging Email ");
+
+            if(sendEmail)
+                emailOutbox.purge(executionTime, connection);
+            else
+                System.out.println(" -- supressed!");
+
+            System.out.println(" ******************************************\n * Manual Actions ");
+
+            manualActionOutbox.purge(executionTime, connection);
+
+            SoundPlayer.playSound(SoundPlayer.ReadyBeep);
+
+        }
+
+    }
+
+    private boolean selectAndProceed(ExecutionStatistics executionStatistics) {
+
 
         System.out.println(" ******************************************\n * Evaluated all users resulting in the following statistics:\n\n");
 
@@ -174,59 +233,96 @@ public class CampaignEngine {
 
         System.out.println(" ******************************************\n * Outboxes to purge:\n\n");
 
-        System.out.println("Total notifications: " + notificationOutbox.size() + ( sendNotification? "": "( but these are suppressed)"));
-        System.out.println("Total push:          " + pushOutbox.size());
-        System.out.println("Total emails:        " + emailOutbox.size() + ( sendEmail? "": "( but these are suppressed)"));
-        System.out.println("Total manual:        " + manualActionOutbox.size());
-        System.out.println("Total coins:         " + coinActionOutbox.size());
+        System.out.println("Total notifications:  " + notificationOutbox.size() + ( sendNotification? "": "( but these are suppressed)"));
+        System.out.println("Total push:           " + pushOutbox.size());
+        System.out.println("Total emails:         " + emailOutbox.size() + ( sendEmail? "": "( but these are suppressed)"));
+        System.out.println("Total manual:         " + manualActionOutbox.size());
+        System.out.println("Total coins:          " + coinActionOutbox.size());
+        System.out.println("Total event triggers: " + eventTriggerOutbox.size());
 
 
         System.out.println("  NOTE! Dry run is " + (dryRun ? "ON" : "OFF"));
 
-        SoundPlayer player = new SoundPlayer();
-        player.playSound(SoundPlayer.ReadyBeep);
+        SoundPlayer.playSound(SoundPlayer.ReadyBeep);
 
+        System.out.println("\nPress Enter to Start\n>");
+        String command = waitReturn();
 
-        // Check if we want an immediate purge or separatey executing the actions in the database
-        if(purge){
+        if(command == null)
+            return true;
 
-            System.out.println("\nPress Enter to Start\n>");
-            waitReturn();
-
-            System.out.println(" ******************************************\n * Coin Actions ");
-
-            coinActionOutbox.purge(executionTime);
-
-            System.out.println(" ******************************************\n * Purging Notifications ");
-
-            if(sendNotification)
-                notificationOutbox.purge(executionTime);
-            else
-                System.out.println(" -- supressed!");
-
-            System.out.println(" ******************************************\n * Purging Mobile Push Notifications");
-
-            //notificationOutbox.listRecepients();
-            pushOutbox.purge(executionTime);
-
-            System.out.println(" ******************************************\n * Purging Email ");
-
-            if(sendEmail)
-                emailOutbox.purge(executionTime);
-            else
-                System.out.println(" -- supressed!");
-
-            System.out.println(" ******************************************\n * Manual Actions ");
-
-            manualActionOutbox.purge(executionTime);
-
-            player.playSound(SoundPlayer.ReadyBeep);
-            player.playSound(SoundPlayer.ReadyBeep);
-
-        }
+        update(command);
+        return false;
 
     }
 
+    /******************************************************************************
+     *
+     *          Update the messages
+     *
+     *
+     * @param command
+     */
+
+    private void update(String command) {
+        //TODO: parse and remove messages for a specific campaign/messageID
+
+        System.out.println(" -- Adjusting messages to send with \""+ command+"\"");
+
+        String[] token = command.split(" ");
+
+        if(token.length == 0){
+
+            System.out.println("   !! Expecting command");
+            return;
+
+        }
+
+        if(token[0].equalsIgnoreCase("remove")){
+
+            try{
+
+                if(token.length != 3){
+
+                    System.out.println("   !! Expecting remove <campaign> <messageId>");
+                    return;
+                }
+
+                String campaign = token[1];
+                int messageId = Integer.valueOf(token[2]);
+
+                System.out.println("   -- removing all actions with campaign name '"+campaign+"' and messageId=" + messageId);
+                int removed = removeAll(campaign, messageId, notificationOutbox, pushOutbox, emailOutbox);
+                System.out.println("   -- Removed all in all " + removed + " actions");
+                return;
+
+            }catch(Exception e){
+
+                e.printStackTrace();
+                System.out.println(" !! Could not parse'" + command + "'");
+                return;
+            }
+
+        }
+
+        System.out.println(" !! Could not understand '" + command + "'");
+
+        return;
+
+    }
+
+    //TODO: This could be optimized by analyzing the ranges of the messageIds
+
+    private int removeAll(String campaign, int messageId, Outbox notificationOutbox, Outbox pushOutbox, Outbox emailOutbox) {
+
+        int count = 0;
+
+        count += notificationOutbox.removeAll(campaign, messageId);
+        count += pushOutbox.removeAll(campaign, messageId);
+        count += emailOutbox.removeAll(campaign, messageId);
+
+        return count;
+    }
 
 
     /************************************************************************************************************'
@@ -271,7 +367,12 @@ public class CampaignEngine {
 
             System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
             PlayerInfo playerInfo = new PlayerInfo(user, dbCache, tempConnection);
-            executionStatistics.registerReceptivity(playerInfo.getReceptivityForPlayer().getFavouriteDay(ReceptivityProfile.SignificanceLevel.SPECIFIC));
+
+            int paymentBehavior = playerInfo.getPaymentBehavior();
+            System.out.println(" -- Paymentbehavior = " + paymentBehavior);
+
+            executionStatistics.registerReceptivityDay(playerInfo.getReceptivityForPlayer().getFavouriteDay(ReceptivityProfile.SignificanceLevel.GENERAL));
+            executionStatistics.registerReceptivityTime(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.GENERAL));
 
             ActionInterface action = evaluateUser(tempConnection, playerInfo, executionTime, campaignExposures, executionStatistics);
             handleAction(action, playerInfo, campaignExposures, executionStatistics);
@@ -304,6 +405,8 @@ public class CampaignEngine {
 
                 waitReturn();
                 retry = true;
+                dbConnection    = ConnectionHandler.getConnection(ConnectionHandler.Location.remote);
+
 
             }
 
@@ -376,6 +479,7 @@ public class CampaignEngine {
 
         if(giveUpPlayer(playerInfo, executionTime)){
 
+            executionStatistics.registerLostPlayer();
             return null;
         }
 
@@ -421,7 +525,7 @@ public class CampaignEngine {
         for (CampaignInterface campaign : repository.getActiveCampaigns()) {
 
             // Check calender restriction
-            String failCalendarReason = campaign.testFailCalendarRestriction(executionTime, overrideTime);
+            String failCalendarReason = campaign.testFailCalendarRestriction(playerInfo, executionTime, overrideTime);
             if(failCalendarReason != null){
 
                 System.out.println("    -- Campaign " + campaign.getName() + " not applicable. " + failCalendarReason);
@@ -520,8 +624,13 @@ public class CampaignEngine {
 
     private boolean giveUpPlayer(PlayerInfo playerInfo, Timestamp executionTime) {
 
-        return(playerInfo.getUser().sessions <= 1 && AbstractCampaign.getDaysBetween(playerInfo.getUser().created, executionTime) > 120);
+        if(playerInfo.getUser().sessions <= 1 && AbstractCampaign.getDaysBetween(playerInfo.getUser().created, executionTime) > 200)
+            return true;
 
+        if(playerInfo.getUser().sessions <= 3 &&  playerInfo.getUser().payments == 0 && playerInfo.getLastSession() != null  && AbstractCampaign.getDaysBetween(playerInfo.getLastSession(), executionTime) > 240)
+            return true;
+
+        return false;
     }
 
     private int adjustOutcome(int existingOutcome, int newOutcome) {
@@ -596,21 +705,34 @@ public class CampaignEngine {
 
         if(purge){
 
-            if(action.getType() == ActionType.NOTIFICATION )
-                notificationOutbox.queue(action);
+            switch (action.getType()) {
 
-            if(action.getType() == ActionType.PUSH )
-                pushOutbox.queue(action);
+                case NOTIFICATION:
+                    notificationOutbox.queue(action);
+                    break;
+                case PUSH:
+                    pushOutbox.queue(action);
+                    break;
+                case MANUAL_ACTION:
+                    manualActionOutbox.queue(action);
+                    break;
+                case EMAIL:
+                    emailOutbox.queue(action);
+                    break;
+                case IN_GAME:
+                    // Nothing implemented
+                    break;
+                case COIN_ACTION:
+                    coinActionOutbox.queue(action);
+                    break;
+                case TRIGGER_EVENT:
+                    eventTriggerOutbox.queue(action);
+                    break;
 
-            if(action.getType() == ActionType.EMAIL )
-                emailOutbox.queue(action);
+                default:
+                    throw new RuntimeException("Unknown action type " + action.getType().name());
 
-            if(action.getType() == ActionType.MANUAL_ACTION )
-                manualActionOutbox.queue(action);
-
-            if(action.getType() == ActionType.COIN_ACTION )
-                coinActionOutbox.queue(action);
-
+            }
         }
 
 
@@ -647,15 +769,31 @@ public class CampaignEngine {
 
     }
 
-    public static void waitReturn() {
+    /****************************************************************
+     *
+     *              Wait for a enter and return teh test entered
+     *
+     *
+     * @return          - the text
+     */
+
+    public static String waitReturn() {
         try {
 
-            System.in.read();
+            byte[] buffer = new byte[1024];
+            System.in.read(buffer);
+
+            if(buffer[0] == 10)
+                return null;
+
+            return new String(buffer);
 
         } catch (IOException e) {
 
             System.out.println("Error getting input. Ignoring");
         }
+
+        return null;
 
     }
 

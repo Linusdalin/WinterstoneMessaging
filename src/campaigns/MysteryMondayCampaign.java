@@ -2,7 +2,6 @@ package campaigns;
 
 import action.ActionInterface;
 import action.EmailAction;
-import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
@@ -25,26 +24,23 @@ public class MysteryMondayCampaign extends AbstractCampaign implements CampaignI
     // Campaign config data
     private static final String Name = "MysteryMonday";
     private static final int CoolDown_Days = 6;            // Just once per week
-    private int[] MessageIds = {1, 2,
-                                10
-    };
-
 
     // Trigger specific config data
-    private static final int Min_Sessions = 40;
+    private static final int Min_Sessions = 30;
 
-    private static final int Min_Inactivity1 = 5;                          // Active players - no message
+    private static final int Min_Inactivity1 = 3;                          // Active players - no message
     private static final int Min_Inactivity2 = 15;                         // Lapsing players
     private static final int Min_Inactivity3 = 30;                         // Lapsed players
     private static final int Max_Inactivity  = 60;
     private Reward reward;
+    private final String day;
 
-    MysteryMondayCampaign(int priority, CampaignState active, Reward reward){
+    MysteryMondayCampaign(int priority, CampaignState active, Reward reward, String day){
 
         super(Name, priority, active);
         this.reward = reward;
+        this.day = day;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -99,6 +95,14 @@ public class MysteryMondayCampaign extends AbstractCampaign implements CampaignI
             return null;
         }
 
+        if(playerInfo.getUsageProfile().isMobilePlayer()){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Not for mobile player");
+            return null;
+
+        }
+
+
         if(playerInfo.hasClaimed(reward)){
 
             System.out.println("    -- Campaign " + Name + " not firing. Player already claimed the reward " );
@@ -119,14 +123,6 @@ public class MysteryMondayCampaign extends AbstractCampaign implements CampaignI
             messageId = 2;
         }
 
-        if(playerInfo.getUsageProfile().isMobilePlayer()){
-
-            System.out.println("    -- Sending Mystery monday MOBILE offer" );
-            return new MobilePushAction("Mystery Monday reward! Click here to claim your free play!", user, executionTime, getPriority(), getTag(), Name,  300 + messageId, getState(), responseFactor)
-                    .withReward(reward);
-
-
-        }
 
         System.out.println("    -- Sending Mystery monday offer" );
         return new NotificationAction("Mystery Monday reward! Click here to claim your free play!",
@@ -139,7 +135,8 @@ public class MysteryMondayCampaign extends AbstractCampaign implements CampaignI
 
     public static EmailInterface mysteryMondayEmail(User user, Reward reward) {
 
-        return new NotificationEmail("It is Mystery Monday", "<p>Don't miss out on the mystery free coin rewards at the SlotAmerica app page. Every now and then there are surprise free coins. Remember to like the page not to miss out on all the free play!</p>" +
+        return new NotificationEmail("It is Mystery Monday",
+                "<p>Don't miss out on the mystery free coin rewards at the SlotAmerica app page. Every now and then there are surprise free coins. Remember to like the page not to miss out on all the free play!</p>" +
                 "<p> Just click here <a href=\"https://www.facebook.com/slotAmerica/\"> to find more</a></p>",
                 "Hello "+ user.name+" Don't miss out on the mystery free coin rewards at the SlotAmerica app page. Every now and then there are surprise free coins. Remember to like the page not to miss out on all the free play!");
     }
@@ -155,9 +152,9 @@ public class MysteryMondayCampaign extends AbstractCampaign implements CampaignI
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
-        String specificWeekDay = isSpecificDay(executionTime, false, "måndag");
+        String specificWeekDay = isSpecificDay(executionTime, false, day);
 
         if(specificWeekDay != null)
             return specificWeekDay;

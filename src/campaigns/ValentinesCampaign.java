@@ -109,7 +109,7 @@ public class ValentinesCampaign extends AbstractCampaign implements CampaignInte
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
 
         String tooEarlyCheck = isTooEarly(executionTime, overrideTime);

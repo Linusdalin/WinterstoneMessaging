@@ -62,7 +62,7 @@ public class GiveCoinAction extends Action implements ActionInterface{
         }
 
         System.out.println("--------------------------------------------------------");
-        System.out.println("! Perform " + type.name() + " for player " + actionParameter.facebookId);
+        System.out.println(" - Perform " + type.name() + " for player " + actionParameter.facebookId);
 
         GiveAwayHandler handler = new GiveAwayHandler(testUser)
                 .toRecipient(actionParameter.facebookId)

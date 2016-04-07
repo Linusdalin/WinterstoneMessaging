@@ -21,18 +21,16 @@ import java.util.List;
 
 public class Outbox {
 
-    private List<ActionInterface> queue = new ArrayList<ActionInterface>(7000);
+    private List<ActionInterface> queue = new ArrayList<ActionInterface>(8000);
     private final int cap;
     private boolean dryRun;
     private String testUser;
-    private Connection connection;
 
-    public Outbox(int cap, boolean dryRun, String testUser, Connection localConnection){
+    public Outbox(int cap, boolean dryRun, String testUser){
 
         this.cap = cap;
         this.dryRun = dryRun;
         this.testUser = testUser;
-        this.connection = localConnection;
     }
 
 
@@ -41,7 +39,7 @@ public class Outbox {
         queue.add(action);
     }
 
-    public void purge(Timestamp executionTime){
+    public void purge(Timestamp executionTime, Connection connection){
 
         System.out.println(" -- Executing "+ queue.size() + " actions in queue with the timestamp " + executionTime.toString());
 
@@ -59,7 +57,7 @@ public class Outbox {
 
             }
             else
-                noteFailedMessageDelivery(action.getParameters().facebookId, action.getType(), response.getStatus());
+                noteFailedMessageDelivery(action.getParameters().facebookId, action.getType(), response.getStatus(), connection);
             count++;
 
             if(count >= cap)
@@ -84,7 +82,7 @@ public class Outbox {
      * @param status     - status of the message. (Temporary or permanent errors)
      */
 
-    private void noteFailedMessageDelivery(String user, ActionType type, ActionResponseStatus status) {
+    private void noteFailedMessageDelivery(String user, ActionType type, ActionResponseStatus status, Connection connection) {
 
         CachedUserTable table = new CachedUserTable();
 
@@ -124,5 +122,35 @@ public class Outbox {
     public int size() {
 
         return queue.size();
+    }
+
+    /*************************************************************************
+     *
+     *              Remove all actions from the queue that matches:
+     *
+     *                  - campaign
+     *                  - messageId
+     *
+     *
+     * @param campaign             - the name
+     * @param messageId            - int id
+     * @return                     - number of affected actions
+     */
+
+    public int removeAll(String campaign, int messageId) {
+
+        int deleted = 0;
+
+        for (ActionInterface queuedAction : queue) {
+
+            if(queuedAction.getCampaign().equalsIgnoreCase(campaign) && queuedAction.getMessageId() == messageId){
+
+                queue.remove(queuedAction);
+                deleted++;
+            }
+        }
+
+        return deleted;
+
     }
 }

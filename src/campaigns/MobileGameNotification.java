@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.EmailAction;
 import action.MobilePushAction;
 import core.PlayerInfo;
 import core.UsageProfileClassification;
@@ -22,13 +23,12 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
 
     // Campaign config data
     private static final String Name = "MobileGameNotification";
-    private static final int CoolDown_Days = 13;     // Avoid duplicate runs for the same game
-    private int[] MessageIds = { 1, 31 };
+    private static final int CoolDown_Days = 8;     // Avoid duplicate runs for the same game
 
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT_FREE      = 120;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 120;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = 200;   // Max days inactivity to get message
     private static final int ACTIVITY_MIN   = 2;               // Min sessions to be active
 
 
@@ -42,7 +42,6 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
         this.gameCode = gameCode;
         this.reward = reward;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
         this.message = message;
     }
 
@@ -126,9 +125,10 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
         }
         else{
 
-            //System.out.println("    -- Campaign " + Name + " firing email to player that failed push");
-            //return new EmailAction(gameEmail(gameCode, user, createPromoCode(201)), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
-            return null;
+            System.out.println("    -- Campaign " + Name + " firing email to player that failed push");
+            return new EmailAction(gameEmail(gameCode, user, createPromoCode(201)), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
+
+
         }
 
 
@@ -142,11 +142,11 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
             return new NotificationEmail("New Mobile Game Crystal!",
 
                             "<table width=\"100%\"><tr><td width=\"50%\">" +
-                                "<p> Finally a new mobile game release <b><i>Golden Dollar</i></b> game has come to SlotAmerica Mobile too! " +
+                                "<p> Finally a new mobile game release <b><i>Crystal</i></b> game has come to SlotAmerica Mobile too! " +
                                     "Come in and try it!<p>" +
                             "</td>" +
                             "<td width=\"50%\">" +
-                                "<img src=\"https://"+imageURL+"goldendollar-mailimage.png\" width=200px>" +
+                                "<img src=\"https://"+imageURL+"crystal-mailimage.png\" width=200px>" +
                             "</td></tr></table>" +
                             "Get the feeling of the dusty old west where.</p>" +
                             "<p>Happy playing!</p>\n" +
@@ -164,17 +164,19 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
                     "They’re positively everywhere. And I’ve hit some really nice wins and been soooo close to hitting a mountainous jackpot!");
 
 
-        if(game.equals("golden_dollar"))
+        if(game.equals("os5xq"))
 
-            return new NotificationEmail("New Mobile Game Golden Dollar!",
+            return new NotificationEmail("New Mobile Game Quintuple Pay!",
 
                     "<table width=\"100%\"><tr><td width=\"50%\">" +
-                            "<p> Now there is a new  <b><i>Crystal</i></b> game has come to SlotAmerica Mobile too! It’s another one of SlotAmerica’s Old School Casino Classics, but this time the team has positively packed it with 2x and 4x WILD multipliers!<p>" +
+                            "<p>The latest mobile release <b><i>Quintuple Pay</i></b> is now live! An Old School Casino Classic with the magic number 5.<p>" +
+                            "<p>If you have an older version of the App, you will be asked to upgrade it</p>" +
                             "</td>" +
                             "<td width=\"50%\">" +
-                            "<img src=\"https://"+imageURL+"crystals-mailimage.png\" width=200px>" +
+                            "<img src=\"https://"+imageURL+"os5xq_mailimage.png\" width=200px>" +
                             "</td></tr></table>" +
-                            "They’re positively everywhere. And I’ve hit some really nice wins and been soooo close to hitting a mountainous jackpot! Click below to upgrade the app to get the new game!</p>" +
+                            "This is is an ‘Old School Casino Classic’-series game. We’ve had games with 5x multipliers on SlotAmerica before, but this one was designed from the ground up with " +
+                            "all our latest experiences of perfecting the ‘Old School Casino Classic’-series. Transforming it to mobile added the touch of smoothness we love in a slot.</p>" +
                             "<p>Happy playing!</p>\n" +
                             "<p><b>Sam and Diane</b></p>\n" +
                             "<p>Your SlotAmerica Casino Managers</p>\n" +
@@ -185,9 +187,98 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
 
 
 
-                    "Finally the Crystal game has come to SlotAmerica Mobile too!" +
-                            "It’s another one of SlotAmerica’s Old School Casino Classics, but this time the team has positively packed it with 2x and 4x WILD multipliers!" +
-                            "They’re positively everywhere. And I’ve hit some really nice wins and been soooo close to hitting a mountainous jackpot!");
+                    "Finally the Quituple Pay game has come to SlotAmerica Mobile too!" +
+                            "This is is an ‘Old School Casino Classic’-series game. We’ve had games with 5x multipliers on SlotAmerica before, but this one was designed from the ground up with " +
+                            "all our latest experiences of perfecting the ‘Old School Casino Classic’-series. Transforming it to mobile added the touch of smoothness we love in a slot.");
+
+
+        if(game.equals("os7x"))
+
+            return new NotificationEmail("New Mobile Game Seven Times Pay!",
+
+                    "<table width=\"100%\"><tr><td width=\"50%\">" +
+                            "<p>The latest mobile release <b><i>Seven Times Pay</i></b> is now live! An Old School Casino Classic. Hitting the 7:s will ensure really high pay outs.<p>" +
+                            "<p>If you have an older version of the App, you will be asked to upgrade it.</p>" +
+                            "</td>" +
+                            "<td width=\"50%\">" +
+                            "<img src=\"https://"+imageURL+"os7x_mailimage.png\" width=200px>" +
+                            "</td></tr></table>" +
+                            "The pulse of wicked and wonderful Vegas beats fiercely in this old-school gem. It’s a game designed to start off easy and build up momentum, to get the " +
+                            "heart pounding and to have some real leverage on the pay lines as you hit. As usual, putting it on mobile added that touch of smoothness...</p>" +
+                            "<p>Happy playing!</p>\n" +
+                            "<p><b>Sam and Diane</b></p>\n" +
+                            "<p>Your SlotAmerica Casino Managers</p>\n" +
+                            "<table width=\"100%\" border=\"0\"><tr>" +
+                            "<td width=\"50%\"><a href=\""+ UpgradeLink +"\"><img src=\"https://"+imageURL+"icon_appleStore.png\" width=200px></a></td>" +
+                            "<td width=\"50%\"><a href=\""+ UpgradeLink +"\"><img src=\"https://"+imageURL+"icon_googlePlay.png\" width=200px></a></td>" +
+                            "</tr></table>\n",
+
+
+
+                    "Seven Times Pay released on SlotAmerica mobile!" +
+                            "The pulse of wicked and wonderful Vegas beats fiercely in this old-school gem. It’s a game designed to start off easy and build up momentum, to get the " +
+                            "heart pounding and to have some real leverage on the pay lines as you hit. As usual, putting it on mobile added that touch of smoothness...</p>");
+
+        if(game.equals("clockwork"))
+
+            return new NotificationEmail("New Mobile Game Clockwork!",
+
+                    "<table width=\"100%\"><tr><td width=\"50%\">" +
+                            "<p>The latest mobile release <b><i>Clockwork</i></b> is now live! It is one of our all time favorites here at SlotAmerica<p>" +
+                            "<p>If you have an older version of the App, you will be asked to upgrade it.</p>" +
+                            "</td>" +
+                            "<td width=\"50%\">" +
+                            "<img src=\"https://"+imageURL+"clockwork_mailimage.png\" width=200px>" +
+                            "</td></tr></table>" +
+                            "<p>Not a minute too soon, this second-to-none slot serves up round-the-clock fun and excitement!</p>" +
+                            "<p>Enter our wonderful world of dials, cogs and springs – all geared up to make you win things! With a timely mix of " +
+                            "free-spins and multiplier wilds, we’re sure Clockwork will stand the tests of time!\n</p>" +
+                            "<p>Happy playing!</p>\n" +
+                            "<p><b>Sam and Diane</b></p>\n" +
+                            "<p>Your SlotAmerica Casino Managers</p>\n" +
+                            "<table width=\"100%\" border=\"0\"><tr>" +
+                            "<td width=\"50%\"><a href=\""+ UpgradeLink +"\"><img src=\"https://"+imageURL+"icon_appleStore.png\" width=200px></a></td>" +
+                            "<td width=\"50%\"><a href=\""+ UpgradeLink +"\"><img src=\"https://"+imageURL+"icon_googlePlay.png\" width=200px></a></td>" +
+                            "</tr></table>\n",
+
+
+
+                    "Clockwork released on SlotAmerica mobile!" +
+                            "Not a minute too soon, this second-to-none slot serves up round-the-clock fun and excitement!" +
+                            "Enter our wonderful world of dials, cogs and springs – all geared up to make you win things! With a timely mix of " +
+                            "free-spins and multiplier wilds, we’re sure Clockwork will stand the tests of time!\n");
+
+
+
+        if(game.equals("eight_times_pay"))
+
+            return new NotificationEmail("New Mobile Game Eight Times Pay!",
+
+                    "<table width=\"100%\"><tr><td width=\"50%\">" +
+                            "<p>Time again for a new mobile release. This time  <b><i>Eight Times Pay</i></b>! This is the latest in the wild multiplier games.<p>" +
+                            "<p>If you have an older version of the App, you will be asked to upgrade it.</p>" +
+                            "</td>" +
+                            "<td width=\"50%\">" +
+                            "<img src=\"https://"+imageURL+"os8x_mailimage.png\" width=200px>" +
+                            "</td></tr></table>" +
+                            "<p>Rack’ em up! SlotAmerica’s new release is 8x Special, inspired in style by the wonderful world of Pool. We fondly remember “The Colour of Money”, with Paul Newman and Tom Cruise.</p>" +
+                            "<p>And whilst there’s absolutely no hustling going on in SlotAmerica – our 8x Special has plenty of ball-breaking action! Double pay wilds, a whopping 8x wild on the center reel and - to top it off - a wild joker instant re-spin that will hopefully have you on a roll in no time!</p>" +
+                            "<p>Happy playing!</p>\n" +
+                            "<p><b>Sam and Diane</b></p>\n" +
+                            "<p>Your SlotAmerica Casino Managers</p>\n" +
+                            "<table width=\"100%\" border=\"0\"><tr>" +
+                            "<td width=\"50%\"><a href=\""+ UpgradeLink +"\"><img src=\"https://"+imageURL+"icon_appleStore.png\" width=200px></a></td>" +
+                            "<td width=\"50%\"><a href=\""+ UpgradeLink +"\"><img src=\"https://"+imageURL+"icon_googlePlay.png\" width=200px></a></td>" +
+                            "</tr></table>\n",
+
+
+
+                    "Clockwork released on SlotAmerica mobile!" +
+                            "Rack’ em up! SlotAmerica’s new release is 8x Special, inspired in style by the wonderful world of Pool. We fondly remember “The Colour of Money”, with Paul Newman and Tom Cruise." +
+                            "And whilst there’s absolutely no hustling going on in SlotAmerica – our 8x Special has plenty of ball-breaking action! Double pay wilds, a whopping 8x wild on the center reel and - to top it off - a wild joker instant re-spin that will hopefully have you on a roll in no time!\n"
+                            );
+
+
 
         throw new RuntimeException("No email defined for game " + game);
 
@@ -203,7 +294,7 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         return isTooEarly(executionTime, overrideTime);
 

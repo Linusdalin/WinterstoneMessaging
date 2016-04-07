@@ -199,9 +199,9 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     protected String isTooEarly(Timestamp executionTime, boolean overrideTime) {
 
-        if(executionTime.getHours() < 14)
+        if(executionTime.getHours() < 13)
             if(!overrideTime)
-                return "No point in sending messages before 14:00";
+                return "No point in sending messages before 13:00";
             else{
 
                 //System.out.println("        (Dry run ignoring too early restriction for campaign "+ getName()+")");
@@ -212,13 +212,48 @@ public abstract class AbstractCampaign implements CampaignInterface{
         return null;
     }
 
+    protected String isTooEarlyForUser(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
+
+        if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.GENERAL) != ReceptivityProfile.DAY &&
+                executionTime.getHours() < 12 ){
+
+            // This is a morning player. Send message in the morning
+            return null;
 
 
-    protected String isSpecificDay(Timestamp executionTime, boolean overrideTime, String dayOfWeek) {
+        }
+
+
+        if(executionTime.getHours() < 13)
+            if(!overrideTime)
+                return "No point in sending messages before 13:00";
+            else{
+
+                //System.out.println("        (Dry run ignoring too early restriction for campaign "+ getName()+")");
+                return null;
+
+            }
+
+
+        if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.GENERAL) == ReceptivityProfile.DAY &&
+                executionTime.getHours() > 14 && !overrideTime){
+
+            return "Not sending to morning players in the evening";
+
+        }
+
+        return null;
+    }
+
+
+    protected String isSpecificDay(Timestamp executionTime, boolean overrideTime, String acceptedDays) {
+
+        if(acceptedDays == null)
+            return null;
 
         String day = (new SimpleDateFormat("EEEE")).format(executionTime.getTime()); // "Tuesday"
 
-        if(day.equals(dayOfWeek))
+        if(acceptedDays.indexOf(day) >= 0)
             return null;
 
         if(overrideTime){
@@ -226,7 +261,7 @@ public abstract class AbstractCampaign implements CampaignInterface{
             return null;
         }
 
-        return "Only applicable on " + dayOfWeek + " today is " + day;
+        return "Only applicable on " + acceptedDays + ". today is " + day;
 
 
     }
@@ -341,6 +376,21 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     }
 
+    public static boolean randomize2(User user, int expected) {
+
+        if((user.facebookId.endsWith("0") || user.facebookId.endsWith("1")  || user.facebookId.endsWith("2")||
+                user.facebookId.endsWith("3")|| user.facebookId.endsWith("4") )
+                && expected == 0)
+            return true;
+
+        if((user.facebookId.endsWith("5") || user.facebookId.endsWith("6")  || user.facebookId.endsWith("7")||
+                user.facebookId.endsWith("8")|| user.facebookId.endsWith("9") )
+                && expected == 0)
+            return true;
+
+        return false;
+
+    }
 
     /**************************************************************************
      *
@@ -421,6 +471,36 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     protected String createPromoCode(int messageId) {
         return name.replaceAll(" ", "") + "-" + messageId;
+    }
+
+
+    protected int tagMessageIdTimeOfDay(int messageId, Timestamp executionTime) {
+
+        if(messageId >= 50)               // Only apply one tag
+            return messageId;
+
+        if(executionTime.getHours() < 14)
+            messageId += 80;                      // Use 80-series for morning messages
+        return messageId;
+    }
+
+    /*********************************************************************
+     *
+     *          This works on the db timezone, so it indicates players registered in the morning US time
+     *
+     *          It is used to guess that a player is a morning player before we have any data.
+     *          (e.g. the GettingStarted message)
+     *
+     * @param user    - the user
+     * @return        - morning player or not
+     */
+
+    protected boolean registeredInTheMorning(User user) {
+
+        int hour = user.created.getHours();
+
+        return (hour > 10 && hour < 18);
+
     }
 
 }

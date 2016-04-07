@@ -6,6 +6,7 @@ import output.DeliveryException;
 import output.PushHandler;
 import remoteData.dataObjects.User;
 import rewards.Reward;
+import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
@@ -51,8 +52,8 @@ public class PushTest {
 
             PushHandler handler = new PushHandler()
                     .withMessage("Come back and play again!")
-                    .withReward(stageRewardCoin.getCode())
-                    .withGame("royal_colors")
+                    .withReward(RewardRepository.M_ClockworkPaying.getCode())
+                    .withGame("clockwork")
                     .toRecipient(linus.facebookId);
 
 
@@ -81,8 +82,8 @@ public class PushTest {
         try{
 
             PushHandler handler = new PushHandler()
-                    .withMessage("Play again test!")
-                    .withReward(stageRewardSpin2.getCode())
+                    .withMessage("Get freespins!")
+                    .withReward("42a572e1-ecad-492d-8e3b-9d479217eb5e")
                     .withGame("os5xq")
                     .withAlternateService(StagePushService)
                     .toRecipient(stageLinus.facebookId);

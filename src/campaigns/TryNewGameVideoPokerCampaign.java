@@ -8,8 +8,6 @@ import email.NotificationEmail;
 import recommendation.GameRecommender;
 import remoteData.dataObjects.User;
 import response.ResponseStat;
-import rewards.Reward;
-import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
@@ -27,16 +25,13 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
     private static final String GameName = "Jacks or Better";
     private static final String Name = "TryNewGame"+Game;
     private static final int CoolDown_Days = 9999;            // Just once per game
-    private int[] MessageIds = {1, 2, 3,
-                                20
-    };
 
-    private static final int DailyCap = 1000;            // Just once per game
+    private static final int DailyCap = 2000;            // Just once per game
 
 
     // Trigger specific config data
-    private static final int Min_Sessions       =  40;
-    private static final int Min_Inactivity1    =   4;                          // Active players
+    private static final int Min_Sessions       =  10;
+    private static final int Min_Inactivity1    =   2;                          // Active players
     private static final int Min_Inactivity2    =  15;                         // Lapsing players
     private static final int Min_Inactivity3    =  50;                         // Lapsed players
     private static final int Max_Inactivity     = 150;
@@ -50,7 +45,6 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
         super(Name, priority, active);
         this.day = day;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -186,7 +180,7 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         String specificWeekDay = isSpecificDay(executionTime, false, day);
 
@@ -194,22 +188,8 @@ public class TryNewGameVideoPokerCampaign extends AbstractCampaign implements Ca
             return specificWeekDay;
 
 
-        return isTooEarly(executionTime, overrideTime);
+        return isTooEarlyForUser(playerInfo, executionTime, overrideTime);
 
-    }
-
-    protected Reward decideReward(User user) {
-
-        if(isHighSpender(user))
-            return RewardRepository.OS2345High;
-
-        if(isPaying(user))
-            return RewardRepository.OS2345Paying;
-
-        if(isFrequent(user))
-            return RewardRepository.OS2345Frequent;
-
-        return RewardRepository.OS2345Rest;
     }
 
 

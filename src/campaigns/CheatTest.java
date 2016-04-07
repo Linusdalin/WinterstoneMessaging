@@ -127,7 +127,7 @@ public class CheatTest extends AbstractCampaign implements CampaignInterface {
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         return null;
 

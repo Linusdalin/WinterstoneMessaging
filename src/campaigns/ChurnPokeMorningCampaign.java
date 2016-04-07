@@ -106,7 +106,7 @@ public class ChurnPokeMorningCampaign extends AbstractCampaign implements Campai
 
             // Adding a time of day separation test
 
-            if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.SPECIFIC) == ReceptivityProfile.DAY){
+            if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.GENERAL) == ReceptivityProfile.DAY){
 
                 if(randomize4(user, 0)|| randomize4(user, 1)){
 
@@ -114,23 +114,23 @@ public class ChurnPokeMorningCampaign extends AbstractCampaign implements Campai
 
                     System.out.println("    -- Campaign " + Name + " firing. Morning players in the morning" );
                     return new NotificationAction("Hello "+ user.name+", you now have new free coins to collect! Click here to claim it NOW!",
-                            user, executionTime, getPriority(), getTag(),  Name, 95, getState(), responseFactor);
+                            user, executionTime, getPriority(), getTag(),  Name, 85, getState(), responseFactor);
                 }
             }
-            else{
 
-                // Other players
+
+            if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.GENERAL) == ReceptivityProfile.EVENING){
 
                 if(randomize4(user, 0)|| randomize4(user, 1)){
 
-                    // Other players in the morning
+                    // Day players in the morning
 
-                    System.out.println("    -- Campaign " + Name + " firing. Other players in the morning" );
+                    System.out.println("    -- Campaign " + Name + " firing. Evening players in the morning" );
                     return new NotificationAction("Hello "+ user.name+", you now have new free coins to collect! Click here to claim it NOW!",
-                            user, executionTime, getPriority(), getTag(),  Name, 96, getState(), responseFactor);
+                            user, executionTime, getPriority(), getTag(),  Name, 86, getState(), responseFactor);
                 }
-
             }
+
         }
 
         System.out.println("    -- Campaign " + Name + " not firing. Not three day churn warning (last:" + lastSession.toString() );
@@ -273,7 +273,7 @@ public class ChurnPokeMorningCampaign extends AbstractCampaign implements Campai
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         return isTooLate(executionTime, overrideTime);
 

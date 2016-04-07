@@ -28,18 +28,15 @@ public class TryNewGameAbsoluteSevenCampaign extends AbstractCampaign implements
     private static final String GameName = "Absolute Sevens";
     private static final String Name = "TryNewGame"+Game;
     private static final int CoolDown_Days = 9999;            // Just once per game
-    private int[] MessageIds = {1, 2, 3,
-                                20
-    };
 
-    private static final int DailyCap = 500;            // Just once per game
+    private static final int DailyCap = 2000;
 
     private int count = 0;
 
 
     // Trigger specific config data
-    private static final int Min_Sessions = 40;
-    private static final int Min_Inactivity1 = 4;                          // Active players
+    private static final int Min_Sessions = 20;
+    private static final int Min_Inactivity1 = 3;                          // Active players
     private static final int Min_Inactivity2 = 15;                         // Lapsing players
     private static final int Min_Inactivity3 = 50;                         // Lapsed players
     private static final int Max_Inactivity = 150;
@@ -50,7 +47,6 @@ public class TryNewGameAbsoluteSevenCampaign extends AbstractCampaign implements
         super(Name, priority, active);
         this.dayRestriction = dayRestriction;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -147,6 +143,9 @@ public class TryNewGameAbsoluteSevenCampaign extends AbstractCampaign implements
             messageId = 3;
         }
 
+        messageId = tagMessageIdTimeOfDay(messageId, executionTime);
+
+
         System.out.println("    -- Sending freespin offer for game " + Game + "\n" );
         count++;
         return new NotificationAction("We have added " + reward.getCoins() + " free spins for you in our favourite game " + GameName + ". click here to claim and try it out for free!",
@@ -177,7 +176,7 @@ public class TryNewGameAbsoluteSevenCampaign extends AbstractCampaign implements
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         String specificWeekDay = isSpecificDay(executionTime, false, dayRestriction);
 
@@ -185,7 +184,7 @@ public class TryNewGameAbsoluteSevenCampaign extends AbstractCampaign implements
             return specificWeekDay;
 
 
-        return isTooEarly(executionTime, overrideTime);
+        return isTooEarlyForUser(playerInfo, executionTime, overrideTime);
 
     }
 

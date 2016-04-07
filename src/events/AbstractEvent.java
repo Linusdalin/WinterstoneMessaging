@@ -11,11 +11,16 @@ import java.sql.Timestamp;
 
 public abstract class AbstractEvent implements EventInterface {
 
-    private Timestamp expiry;
 
-    protected void setExpiry(String expiry) {
+    private String name;
+    private final String expiry;
+    private final String id;
 
-        this.expiry = Timestamp.valueOf(expiry);
+    public AbstractEvent(String name, String code, String expiry) {
+
+        this.name = name;
+        this.expiry = expiry;
+        this.id = code;
     }
 
 
@@ -25,6 +30,14 @@ public abstract class AbstractEvent implements EventInterface {
 
         return false;
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getId() {
+        return id;
     }
 
 }

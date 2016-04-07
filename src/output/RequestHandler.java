@@ -59,6 +59,7 @@ public class RequestHandler {
                 System.out.println("Setting basic auth for " + user);
                 con.setRequestProperty("Authorization", "Basic " + getBasicAuthenticationEncoding());
 
+
             }
 
 
@@ -87,13 +88,33 @@ public class RequestHandler {
         }
     }
 
-    public String executePost(String urlParameters) throws DeliveryException {
+    public String executePost(String urlParameters, String contentType) throws DeliveryException {
 
-        System.out.println("Trying to POST: " + targetURL + "with "+ urlParameters);
-        return execute(targetURL, urlParameters, "POST");
+        System.out.println("Trying to POST: " + targetURL + " with "+ urlParameters);
+        return execute(targetURL, urlParameters, "POST", contentType);
 
     }
 
+    public String executePost(String urlParameters) throws DeliveryException {
+
+        System.out.println("Trying to POST: " + targetURL + " with "+ urlParameters);
+        return execute(targetURL, urlParameters, "POST", null);
+
+    }
+
+    public String executePut(String urlParameters, String contentType) throws DeliveryException {
+
+        System.out.println("Trying to PUT: " + targetURL + " with "+ urlParameters);
+        return execute(targetURL, urlParameters, "PUT", contentType);
+
+    }
+
+    public String executePut(String urlParameters) throws DeliveryException {
+
+        System.out.println("Trying to PUT: " + targetURL + " with "+ urlParameters);
+        return execute(targetURL, urlParameters, "PUT", null);
+
+    }
 
     /*************************************************************
      *
@@ -117,7 +138,7 @@ public class RequestHandler {
      * @return          - last line back
      */
 
-    public String execute(String targetURL, String urlParameters, String method) throws DeliveryException {
+    public String execute(String targetURL, String urlParameters, String method, String contentType) throws DeliveryException {
 
         URL url;
         HttpURLConnection connection = null;
@@ -129,7 +150,7 @@ public class RequestHandler {
             connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod(method);
 
-            if(method.equals("POST")){
+            if(method.equals("POST") || method.equals("PUT")){
 
                 connection.setRequestProperty("Content-Type",
                         "application/x-www-form-urlencoded");
@@ -137,6 +158,9 @@ public class RequestHandler {
                 connection.setRequestProperty("Content-Length", "" +
                         Integer.toString(urlParameters.getBytes().length));
                 connection.setRequestProperty("Content-Language", "en-US");
+
+                if(contentType != null)
+                    connection.setRequestProperty("Content-Type", contentType);
 
             }
 
@@ -171,7 +195,7 @@ public class RequestHandler {
 
             if(httpCode != 200){
 
-                System.out.println("Got: " + httpCode);
+                System.out.println("Got error code: " + httpCode);
                 throw new DeliveryException(httpCode);
             }
 

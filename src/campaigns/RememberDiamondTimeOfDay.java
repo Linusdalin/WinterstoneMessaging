@@ -114,7 +114,7 @@ public class RememberDiamondTimeOfDay extends AbstractCampaign implements Campai
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         if(true || executionTime.getHours() > 10 || executionTime.getHours() < 6)
                 return "Only for testing in the morning";

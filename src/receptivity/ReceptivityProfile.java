@@ -322,6 +322,7 @@ public class ReceptivityProfile {
 
         }
 
+
         double factor;
 
         // The factor will define how big the significant day is compared to the average
@@ -329,14 +330,14 @@ public class ReceptivityProfile {
         if(significanceLevel == SignificanceLevel.GENERAL)
             factor = 1.2;
         else
-            factor = 1.5;
+            factor = 1.4;
 
         // Now check if the day with the most hits is significant
-        // We use a simple formula saying that the number of sessions should be twice the average
+        // We use a simple formula saying that the number of sessions should be X times the average
 
         int threshold = (int)((factor * (totalSessions)) / 3);
 
-        if(bestTimeSessions > threshold){
+        if(threshold >= 0.8 && bestTimeSessions > threshold){
 
             return bestTime;
         }

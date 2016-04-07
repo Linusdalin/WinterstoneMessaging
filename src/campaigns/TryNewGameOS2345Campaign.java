@@ -28,14 +28,11 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
     private static final String GameName = "Old School 2x3x4x5x";
     private static final String Name = "TryNewGame"+Game;
     private static final int CoolDown_Days = 9999;            // Just once per game
-    private int[] MessageIds = {1, 2, 3,
-                                20
-    };
 
 
     // Trigger specific config data
-    private static final int Min_Sessions    =  40;
-    private static final int Min_Inactivity1 =   4;                          // Active players
+    private static final int Min_Sessions    =  20;
+    private static final int Min_Inactivity1 =   3;                          // Active players
     private static final int Min_Inactivity2 =  15;                         // Lapsing players
     private static final int Min_Inactivity3 =  50;                         // Lapsed players
     private static final int Max_Inactivity  = 150;
@@ -46,7 +43,6 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
         super(Name, priority, active);
         this.day = day;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -136,6 +132,9 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
             messageId = 3;
         }
 
+        messageId = tagMessageIdTimeOfDay(messageId, executionTime);
+
+
         System.out.println("    -- Sending freespin offer for game " + Game + "\n" );
         return new NotificationAction("We have added " + reward.getCoins() + " free spins for you in our favourite game " + GameName + ". click here to claim and try it out for free!",
                 user, executionTime, getPriority(), getTag(),  Name, messageId, getState(), responseFactor)
@@ -150,7 +149,7 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
 
         return new NotificationEmail("We have a recommendation for you", "<p>Don't miss out one of the most liked games at SlotAmerica. It is the original Old School game 2x3x4x5x, with multiple bonuses.  " +
                 "We really think you will like it. We have added "+ reward.getCoins()+" free spins for you to try it out!</p>" +
-                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+Game+"&promocode="+ promoCode+"&reward="+reward.getCode() + "\"> to claim your spins</a></p>",
+                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+Game+"&promoCode="+ promoCode+"&reward="+reward.getCode() + "\"> to claim your spins</a></p>",
                 "Hello "+ user.name+" Don't miss out the Old School 2x3x4x5x game we released here at Slot America. We think you will like it...");
     }
 
@@ -165,7 +164,7 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         String specificWeekDay = isSpecificDay(executionTime, false, day);
 
@@ -173,7 +172,7 @@ public class TryNewGameOS2345Campaign extends AbstractCampaign implements Campai
             return specificWeekDay;
 
 
-        return isTooEarly(executionTime, overrideTime);
+        return isTooEarlyForUser(playerInfo, executionTime, overrideTime);
 
     }
 

@@ -21,50 +21,75 @@ public class CampaignRepository {
 
     // Static list of active campaigns
 
+
+    public static final List<CampaignInterface> activeCampaignsT = new ArrayList<CampaignInterface>(){{
+
+            add(new ConversionOfferCampaign      ( 80, CampaignState.ACTIVE, false ));
+
+    }};
+
+
     public static final List<CampaignInterface> activeCampaigns = new ArrayList<CampaignInterface>(){{
 
+        // Morning messages
 
         add(new RememberDiamondMorningCampaign ( 70, CampaignState.ACTIVE));
-        add(new ChurnPokeMorningCampaign       ( 70, CampaignState.REDUCED));
+        add(new ChurnPokeMorningCampaign       ( 70, CampaignState.ACTIVE));
+        add(new GettingStartedMorningCampaign  ( 70, CampaignState.ACTIVE));
 
 
-        add(new GettingStartedCampaign      ( 80, CampaignState.REDUCED ));
-        //add(new BadBeatCampaign             ( 95, CampaignState.ACTIVE));
+        add(new GettingStartedCampaign      ( 80, CampaignState.ACTIVE ));
+        //add(new ConversionOfferCampaign      ( 101, CampaignState.TEST_MODE ));
+
+
+        add(new BadBeatCampaign             ( 95, CampaignState.ACTIVE));
         add(new RememberDiamondCampaign     ( 70, CampaignState.ACTIVE));
-        add(new ChurnPokeCampaign           ( 70, CampaignState.REDUCED));
+        add(new ChurnPokeCampaign           ( 70, CampaignState.ACTIVE));
         add(new MobilePokeNotification      ( 70, CampaignState.ACTIVE));
-        //add(new CoinsLeftCampaign           ( 60, CampaignState.ACTIVE));
+        add(new AnniversaryCampaign         ( 99, CampaignState.ACTIVE));
+        add(new CoinsLeftCampaign           ( 60, CampaignState.ACTIVE));
 
         //add(new SeventeenEmailCampaign      ( 59, CampaignState.ACTIVE, RewardRepository.loyaltyMystery2));
         //add(new SeventeenCampaign           ( 59, CampaignState.ACTIVE, RewardRepository.loyaltyMystery1));
 
 
-        //add(new LevelUpCampaign             ( 75, CampaignState.ACTIVE ));
+        add(new LevelUpCampaign             ( 75, CampaignState.ACTIVE ));
         add(new ActivationPokeCampaign      ( 55, CampaignState.ACTIVE));
         //add(new ActivationFreeCoinCampaign  ( 62, CampaignState.ACTIVE));
+
 
         // Weekend and game release. (This is day-restricted (Thu, Fri, Sat, Sun)
         //
 
-        add(new GameNotificationWeekendAB  (95, CampaignState.REDUCED, "president", "Show who the real boss is! Play the game and rule the reels. 10 free spins to try our new game President.", RewardRepository.president));
-        //add(new GameNotification (93, CampaignState.ACTIVE, "president", "Hail to the Chief! It is presidents day. Click here for the free spins",null, RewardRepository.president));
+        add(new GameNotificationWeekendAB  (95, CampaignState.ACTIVE, "cocktail_cherries", "A new machine with the 'real' mechanical feel. get 12 free spins for Cocktail Cherries here!", RewardRepository.cocktail));
 
 
         // Monday is the day for sending reward reminders and to get players to try new games. Adding more campaigns for newer games
         // Mystery Monday should be connected with a app post
         // All of these are day restricted
 
-        //add(new TryNewGameOS2345Campaign        ( 70, CampaignState.ACTIVE, "måndag"));
-        //add(new TryNewGameOS6XCampaign          ( 70, CampaignState.ACTIVE, "tisdag"));
-        //add(new TryNewGameClockworkCampaign     ( 70, CampaignState.ACTIVE, "måndag"));
-        //add(new TryNewGameSonicCampaign         ( 68, CampaignState.ACTIVE, "måndag"));
-        //add(new TryNewGameAbsoluteSevenCampaign ( 71, CampaignState.ACTIVE, "måndag"));
-        //add(new TryNewGameVideoPokerCampaign    ( 70, CampaignState.ACTIVE, "måndag"));
 
-        //add(new TryNewGameMobileOS6XCampaign    ( 70, CampaignState.ACTIVE, "måndag"));
 
-        //add(new MysteryMondayCampaign           ( 75, CampaignState.ACTIVE, RewardRepository.mysteryMonday2));
-        //add(new RewardReminderCampaign          ( 94, CampaignState.ACTIVE, RewardRepository.eightX8, "eight_times_pay", "måndag", "Your Eight times pay freespins still awaits you. Click here to claim"));
+        //add(new MysteryMondayCampaign           ( 75, CampaignState.ACTIVE, RewardRepository.mysteryMonday5, "måndag"));
+        //add(new MysteryMondayMobileCampaign     ( 75, CampaignState.ACTIVE, RewardRepository.mysteryMonday5, "måndag"));
+
+        //add(new RewardReminderCampaign          ( 93, CampaignState.ACTIVE, RewardRepository.president, "president", "måndag", "Your President freespins still awaits you. Click here to claim"));
+        //add(new RewardReminderCampaign          ( 95, CampaignState.ACTIVE, RewardRepository.eruption, "eruption", "måndag", "Your Eruption freespins still awaits you. Click here to claim"));
+
+
+
+        add(new TryNewGameOS2345Campaign        ( 70, CampaignState.ACTIVE, "tisdag"));
+        add(new TryNewGameCrystalCampaign       ( 68, CampaignState.ACTIVE, "tisdag"));
+        add(new TryNewGameOS6XCampaign          ( 70, CampaignState.ACTIVE, "tisdag"));
+        add(new TryNewGameClockworkCampaign     ( 71, CampaignState.ACTIVE, "tisdag"));
+        //add(new TryNewGameSonicCampaign         ( 68, CampaignState.ACTIVE, "tisdag"));
+        //add(new TryNewGameAbsoluteSevenCampaign ( 71, CampaignState.ACTIVE, "tisdag"));         // Stop by Mar 31
+        add(new TryNewGameVideoPokerCampaign    ( 67, CampaignState.ACTIVE, "tisdag"));
+
+        add(new TryNewGameMobileOS6XCampaign    ( 70, CampaignState.ACTIVE, "tisdag"));
+        add(new TryNewGameMobileOS5XQCampaign   ( 70, CampaignState.ACTIVE, "tisdag"));
+        add(new TryNewGameMobileClockworkCampaign( 69, CampaignState.ACTIVE, "tisdag"));
+
 
 
         // Tuesday and Wednesday level up
@@ -72,17 +97,19 @@ public class CampaignRepository {
         //add(new LevelUpTuesday              ( 70, CampaignState.ACTIVE ));
         //add(new LevelUpTuesdayReward        ( 101, CampaignState.ACTIVE ));
 
-        //Wednesday Happy hour
 
-        //add(new HappyHourCampaign           ( 95, CampaignState.ACTIVE, 100));
-        //add(new ValentinesCampaign            ( 94, CampaignState.ACTIVE));
-        add(new ValentinesThankyou            ( 101, CampaignState.ACTIVE));
+        //Happy hour and sale
+
+        //add(new SaleEventCampaign( 95, CampaignState.ACTIVE, "Our St. Patrick’s Day Sale is on. Grab your own pot of gold in SlotAmerica. Sale ends Friday night, so don’t wait!"));
+
+
+        // Loyalty campaigns
 
         add(new FirstPaymentCampaign    ( 100, CampaignState.ACTIVE));
 
         // Mobile
 
-        add(new MobileGameNotification( 93, CampaignState.ACTIVE, "golden_dollar", "Try Golden Dollar!", null));
+        //add(new MobileGameNotification( 93, CampaignState.ACTIVE, "eight_times_pay", "New Eight Times Pay Special on mobile", null));
         add(new MobileCrossPromotionCampaign( 80, CampaignState.ACTIVE));
         add(new MobileConversionWelcomeCampaign( 99, CampaignState.ACTIVE));
 
@@ -90,7 +117,7 @@ public class CampaignRepository {
         // Reactivations and hail marys
         // TODO: Make these on the right day to increase click-through. Mon - Wed and rest on Thursday
 
-        //add(new ReactivationCampaign        ( 60, CampaignState.ACTIVE));
+        add(new ReactivationCampaign        ( 60, CampaignState.ACTIVE, "måndag, tisdag, onsdag"));
         add(new ReactivationMobileCampaign  ( 70, CampaignState.ACTIVE));    // More like activation of registered lost players
         add(new ReactivationEmailCampaign   ( 60, CampaignState.ACTIVE));
 
@@ -106,6 +133,10 @@ public class CampaignRepository {
         //add(new NewYearGiftCampaign( 90, CampaignState.ACTIVE));
         //add(new DumyTest( 70, CampaignState.ACTIVE));
         //add(new GameActivationCampaign      ( 65, CampaignState.ACTIVE));
+        //add(new SuperTuesdayCampaign ( 70, CampaignState.ACTIVE));
+        //add(new ValentinesCampaign            ( 94, CampaignState.ACTIVE));
+        //add(new ValentinesThankyou            ( 101, CampaignState.ACTIV E));
+        //add(new BlackFridayCampaign       ( 95, CampaignState.ACTIVE, 200));
 
     }};
 

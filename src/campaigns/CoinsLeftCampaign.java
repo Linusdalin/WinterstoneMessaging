@@ -145,7 +145,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
     private EmailInterface coinLeftEmail(User user, String promoCode) {
 
         return new NotificationEmail("there is more fun awaiting you", "<p>Did you know you have <b>"+ user.balance+"</b> coins left on your account? It would be a shame to let them go to waste, right?</p>" +
-                "<p> There are some new and fabulous games you can try out with it! Like <a href=\"https://apps.facebook.com/slotAmerica/?game=clockworks&promocode="+ promoCode +"\">Clockwork</a>. Welcome back to test it out :-) </p>",
+                "<p> There are some new and fabulous games you can try out with it! Like <a href=\"https://apps.facebook.com/slotAmerica/?game=clockworks&promoCode="+ promoCode +"\">Clockwork</a>. Welcome back to test it out :-) </p>",
                 "You have "+ user.balance+ " coins left on your account.There are some fabulous new games you can try out with it.");
     }
 
@@ -158,7 +158,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         return isTooEarly(executionTime, overrideTime);
 

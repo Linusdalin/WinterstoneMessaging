@@ -26,8 +26,6 @@ public class ReactivationEmailCampaign extends AbstractMobileCampaign implements
     // Campaign config data
     private static final String Name = "ReactivationEmail";
     private static final int CoolDown_Days = 365000;     // Only once per player
-    private static final int[] MessageIds = { 1, 2, 3, 4 };
-
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT   = 200;      // Three months old
@@ -41,7 +39,6 @@ public class ReactivationEmailCampaign extends AbstractMobileCampaign implements
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -164,7 +161,7 @@ public class ReactivationEmailCampaign extends AbstractMobileCampaign implements
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         return isTooEarly(executionTime, overrideTime);
 

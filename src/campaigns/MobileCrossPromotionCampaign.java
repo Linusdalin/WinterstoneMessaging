@@ -208,7 +208,7 @@ public class MobileCrossPromotionCampaign extends AbstractMobileCampaign impleme
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         return isTooEarly(executionTime, overrideTime);
 

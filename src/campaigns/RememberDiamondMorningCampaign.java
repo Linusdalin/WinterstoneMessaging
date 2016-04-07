@@ -130,7 +130,7 @@ public class RememberDiamondMorningCampaign extends AbstractCampaign implements 
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
 
         String timeCheck = isTooLate(executionTime, overrideTime);

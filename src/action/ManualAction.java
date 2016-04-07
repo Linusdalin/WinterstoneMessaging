@@ -71,7 +71,7 @@ public class ManualAction extends Action implements ActionInterface{
         }
 
         System.out.println("--------------------------------------------------------");
-        System.out.println("! Perform " + type.name() + " for player " + actionParameter.facebookId);
+        System.out.println(" - Perform " + type.name() + " for player " + actionParameter.facebookId);
 
         if(!dryRun){
 

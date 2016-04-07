@@ -17,4 +17,5 @@ public enum ActionType {
     EMAIL,                      // Sending an email
     IN_GAME,                    // TODO: Future: Send an ingame message
     COIN_ACTION,                // Give the user some coins
+    TRIGGER_EVENT               // Trigger a personalized event for the player
 }

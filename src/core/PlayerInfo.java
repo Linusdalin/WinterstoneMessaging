@@ -7,6 +7,7 @@ import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.Payment;
 import remoteData.dataObjects.User;
 import rewards.Reward;
+import transfer.PaymentAnalyser;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -31,9 +32,13 @@ public class PlayerInfo {
     private Timestamp lastSession = null;
     private Timestamp lastMobile = null;
 
+
+    private int paymentBehavior = PaymentAnalyser.UNDEFINED_BEHAVIOUR;
+
     private ReceptivityProfile receptivityProfile = null;
     private CachedUser cachedUser;
     private int levelUp = 0;
+    private Connection connection;
 
     private String claimedRewards = null;
 
@@ -50,6 +55,7 @@ public class PlayerInfo {
         if(receptivityProfile == null)
             receptivityProfile = dbCache.getReceptivityProfileForPlayer(user.facebookId);
 
+        this.connection = connection;
 
     }
 
@@ -286,4 +292,24 @@ public class PlayerInfo {
         return cachedUser.fallbackFromMobile();
 
     }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+
+
+    public int getPaymentBehavior(){
+
+        if(paymentBehavior == PaymentAnalyser.UNKNOWN_BEHAVIOUR){
+
+            PaymentAnalyser analyzer = new PaymentAnalyser();
+            paymentBehavior = analyzer.getBehaviorForPlayer(getUser().facebookId);
+
+        }
+
+        return paymentBehavior;
+
+    }
+
 }

@@ -2,6 +2,7 @@ package test;
 
 
 import campaigns.*;
+import email.EmailInterface;
 import email.NotificationEmail;
 import email.ReleaseEmail;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class EmailTest {
 
     );
 
-    private static final Payment payment = new Payment("627716024", 30, "", new Timestamp(2015, 1, 1, 1, 1, 1, 1));
+    private static final Payment payment = new Payment("627716024", 30, "", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 0, 0, 0);
 
 
     @Test
@@ -270,7 +271,7 @@ public class EmailTest {
             EmailHandler handler;
 
             handler = new EmailHandler()
-                    .withEmail(MobileGameNotification.gameEmail("os_crystal", user, "tag"))
+                    .withEmail(MobileGameNotification.gameEmail("eight_times_pay", user, "tag-1"))
                     .toRecipient(user.facebookId);
 
             success = handler.send();
@@ -319,9 +320,38 @@ public class EmailTest {
 
             boolean success;
             EmailHandler handler;
+            EmailInterface email = MobilePokeNotification.getMail7(user, "testTag-1");
+            email.addContentBoxes( user, 2 );
 
             handler = new EmailHandler()
-                    .withEmail(MobilePokeNotification.getMail7(user, "testTag-1"))
+                    .withEmail(email)
+                    .toRecipient(user.facebookId);
+
+            success = handler.send();
+
+            assertThat("Should work", success, is(true) );
+
+
+        }catch(DeliveryException e){
+
+            assertTrue(false);
+        }
+
+    }
+
+
+    @Test
+    public void rafMail(){
+
+        try{
+
+            boolean success;
+            EmailHandler handler;
+            EmailInterface email = RaFEmailCampaign.getEmail(user, 42);
+            //email.addContentBoxes( user, 2 );
+
+            handler = new EmailHandler()
+                    .withEmail(email)
                     .toRecipient(user.facebookId);
 
             success = handler.send();

@@ -1,6 +1,10 @@
 package email;
 
 import net.sf.json.JSONObject;
+import remoteData.dataObjects.User;
+
+import java.util.List;
+
 
 /***********************************************************************
  *
@@ -10,14 +14,14 @@ import net.sf.json.JSONObject;
 public abstract class AbstractEmail implements EmailInterface{
 
     private final String subject;
-    private final String body;
+    private StringBuffer body = new StringBuffer();
     private final String plainText;
     private String template;
 
     public AbstractEmail(String subject, String html, String plainText, String template){
 
         this.subject = subject;
-        this.body = html;
+        this.body.append(html);
         this.plainText = plainText;
         this.template = template;
     }
@@ -33,18 +37,50 @@ public abstract class AbstractEmail implements EmailInterface{
     }
 
 
+    /*********************************************************
+     *
+     *          Clean up and replace any remaining box marker
+     *
+     *
+     * @return
+     */
+
     @Override
     public JSONObject toJSON() {
 
         return new JSONObject()
                 .put("template", template)
                 .put("subject", subject.replaceAll("'", ""))
-                .put("body", body.replaceAll("'", ""))
+                .put("body", body.toString().replaceAll("'", ""))
                 .put("plainText", plainText.replaceAll("'", ""));
     }
 
+    /**************************************************************
+     *
+     *          Adding content boxes to the email depending on the user
+     *
+     * @param user      - user for which to add user specific content
+     * @param max       - max number of boxes to add
+     */
+
+
+    @Override
+    public void addContentBoxes(User user, int max) {
+
+        ContentBoxManager mgr = new ContentBoxManager(user);
+        List<String> contentBoxes = mgr.getBoxes( max );
+        StringBuffer boxedContent = new StringBuffer();
+
+        for (String box : contentBoxes) {
+
+            body.append( box );
+        }
+
+
+    }
+
     public String getBody() {
-        return body;
+        return body.toString();
     }
 
     public String getSubject() {

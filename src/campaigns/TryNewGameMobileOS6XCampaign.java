@@ -28,13 +28,11 @@ public class TryNewGameMobileOS6XCampaign extends AbstractCampaign implements Ca
     private static final String GameName = "Old School 6x";
     private static final String Name = "TryNewMobileGame"+Game;
     private static final int CoolDown_Days = 10;            // Just once per game
-    private int[] MessageIds = {
-    };
 
 
     // Trigger specific config data
-    private static final int Min_Sessions       =  20;
-    private static final int Min_Inactivity1    =   4;                          // Active players
+    private static final int Min_Sessions       =  10;
+    private static final int Min_Inactivity1    =   3;                          // Active players
     private static final int Min_Inactivity2    =  15;                         // Lapsing players
     private static final int Min_Inactivity3    =  50;                         // Lapsed players
     private static final int Max_Inactivity     = 150;
@@ -45,7 +43,6 @@ public class TryNewGameMobileOS6XCampaign extends AbstractCampaign implements Ca
         super(Name, priority, active);
         this.dayRestriction = dayRestriction;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -175,7 +172,7 @@ public class TryNewGameMobileOS6XCampaign extends AbstractCampaign implements Ca
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         String specificWeekDay = isSpecificDay(executionTime, false, dayRestriction);
 
@@ -183,7 +180,7 @@ public class TryNewGameMobileOS6XCampaign extends AbstractCampaign implements Ca
             return specificWeekDay;
 
 
-        return isTooEarly(executionTime, overrideTime);
+        return isTooEarlyForUser(playerInfo, executionTime, overrideTime);
 
     }
 

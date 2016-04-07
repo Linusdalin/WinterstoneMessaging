@@ -125,7 +125,7 @@ public class RememberDiamondCampaign extends AbstractCampaign implements Campaig
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         /*
         String specificWeekDay = isSpecificDay(executionTime, dryRun, "måndag");

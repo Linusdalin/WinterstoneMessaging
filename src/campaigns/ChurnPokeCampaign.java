@@ -101,77 +101,102 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
             if(playerInfo.getUsageProfile().hasTriedMobile()){
 
-                return new MobilePushAction("Hello, your daily bonus is waiting for you. Click to claim it NOW!",
-                        user, executionTime, getPriority(), getTag(),  Name, 301, getState(), responseFactor);
+                if(!playerInfo.fallbackFromMobile()){
+
+                    return new MobilePushAction("Hello, your daily bonus is waiting for you. Click to claim it NOW!",
+                            user, executionTime, getPriority(), getTag(),  Name, 301, getState(), responseFactor);
+                }
+                else{
+
+                    System.out.println("    -- Sending a churn warning poke mail" );
+                    return new EmailAction(churnPokeEmail(user, createPromoCode(201)), user, executionTime, getPriority(), getTag(), 207, getState(), responseFactor);
+
+                }
+
 
             }
 
             // Adding a time of day separation test
 
-            if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.SPECIFIC) == ReceptivityProfile.DAY){
+            if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.GENERAL) == ReceptivityProfile.DAY){
 
                 if(randomize4(user, 2)|| randomize4(user, 3)){
-
-                    // Morning players in the evening
 
                     System.out.println("    -- Campaign " + Name + " firing. Morning players in the evening" );
                     return new NotificationAction("Hello "+ user.name+", you now have new free coins to collect! Click here to claim it NOW!",
-                            user, executionTime, getPriority(), getTag(),  Name, 97, getState(), responseFactor);
+                            user, executionTime, getPriority(), getTag(),  Name, 87, getState(), responseFactor);
                 }
             }
-            else{
+            else if(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.GENERAL) == ReceptivityProfile.EVENING){
 
                 if(randomize4(user, 2)|| randomize4(user, 3)){
 
-                    // Other players in the evening
-
-                    System.out.println("    -- Campaign " + Name + " firing. Other players in the evening" );
+                    System.out.println("    -- Campaign " + Name + " firing. Evening players in the evening" );
                     return new NotificationAction("Hello "+ user.name+", you now have new free coins to collect! Click here to claim it NOW!",
-                            user, executionTime, getPriority(), getTag(),  Name, 98, getState(), responseFactor);
-
+                            user, executionTime, getPriority(), getTag(),  Name, 88, getState(), responseFactor);
                 }
             }
 
-            System.out.println("    -- No message sent" );
-            return null;
 
-        }
-        else if((idleDays == 5 || idleDays == 6)
-                && playerInfo.getUsageProfile().hasTriedMobile()){
+            // Other players (not part of the test)
 
-            System.out.println("    -- Sending a FIVE day churn warning poke on mobile" );
-            return new MobilePushAction("Hello, the games are hot and the bonus ready to pick!",
-                    user, executionTime, getPriority(), getTag(),  Name, 302, getState(), responseFactor);
+                System.out.println("    -- Campaign " + Name + " firing. Other players in the evening" );
+                return new NotificationAction("Hello "+ user.name+", you now have new free coins to collect! Click here to claim it NOW!",
+                        user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor);
 
-        }
-        else if((idleDays == 7 || idleDays == 8)
-                && playerInfo.getUsageProfile().hasTriedMobile()){
-
-            System.out.println("    -- Sending a SEVEN day churn warning poke on mobile" );
-            return new MobilePushAction("Hi, the luck is awaiting you at SlotAmerica. Come in and experience the thrill.!",
-                    user, executionTime, getPriority(), getTag(),  Name, 303, getState(), responseFactor);
-
-        }
-        else if(idleDays == 9 && !betterTomorrow(playerInfo, executionTime)){
-
-            if(state == CampaignState.REDUCED){
-
-                System.out.println("    -- Campaign " + Name + " not firing. Reduced mode remove low priority messages" );
-                return null;
 
             }
 
+            else if(idleDays == 5 || idleDays == 6){
 
-            System.out.println("    -- Sending a NINE day churn warning poke" );
-            return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
-                user, executionTime, getPriority(), getTag(),  Name,  4, getState(), responseFactor);
+                if(playerInfo.getUsageProfile().hasTriedMobile()){
 
-        }
-        else if(idleDays == 9 || idleDays == 10){
 
-            System.out.println("    -- Sending a NINE day churn warning poke" );
-            return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
-                    user, executionTime, getPriority(), getTag(),  Name,  7, getState(), responseFactor);
+                    System.out.println("    -- Sending a FIVE day churn warning poke on mobile" );
+                    return new MobilePushAction("Hello, the games are hot and the bonus ready to pick!",
+                            user, executionTime, getPriority(), getTag(),  Name, 302, getState(), responseFactor);
+
+                }
+
+                System.out.println("    -- Campaign " + Name + " firing. Other players in the evening" );
+                return new NotificationAction("Hello "+ user.name+", the games are hot and the bonus ready to pick!!",
+                        user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor);
+
+
+
+            }
+            else if((idleDays == 7 || idleDays == 8)
+                    && playerInfo.getUsageProfile().hasTriedMobile()){
+
+                System.out.println("    -- Sending a SEVEN day churn warning poke on mobile" );
+                return new MobilePushAction("Hi, the luck is awaiting you at SlotAmerica. Come in and experience the thrill.!",
+                        user, executionTime, getPriority(), getTag(),  Name, 303, getState(), responseFactor);
+
+            }
+            else if(idleDays == 9 && !betterTomorrow(playerInfo, executionTime)){
+
+                if(state == CampaignState.REDUCED){
+
+                    System.out.println("    -- Campaign " + Name + " not firing. Reduced mode remove low priority messages" );
+                    return null;
+
+                }
+
+
+                System.out.println("    -- Sending a NINE day churn warning poke" );
+                return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
+                    user, executionTime, getPriority(), getTag(),  Name,  4, getState(), responseFactor);
+
+            }
+            else if(idleDays == 9 || idleDays == 10){
+
+
+                System.out.println("    -- Sending a NINE day churn warning poke" );
+                return new NotificationAction("Hello, don't miss out the latest slot game release at SlotAmerica. Click here to check it out!",
+                        user, executionTime, getPriority(), getTag(),  Name,  7, getState(), responseFactor);
+
+
+
 
 
         }
@@ -356,7 +381,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         return isTooEarly(executionTime, overrideTime);
 

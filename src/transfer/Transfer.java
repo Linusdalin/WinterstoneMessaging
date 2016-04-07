@@ -1,14 +1,13 @@
 package transfer;
 
 import dbManager.ConnectionHandler;
-import remoteData.dataObjects.GameSession;
-import remoteData.dataObjects.GameSessionTable;
-import remoteData.dataObjects.Payment;
-import remoteData.dataObjects.PaymentTable;
+import dbManager.DatabaseException;
+import remoteData.dataObjects.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**************************************************************************
  *
@@ -105,8 +104,12 @@ public class Transfer {
 
 
             PaymentTable table = new PaymentTable(  );
-
+            PaymentAnalyser analyser = new PaymentAnalyser();
             Timestamp last = table.getLast(localConnection);
+
+            if(last == null){
+                last = Timestamp.valueOf("2014-01-01 00:00:00");
+            }
             System.out.println(" -- Last entry is: " + last.toString());
 
             table.loadRemote(last, MAX_RECORDS, remoteConnection);
@@ -117,9 +120,10 @@ public class Transfer {
 
             while(payment!= null){
 
-                //System.out.println("Got payment: " + payment.toString());
-                payment.store(localConnection);
+                analyser.updateForSize(payment, localConnection);
+                analyser.setUnknownBehaviour(payment, localConnection);
 
+                payment.store(localConnection);
                 payment = table.getNext();
                 count++;
 
@@ -129,13 +133,66 @@ public class Transfer {
 
             }
 
-            System.out.println(" -- A total of " + count + " payments transferred");
+            System.out.println(" -- A total of " + count + " payments transferred. Now anlaysing behavior of old payments.");
+            int updated = analyseBehaviour(localConnection);
+            System.out.println(" -- Analysed " + updated + " old payments.");
 
         }catch(Exception e){
 
             e.printStackTrace();
 
         }
+    }
+
+
+    /*****************************************************************************************'
+     *
+     *          For a first payment store it to match with the players campaigns
+     *
+     *
+     * @param payment       -   the payment
+     */
+
+
+    private void handleFirstPayment(Payment payment, User user) {
+
+
+
+        System.out.println(" !! First payment for player " + payment.facebookId + " but this is not implemented...");
+
+
+    }
+
+    /*****************************************************************
+     *
+     *          Check if the payment is the first for the player
+     *
+     *          If there are no existing payments it is the first
+     *
+     * @param payment     - the payment
+     * @return            - first or not
+     */
+
+    private boolean isFirstPayment(Payment payment, Connection connection) {
+
+
+        try {
+
+            PaymentTable table = new PaymentTable();
+            table.load(connection, "playerId = '" + payment.facebookId + "'");
+            Payment existingPayment = table.getNext();
+
+
+            return (existingPayment == null);
+
+
+        } catch (DatabaseException e) {
+
+            e.printStackTrace();
+            return false;
+        }
+
+
     }
 
 
@@ -186,6 +243,35 @@ public class Transfer {
         }
     }
 
+
+    /***********************************************************************
+     *
+     *          Analysing old payments to see if the behaviour changed
+     *
+     * @param connection
+     * @return
+     */
+
+
+    private int analyseBehaviour(Connection connection) {
+
+        PaymentTable table = new PaymentTable();
+        PaymentAnalyser analyser = new PaymentAnalyser();
+
+        List<Payment> unAnalysedPayments = table.getUnAnalysedPayments(connection);
+
+        System.out.println("Found " + unAnalysedPayments.size() + " payments with unknown behaviour");
+
+        for (Payment payment : unAnalysedPayments) {
+
+            payment.behavior = analyser.getBehaviour(payment, table, connection);
+            payment.ordinal  = analyser.getOrdinal(payment, connection);
+            payment.updateBehaviour(connection);
+        }
+
+        return unAnalysedPayments.size();
+
+    }
 
 
 }

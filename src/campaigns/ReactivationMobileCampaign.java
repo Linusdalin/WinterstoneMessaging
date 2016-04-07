@@ -1,9 +1,11 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.EmailAction;
 import action.GiveCoinAction;
 import action.MobilePushAction;
 import core.PlayerInfo;
+import email.NotificationEmail;
 import remoteData.dataObjects.User;
 import response.ResponseStat;
 
@@ -20,8 +22,6 @@ public class ReactivationMobileCampaign extends AbstractCampaign implements Camp
     // Campaign config data
     private static final String Name = "ReactivationMobile";
     private static final int CoolDown_Days = 11;                    // Every once in a while
-    private static final int[] MessageIds = { 31, 32, 33, 34 };
-
 
     // Trigger specific config data
     private static final int INACTIVITY_LIMIT_FREE      = 150;   // Max days inactivity to get message
@@ -38,7 +38,6 @@ public class ReactivationMobileCampaign extends AbstractCampaign implements Camp
 
         super(Name, priority, activation);
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -119,7 +118,15 @@ public class ReactivationMobileCampaign extends AbstractCampaign implements Camp
 
         }
 
+        /*
 
+        if(playerInfo.fallbackFromMobile()){
+
+            return getRandomEmail(user, executionTime, responseFactor);
+
+        }
+
+          */
 
         System.out.println("    -- Campaign " + Name + " firing." );
         count++;
@@ -174,6 +181,37 @@ public class ReactivationMobileCampaign extends AbstractCampaign implements Camp
     }
 
 
+
+    private ActionInterface getRandomEmail(User user, Timestamp executionTime, double responseFactor) {
+
+        int NO_ACTIONS = 1;
+
+        int action = (int)(Math.random() * NO_ACTIONS) + 1;
+        String promoCode;
+
+        switch(action){
+
+
+            case 1:
+                promoCode = createPromoCode(201);
+                return new EmailAction(
+
+                        new NotificationEmail("where did you go?", "<p>Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out!</p>" +
+                        "<p> Why don't you come in and use your free bonus to try them? Click <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+promoCode+"\">here</a> to test it out :-) </p>",
+
+                        "Hello "+ user.name+" Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out." +
+                        "Why don't you come in and use your free bonus to try them?"),
+
+                        user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
+
+            default:
+                return null;
+        }
+
+
+
+    }
+
     /*********************************************************************
      *
      *              Campaign timing restrictions
@@ -182,7 +220,7 @@ public class ReactivationMobileCampaign extends AbstractCampaign implements Camp
      * @return                  - messgage or null if ok.
      */
 
-    public String testFailCalendarRestriction(Timestamp executionTime, boolean overrideTime) {
+    public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
         return isTooEarly(executionTime, overrideTime);
 

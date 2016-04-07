@@ -31,6 +31,11 @@ public class RewardRepository {
     public static final Reward bonusBonanza10       = new Reward("Bonus Bonanza",   "0bcd4ea2-e2b2-4cd6-8661-3d965d9dc049", 10, true);    //250
     public static final Reward eightX8              = new Reward("Eight Times Pay", "9999cec8-d3d4-4686-941e-e706c121d4b3", 8, true);     //250
     public static final Reward president            = new Reward("President",       "5629e78e-f67f-43f5-a8f5-7b6e6df1ff12", 10, true);     //250
+    public static final Reward buffalo              = new Reward("Buffalo",         "584e9121-8c36-41fd-ac4d-466ceb10ac49", 10, true);     //250
+    public static final Reward eruption             = new Reward("Eruption",        "99ff10df-0bb5-44fd-829a-7ed75275c11e", 12, true);     //250
+    public static final Reward cocktail             = new Reward("Cocktail",        "e03730c0-da06-42de-99cc-df444cb837d9", 12, true);     //250
+    public static final Reward clubSeven            = new Reward("Club",            "c00c205f-5c18-4392-8fff-677ffa791e99", 12, true);     //250
+
 
     public static final Reward mobileTest           = new Reward("Mobile T",        "ce48dc8c-4bc3-4835-8e41-27510285f857", 7777, true);
     public static final Reward mobile1              = new Reward("Mobile 1",        "ac805f4b-630f-41a2-b73d-addd750b1c11", 5000, true);
@@ -65,36 +70,58 @@ public class RewardRepository {
     public static final Reward OS6XFrequent       = new Reward("OS6 Fequent",      "1c4896b9-5455-4b3c-8f86-f86b1217d722", 10, true);      //250
     public static final Reward OS6XRest           = new Reward("OS6 Rest",         "f6704811-14c7-4ef3-9a88-e27a324f104c", 10, true);      //100
 
+    public static final Reward CrystalHigh           = new Reward("Crystal High",         "fb6f0e8a-cd8a-4d66-b072-7e8455640ced", 25, true);      //500
+    public static final Reward CrystalPaying         = new Reward("Crystal Paying",       "ba25a0dd-5f31-4215-9578-2ff9a5084bea", 15, true);      //250
+    public static final Reward CrystalFrequent       = new Reward("Crystal Frequent",     "e7b6939a-b639-44d6-96d7-a3ccdd581f88", 10, true);      //250
+    public static final Reward CrystalRest           = new Reward("Crystal Rest",         "8009c208-b10f-41bd-af0b-0b42a4907370", 10, true);      //100
+
     public static final Reward M_OS6XHigh           = new Reward("O6S High",         "58ccaf1c-0cab-4461-b011-2aaee28c2cd1", 8000, true);
     public static final Reward M_OS6XPaying         = new Reward("OS6 Paying",       "fea7d7cc-8e32-4336-8b3b-70e35e720535", 6000, true);
-    public static final Reward M_OS6XFrequent       = new Reward("OS6 Fequent",      "3cc546c1-3576-436e-acc9-ebe53cb4ec89", 4000, true);
+    public static final Reward M_OS6XFrequent       = new Reward("OS6 Frequent",     "3cc546c1-3576-436e-acc9-ebe53cb4ec89", 4000, true);
     public static final Reward M_OS6XRest           = new Reward("OS6 Rest",         "3d980abf-f321-4335-89ab-26a396ee0bd5", 2000, true);
+
+    public static final Reward M_OS5XQHigh           = new Reward("Quintuple High",         "7e18de25-f4af-4756-bdd1-7022f544b621", 25, true);    //500
+    public static final Reward M_OS5XQPaying         = new Reward("Quintuple Paying",       "303f2eb3-61d8-45fa-9f3c-bc527e442108", 15, true);    //250
+    public static final Reward M_OS5XQFrequent       = new Reward("Quintuple Frequent",     "b73cc694-842b-4da6-ab0f-07fbea7cf02e", 10, true);    //250
+    public static final Reward M_OS5XQRest           = new Reward("Quintuple Rest",         "f748cc37-a017-4492-aefa-740d330b06d8", 10, true);    //100
+
+    public static final Reward M_ClockworkHigh       = new Reward("Clockwork High",         "f0426042-6e97-49bd-9d62-8d2fa6903ae4", 25, true);    //500
+    public static final Reward M_ClockworkPaying     = new Reward("Clockwork Paying",       "3120a504-9e91-451f-ad3b-4da623f4fb9b", 15, true);    //250
+    public static final Reward M_ClockworkFrequent   = new Reward("Clockwork Frequent",     "789fe39a-245a-4b85-b66d-b398ff700f91", 10, true);    //250
+    public static final Reward M_ClockworkRest       = new Reward("Clockwork Rest",         "cb5c9db4-a40f-4c9b-94c9-516e417f1d77", 10, true);    //100
 
     public static final Reward newYearPaying        = new Reward("NewYear1",        "0338c05d-066e-454a-87ad-fde52ece0d79",  5000, true);
     public static final Reward newYearFree          = new Reward("NewYear2",        "bc9d1bd9-08f6-48ab-b623-917c5593b4cd",  3000, true);
 
     public static final Reward mysteryMonday1       = new Reward("MysteryMonday1",        "a78e5d46-2fc8-4197-82d6-31968ae8834c",  2000, true);
     public static final Reward mysteryMonday2       = new Reward("MysteryMonday2",        "9088446c-7c8a-456c-9205-233e53046783",  3333, true);
+    public static final Reward mysteryMonday3       = new Reward("MysteryMonday3",        "253290cd-c307-4fe8-b190-17157f90ef14",  3333, true);
+    public static final Reward mysteryMonday4       = new Reward("MysteryMonday4",        "2a5a7938-2dba-4384-bdfd-5b8c9c23c1bf",  3333, true);
+    public static final Reward mysteryMonday5       = new Reward("MysteryMonday5",        "3b6b810d-02f3-486a-9707-b74cf63752be",  2345, true);
 
     public static final Reward loyaltyMystery1       = new Reward("LoyaltyMystery1",      "af8759d0-40a8-41e1-bd57-46b865c029af",  2000, true);
     public static final Reward loyaltyMystery2       = new Reward("LoyaltyMystery2",      "af8759d0-40a8-41e1-bd57-46b865c029af",  20, true);
 
     public static final Reward valentineCoins       = new Reward("Valentine",      "170d3ce3-c8c9-4b30-b795-011e31f6f319",  10000, true);
+    public static final Reward rafClockwork         = new Reward("RaFClockwork",   "609b8678-ef4c-42b3-99df-83b8a737f5a2",  20, true);         // 250
+
+    public static final Reward anniversaryPaying    = new Reward("Anniversary1",   "ceeef843-8038-447a-8530-662beb83526d",  30000, true);         // 30000
+    public static final Reward anniversaryFree      = new Reward("Anniversary2",   "ee1e120a-15b9-43d2-8159-4b7636925089",  10000, true);         // 10000
+
 
 
     /****************************
-     *
-     *          Create a reward
-     *
-     *
+    *
+    *          Create a reward
+    *
+    *
 
-     http://slot-america-magic-box.elasticbeanstalk.com/api/rewards/aad91e9a-2b30-4bbd-ac6c-034e78531799
+    http://slot-america-magic-box.elasticbeanstalk.com/api/rewards/aad91e9a-2b30-4bbd-ac6c-034e78531799
 
-     {"type":"COINS","value":5000,"userCategories":[1,2,3,4,5],"groups":[],"message":"Here are your 5,000 coins, celebrating May Day with 'Ten X Pay'. Good Luck!","expires":1431361720,"id":"aad91e9a-2b30-4bbd-ac6c-034e78531799"}
+    {"type":"COINS","value":5000,"userCategories":[1,2,3,4,5],"groups":[],"message":"Here are your 5,000 coins, celebrating May Day with 'Ten X Pay'. Good Luck!","expires":1431361720,"id":"aad91e9a-2b30-4bbd-ac6c-034e78531799"}
 
 
-     */
-
+    */
 
 
 }

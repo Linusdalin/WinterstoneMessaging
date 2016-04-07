@@ -46,14 +46,14 @@ public class LevelTest {
         LevelUpCampaign campaign = new LevelUpCampaign(100, CampaignState.ACTIVE);
         Timestamp executionTime = Timestamp.valueOf("2016-01-21 00:00:00");
 
-        String message = campaign.testFailCalendarRestriction(executionTime, true);
+        String message = campaign.testFailCalendarRestriction(null, executionTime, true);
         System.out.println("Got message: " + message);
 
         assertNotNull(message);
 
         executionTime = Timestamp.valueOf("2016-01-22 00:00:00");
 
-        message = campaign.testFailCalendarRestriction(executionTime, true);
+        message = campaign.testFailCalendarRestriction(null, executionTime, true);
         System.out.println("Got message: " + message);
 
         assertNotNull(message);
@@ -61,7 +61,7 @@ public class LevelTest {
 
         executionTime = Timestamp.valueOf("2016-01-23 00:00:00");
 
-        message = campaign.testFailCalendarRestriction(executionTime, true);
+        message = campaign.testFailCalendarRestriction(null,executionTime, true);
         System.out.println("Got message: " + message);
 
         assertThat(message, is((String)null));
