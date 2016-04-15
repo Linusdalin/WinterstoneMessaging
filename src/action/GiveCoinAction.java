@@ -25,7 +25,7 @@ public class GiveCoinAction extends Action implements ActionInterface{
 
     public GiveCoinAction(long amount, User user, Timestamp timeStamp, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        this(0, amount, new ActionParameter(user.name, user.facebookId, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
+        this(0, amount, new ActionParameter(user.name, user.id, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
     }
 
 

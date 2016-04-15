@@ -54,7 +54,7 @@ public class TimeAnalyser {
         double responseFactor = action.getResponseFactor();
         System.out.println("      Got response " + response.toString() + " for user.");
 
-        int exposures = campaignExposures.getUserExposure(playerInfo.getUser().facebookId, null, Personal_CoolOff);
+        int exposures = campaignExposures.getUserExposure(playerInfo.getUser().id, null, Personal_CoolOff);
 
         int limit = BASE_LIMIT;
 
@@ -104,7 +104,7 @@ public class TimeAnalyser {
     public boolean hasResponded(Connection connection, User user, String campaign){
 
         ResponseTable responseTable = new ResponseTable(connection);
-        int responses = responseTable.getResponses(user.facebookId, campaign);
+        int responses = responseTable.getResponses(user.id, campaign);
         responseTable.close();
 
         return (responses > 0);

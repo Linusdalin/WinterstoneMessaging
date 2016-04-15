@@ -69,7 +69,7 @@ public class DataCache {
         GameSessionTable sessionTable = new GameSessionTable();
 
         try {
-            sessionTable.load(connection,"and facebookId='" + user.facebookId + "'","ASC", -1 );
+            sessionTable.load(connection,"and facebookId='" + user.id + "'","ASC", -1 );
         } catch (DatabaseException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -84,7 +84,7 @@ public class DataCache {
     public Timestamp getLastSessionForUser(User user) {
 
         CachedUserTable userTable = new CachedUserTable();
-        userTable.loadAndRetry(connection, "and facebookId='" + user.facebookId + "'", "ASC", 1);
+        userTable.loadAndRetry(connection, "and facebookId='" + user.id + "'", "ASC", 1);
 
         CachedUser last = userTable.getNext();
         if(last == null)
@@ -97,7 +97,7 @@ public class DataCache {
     public Timestamp getLastMobileSessionForUser(User user) {
 
         CachedUserTable userTable = new CachedUserTable();
-        userTable.loadAndRetry(connection, "and facebookId='" + user.facebookId + "'", "ASC", 1);
+        userTable.loadAndRetry(connection, "and facebookId='" + user.id + "'", "ASC", 1);
 
         CachedUser last = userTable.getNext();
         if(last == null)
@@ -116,7 +116,7 @@ public class DataCache {
     public CachedUser getCachedUser(User user, Connection connection) {
 
         CachedUserTable userTable = new CachedUserTable();
-        userTable.loadAndRetry(connection, "and facebookId='" + user.facebookId + "'", "ASC", 1);
+        userTable.loadAndRetry(connection, "and facebookId='" + user.id + "'", "ASC", 1);
 
         CachedUser cachedUser = userTable.getNext();
         userTable.close();
@@ -132,7 +132,7 @@ public class DataCache {
             return new ArrayList<Payment>();
 
         PaymentTable paymentTable = new PaymentTable();
-        paymentTable.loadAndRetry(connection, "and playerId='" + user.facebookId + "'", "ASC", -1);
+        paymentTable.loadAndRetry(connection, "and playerId='" + user.id + "'", "ASC", -1);
 
         List<Payment> paymentsForUser = paymentTable.getAll();
 
@@ -273,7 +273,7 @@ public class DataCache {
     public List<GameSession> getSessionsYesterday(User user, Timestamp analysisDate, int days) {
 
         GameSessionTable gameSessions = new GameSessionTable();
-        gameSessions.loadAndRetry(connection, "and facebookId='" + user.facebookId + "' and date(timeStamp) = date(date_sub('" + analysisDate + "', interval " + days + " day))", "ASC", 100);
+        gameSessions.loadAndRetry(connection, "and facebookId='" + user.id + "' and date(timeStamp) = date(date_sub('" + analysisDate + "', interval " + days + " day))", "ASC", 100);
         return gameSessions.getAll();
 
     }

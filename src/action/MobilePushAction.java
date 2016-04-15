@@ -1,7 +1,6 @@
 package action;
 
 import campaigns.CampaignState;
-import localData.Exposure;
 import net.sf.json.JSONObject;
 import output.DeliveryException;
 import output.PushHandler;
@@ -40,7 +39,7 @@ public class MobilePushAction extends Action implements ActionInterface{
 
     public MobilePushAction(String message, User user, Timestamp timestamp, int significance, String ref, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        this(0, message, new ActionParameter(user.name, user.facebookId, user.email), timestamp, significance, ref, campaignName, messageId, state, responseFactor);
+        this(0, message, new ActionParameter(user.name, user.id, user.email), timestamp, significance, ref, campaignName, messageId, state, responseFactor);
 
     }
 
@@ -110,6 +109,7 @@ public class MobilePushAction extends Action implements ActionInterface{
 
             }
 
+            noteFailedExposure( (testUser == null ? actionParameter.facebookId : testUser ) , executionTime, localConnection );
             return new ActionResponse(ActionResponseStatus.FAILED,   "Message delivery failed");
 
         }
@@ -122,11 +122,6 @@ public class MobilePushAction extends Action implements ActionInterface{
     }
 
 
-    private void noteSuccessFulExposure(String actualUser, Timestamp executionTime, Connection localConnection) {
-
-        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.PUSH.name());
-        exposure.store(localConnection);
-    }
 
 
     public ActionInterface withReward(String reward) {

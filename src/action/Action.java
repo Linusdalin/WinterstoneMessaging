@@ -2,6 +2,7 @@ package action;
 
 import campaigns.CampaignInterface;
 import campaigns.CampaignState;
+import localData.Exposure;
 import net.sf.json.JSONObject;
 import remoteData.dataObjects.User;
 import rewards.Reward;
@@ -57,7 +58,7 @@ public abstract class Action implements ActionInterface{
 
     public Action(ActionType type, User user, Timestamp timestamp, String message, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        this(0, type, new ActionParameter(user.name, user.facebookId, user.email), timestamp, message, significance, campaignName, messageId, state, responseFactor);
+        this(0, type, new ActionParameter(user.name, user.id, user.email), timestamp, message, significance, campaignName, messageId, state, responseFactor);
 
     }
 
@@ -324,6 +325,18 @@ public abstract class Action implements ActionInterface{
     @Override
     public void useStage() {
         this.useStage = true;
+    }
+
+    protected void noteSuccessFulExposure(String actualUser, Timestamp executionTime, Connection localConnection) {
+
+        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.PUSH.name(), true);
+        exposure.store(localConnection);
+    }
+
+    protected void noteFailedExposure(String actualUser, Timestamp executionTime, Connection localConnection) {
+
+        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.PUSH.name(), false);
+        exposure.store(localConnection);
     }
 
 }

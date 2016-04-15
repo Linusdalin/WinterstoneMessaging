@@ -1,7 +1,6 @@
 package campaigns;
 
 import action.ActionInterface;
-import action.EmailAction;
 import action.MobilePushAction;
 import core.PlayerInfo;
 import core.UsageProfileClassification;
@@ -125,13 +124,11 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
         }
         else{
 
-            System.out.println("    -- Campaign " + Name + " firing email to player that failed push");
-            return new EmailAction(gameEmail(gameCode, user, createPromoCode(201)), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
-
+            //System.out.println("    -- Campaign " + Name + " firing email to player that failed push");
+            //return new EmailAction(gameEmail(gameCode, user, createPromoCode(201)), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
+            return null;
 
         }
-
-
     }
 
     public static EmailInterface gameEmail(String game, User user, String tag) {

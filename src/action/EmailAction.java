@@ -2,10 +2,10 @@ package action;
 
 import campaigns.CampaignState;
 import email.EmailInterface;
-import localData.Exposure;
 import net.sf.json.JSONObject;
 import output.DeliveryException;
-import output.EmailHandler;import remoteData.dataObjects.User;
+import output.EmailHandler;
+import remoteData.dataObjects.User;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -39,7 +39,7 @@ public class EmailAction extends Action implements ActionInterface{
 
     public EmailAction(EmailInterface email, User user, Timestamp timeStamp, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        this(0, email, new ActionParameter(user.name, user.facebookId, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
+        this(0, email, new ActionParameter(user.name, user.id, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
 
     }
 
@@ -126,12 +126,6 @@ public class EmailAction extends Action implements ActionInterface{
 
     }
 
-
-    private void noteSuccessFulExposure(String actualUser, Timestamp executionTime, Connection localConnection) {
-
-        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.EMAIL.name());
-        exposure.store(localConnection);
-    }
 
 
     /*************************************************************'

@@ -396,7 +396,7 @@ public class CampaignEngine {
         do{
 
             try {
-                allPlayers.load(dbConnection, " and users.created >= '"+ startDate+"' and users.uninstall=0", "ASC", batchSize, userCount);      // Restriction for testing
+                allPlayers.load(dbConnection, " and players.created >= '"+ startDate+"' and players.uninstall=0", "ASC", batchSize, userCount);      // Restriction for testing
 
             } catch (DatabaseException e) {
 
@@ -496,7 +496,7 @@ public class CampaignEngine {
         // This is used for all the analysis and defines the API to the information in the database
 
         TimeAnalyser timeAnalyser = new TimeAnalyser(playerInfo, tempConnection);
-        ResponseHandler responseHandler = new ResponseHandler(user.facebookId, tempConnection);
+        ResponseHandler responseHandler = new ResponseHandler(user.id, tempConnection);
 
 
         int outcome = ExecutionStatistics.MISSED; // Keep track of the outcome for the user
@@ -593,7 +593,7 @@ public class CampaignEngine {
             executionStatistics.registerOutcome(outcome);
 
             if(responseStat.getExposures() == 0 && playerInfo.getUser().sessions > 10 && !playerInfo.getUser().email.equals(""))
-                executionStatistics.registerOverlooked(playerInfo.getUser().facebookId);
+                executionStatistics.registerOverlooked(playerInfo.getUser().id);
 
 
         }
@@ -667,7 +667,7 @@ public class CampaignEngine {
             return;
         }
 
-        ResponseHandler handler = new ResponseHandler( user.facebookId, localConnection );
+        ResponseHandler handler = new ResponseHandler( user.id, localConnection );
         int eligibility = timeAnalyser.eligibilityForCommunication(campaignExposures, handler, selectedAction, executionStatistics);
 
         eligibility = timeAnalyser.adjustForResponse(eligibility, selectedAction );
@@ -818,7 +818,7 @@ public class CampaignEngine {
 
         for (String lostUser : HailMaryUsers.lostUsers) {
 
-            User user = new User(lostUser, "", "", "", "", null, 0, 0, 0, 0, 0, 0, 0, 0, "A", "M", Timestamp.valueOf("2016-01-01 00:00:00"));
+            User user = new User(lostUser, lostUser, "", "", "", "", null, 0, 0, 0, 0, 0, 0, 0, 0, "A", "M", Timestamp.valueOf("2016-01-01 00:00:00"));
             PlayerInfo playerInfo = new PlayerInfo(user, dbCache, localConnection);
 
             ActionInterface action = new NotificationAction( "Hello, We ar missing you at SlotAmrica. To welcome you back we have added "+ RewardRepository.freeCoinAcitivation.getCoins()+" free coins for you to play with on your account. Click here to collect and play!",

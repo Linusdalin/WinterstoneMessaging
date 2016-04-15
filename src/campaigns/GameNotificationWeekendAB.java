@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 public class GameNotificationWeekendAB extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "GameNotification";
+    public static final String Name = "GameNotification";
     private static final int CoolDown_Days = 5;     // Avoid duplicate runs     TODO: Should be 5
 
     private static final int DAILY_CAP   = 4000;         // Max per execution
@@ -33,8 +33,8 @@ public class GameNotificationWeekendAB extends AbstractCampaign implements Campa
     private static final String Day4 = "söndag";   // Swedish due to locale on test computer
 
 
-    private static final int INACTIVITY_LIMIT_FREE      =  3;   // Max days inactivity to get message       TODO:   Should be 2
-    private static final int INACTIVITY_LIMIT_PAYING    =  150;   // Max days inactivity to get message      TODO: Should be 50
+    private static final int INACTIVITY_LIMIT_FREE      =  2;   // Max days inactivity to get message       TODO:   Should be 2
+    private static final int INACTIVITY_LIMIT_PAYING    =  120;   // Max days inactivity to get message      TODO: Should be 50
     private static final int ACTIVITY_MIN   = 15;               // Min sessions to be active               TODO: Should be 35
 
     private String gameCode;

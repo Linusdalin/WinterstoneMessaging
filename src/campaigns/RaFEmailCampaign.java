@@ -130,7 +130,7 @@ public class RaFEmailCampaign extends AbstractCampaign implements CampaignInterf
 
     public static EmailInterface getEmail(User user, int code) {
 
-        String link = "https://apps.facebook.com/slotamerica/?reward="+RewardRepository.rafClockwork.getCode()+"&promoCode=raf_"+code +"_"+ user.facebookId;
+        String link = "https://apps.facebook.com/slotamerica/?reward="+RewardRepository.rafClockwork.getCode()+"&promoCode=raf_"+code +"_"+ user.id;
 
         return new NotificationEmail("Want some free coins?", "<p>Do you want to get some more coins? The only thing you have to do " +
                 "is to tell a friend about SlotAmerica and have him or her to sign up through your personal refer-a-friend offer link</p>" +

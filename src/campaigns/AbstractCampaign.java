@@ -314,35 +314,35 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     protected boolean abSelect1(User user) {
 
-        return  user.facebookId.endsWith("1") ||
-                user.facebookId.endsWith("2") ||
-                user.facebookId.endsWith("3") ||
-                user.facebookId.endsWith("4") ||
-                user.facebookId.endsWith("5");
+        return  user.id.endsWith("1") ||
+                user.id.endsWith("2") ||
+                user.id.endsWith("3") ||
+                user.id.endsWith("4") ||
+                user.id.endsWith("5");
 
     }
 
     protected boolean abSelect2(User user) {
 
-        return  user.facebookId.endsWith("1") ||
-                user.facebookId.endsWith("3") ||
-                user.facebookId.endsWith("5") ||
-                user.facebookId.endsWith("7") ||
-                user.facebookId.endsWith("9");
+        return  user.id.endsWith("1") ||
+                user.id.endsWith("3") ||
+                user.id.endsWith("5") ||
+                user.id.endsWith("7") ||
+                user.id.endsWith("9");
 
     }
 
 
     public static boolean randomize3(User user, int expected) {
 
-        if((user.facebookId.endsWith("1") || user.facebookId.endsWith("2") || user.facebookId.endsWith("3") ||
-                user.facebookId.endsWith("10")|| user.facebookId.endsWith("20")|| user.facebookId.endsWith("30") ) && expected == 0)
+        if((user.id.endsWith("1") || user.id.endsWith("2") || user.id.endsWith("3") ||
+                user.id.endsWith("10")|| user.id.endsWith("20")|| user.id.endsWith("30") ) && expected == 0)
             return true;
-        if((user.facebookId.endsWith("4") || user.facebookId.endsWith("5") || user.facebookId.endsWith("6") ||
-                user.facebookId.endsWith("40")|| user.facebookId.endsWith("50")|| user.facebookId.endsWith("60")) && expected == 1)
+        if((user.id.endsWith("4") || user.id.endsWith("5") || user.id.endsWith("6") ||
+                user.id.endsWith("40")|| user.id.endsWith("50")|| user.id.endsWith("60")) && expected == 1)
             return true;
-        if((user.facebookId.endsWith("7") || user.facebookId.endsWith("8") || user.facebookId.endsWith("9") ||
-                user.facebookId.endsWith("70")|| user.facebookId.endsWith("80")|| user.facebookId.endsWith("90") ||user.facebookId.endsWith("00")) && expected == 2)
+        if((user.id.endsWith("7") || user.id.endsWith("8") || user.id.endsWith("9") ||
+                user.id.endsWith("70")|| user.id.endsWith("80")|| user.id.endsWith("90") ||user.id.endsWith("00")) && expected == 2)
             return true;
 
         return false;
@@ -351,23 +351,23 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     public static boolean randomize4(User user, int expected) {
 
-        if((user.facebookId.endsWith("0") || user.facebookId.endsWith("1")  ||
-                user.facebookId.endsWith("02")|| user.facebookId.endsWith("12")|| user.facebookId.endsWith("22") || user.facebookId.endsWith("32")|| user.facebookId.endsWith("42") )
+        if((user.id.endsWith("0") || user.id.endsWith("1")  ||
+                user.id.endsWith("02")|| user.id.endsWith("12")|| user.id.endsWith("22") || user.id.endsWith("32")|| user.id.endsWith("42") )
                 && expected == 0)
             return true;
 
-        if((user.facebookId.endsWith("3") || user.facebookId.endsWith("4")  ||
-                user.facebookId.endsWith("52")|| user.facebookId.endsWith("62")|| user.facebookId.endsWith("72") || user.facebookId.endsWith("82")|| user.facebookId.endsWith("92") )
+        if((user.id.endsWith("3") || user.id.endsWith("4")  ||
+                user.id.endsWith("52")|| user.id.endsWith("62")|| user.id.endsWith("72") || user.id.endsWith("82")|| user.id.endsWith("92") )
                 && expected == 1)
             return true;
 
-        if((user.facebookId.endsWith("5") || user.facebookId.endsWith("6") ||
-                user.facebookId.endsWith("07")|| user.facebookId.endsWith("17")|| user.facebookId.endsWith("27") || user.facebookId.endsWith("37")|| user.facebookId.endsWith("47") )
+        if((user.id.endsWith("5") || user.id.endsWith("6") ||
+                user.id.endsWith("07")|| user.id.endsWith("17")|| user.id.endsWith("27") || user.id.endsWith("37")|| user.id.endsWith("47") )
                 && expected == 2)
             return true;
 
-        if((user.facebookId.endsWith("8") || user.facebookId.endsWith("9")  ||
-                user.facebookId.endsWith("57")|| user.facebookId.endsWith("67")|| user.facebookId.endsWith("77") || user.facebookId.endsWith("87")|| user.facebookId.endsWith("97") )
+        if((user.id.endsWith("8") || user.id.endsWith("9")  ||
+                user.id.endsWith("57")|| user.id.endsWith("67")|| user.id.endsWith("77") || user.id.endsWith("87")|| user.id.endsWith("97") )
                 && expected == 3)
             return true;
 
@@ -378,13 +378,13 @@ public abstract class AbstractCampaign implements CampaignInterface{
 
     public static boolean randomize2(User user, int expected) {
 
-        if((user.facebookId.endsWith("0") || user.facebookId.endsWith("1")  || user.facebookId.endsWith("2")||
-                user.facebookId.endsWith("3")|| user.facebookId.endsWith("4") )
+        if((user.id.endsWith("0") || user.id.endsWith("1")  || user.id.endsWith("2")||
+                user.id.endsWith("3")|| user.id.endsWith("4") )
                 && expected == 0)
             return true;
 
-        if((user.facebookId.endsWith("5") || user.facebookId.endsWith("6")  || user.facebookId.endsWith("7")||
-                user.facebookId.endsWith("8")|| user.facebookId.endsWith("9") )
+        if((user.id.endsWith("5") || user.id.endsWith("6")  || user.id.endsWith("7")||
+                user.id.endsWith("8")|| user.id.endsWith("9") )
                 && expected == 0)
             return true;
 

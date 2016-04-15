@@ -35,6 +35,7 @@ public class RewardRepository {
     public static final Reward eruption             = new Reward("Eruption",        "99ff10df-0bb5-44fd-829a-7ed75275c11e", 12, true);     //250
     public static final Reward cocktail             = new Reward("Cocktail",        "e03730c0-da06-42de-99cc-df444cb837d9", 12, true);     //250
     public static final Reward clubSeven            = new Reward("Club",            "c00c205f-5c18-4392-8fff-677ffa791e99", 12, true);     //250
+    public static final Reward blackCastle          = new Reward("Black Castle",    "8c2711fd-41a3-42e4-93cc-c769f25a6547", 10, true);     //250
 
 
     public static final Reward mobileTest           = new Reward("Mobile T",        "ce48dc8c-4bc3-4835-8e41-27510285f857", 7777, true);
@@ -70,6 +71,12 @@ public class RewardRepository {
     public static final Reward OS6XFrequent       = new Reward("OS6 Fequent",      "1c4896b9-5455-4b3c-8f86-f86b1217d722", 10, true);      //250
     public static final Reward OS6XRest           = new Reward("OS6 Rest",         "f6704811-14c7-4ef3-9a88-e27a324f104c", 10, true);      //100
 
+    public static final Reward OS8XHigh           = new Reward("8xs High",         "bb17d35b-7938-4e71-ab86-058b177d11c2", 25, true);      //500
+    public static final Reward OS8XPaying         = new Reward("8xs Paying",       "63d25227-ba16-4958-b583-5ba47b9459dc", 15, true);      //250
+    public static final Reward OS8XFrequent       = new Reward("8xs Fequent",      "5b7e64a1-ad11-44fa-ad72-d7fa89876784", 10, true);      //250
+    public static final Reward OS8XRest           = new Reward("8xs Rest",         "808c347d-14f2-4eda-bbb1-4bcc172c082f", 10, true);      //100
+
+
     public static final Reward CrystalHigh           = new Reward("Crystal High",         "fb6f0e8a-cd8a-4d66-b072-7e8455640ced", 25, true);      //500
     public static final Reward CrystalPaying         = new Reward("Crystal Paying",       "ba25a0dd-5f31-4215-9578-2ff9a5084bea", 15, true);      //250
     public static final Reward CrystalFrequent       = new Reward("Crystal Frequent",     "e7b6939a-b639-44d6-96d7-a3ccdd581f88", 10, true);      //250
@@ -98,6 +105,7 @@ public class RewardRepository {
     public static final Reward mysteryMonday3       = new Reward("MysteryMonday3",        "253290cd-c307-4fe8-b190-17157f90ef14",  3333, true);
     public static final Reward mysteryMonday4       = new Reward("MysteryMonday4",        "2a5a7938-2dba-4384-bdfd-5b8c9c23c1bf",  3333, true);
     public static final Reward mysteryMonday5       = new Reward("MysteryMonday5",        "3b6b810d-02f3-486a-9707-b74cf63752be",  2345, true);
+    public static final Reward mysteryMonday6       = new Reward("MysteryMonday6",        "c0ce0fa9-7ade-4919-8b97-cb1ff973e30d",  2222, true);
 
     public static final Reward loyaltyMystery1       = new Reward("LoyaltyMystery1",      "af8759d0-40a8-41e1-bd57-46b865c029af",  2000, true);
     public static final Reward loyaltyMystery2       = new Reward("LoyaltyMystery2",      "af8759d0-40a8-41e1-bd57-46b865c029af",  20, true);

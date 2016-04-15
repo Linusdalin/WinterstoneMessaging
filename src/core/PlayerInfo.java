@@ -29,6 +29,7 @@ public class PlayerInfo {
     private final DataCache dbCache;
 
     private List<Payment> userPayments;
+    private List<GameSession> userSessions = null;
     private Timestamp lastSession = null;
     private Timestamp lastMobile = null;
 
@@ -53,7 +54,7 @@ public class PlayerInfo {
             checkLevelUp(user, cachedUser);
 
         if(receptivityProfile == null)
-            receptivityProfile = dbCache.getReceptivityProfileForPlayer(user.facebookId);
+            receptivityProfile = dbCache.getReceptivityProfileForPlayer(user.id);
 
         this.connection = connection;
 
@@ -79,7 +80,7 @@ public class PlayerInfo {
 
         if(user.level > cachedUser.level){
 
-            dbCache.updateLevel(user.facebookId, user.level);
+            dbCache.updateLevel(user.id, user.level);
 
         }
 
@@ -94,6 +95,14 @@ public class PlayerInfo {
         return sessionsYesterday;
     }
 
+    public List<GameSession> getSessions() {
+
+        if(userSessions == null)
+            userSessions = dbCache.getSessionsForUser(user);
+
+        System.out.println("     (Got " + userSessions.size() + "sessions for user)");
+        return userSessions;
+    }
 
 
     public List<Payment> getPaymentsForUser() {
@@ -200,10 +209,10 @@ public class PlayerInfo {
     public ReceptivityProfile getReceptivityForPlayer() {
 
         if(receptivityProfile == null)
-            receptivityProfile = dbCache.getReceptivityProfileForPlayer(user.facebookId);
+            receptivityProfile = dbCache.getReceptivityProfileForPlayer(user.id);
 
         if(receptivityProfile == null)
-            receptivityProfile = new ReceptivityProfile(user.facebookId);
+            receptivityProfile = new ReceptivityProfile(user.id);
 
         return receptivityProfile;
 
@@ -222,7 +231,7 @@ public class PlayerInfo {
 
     public UsageProfileClassification getUsageProfile(){
 
-        if(user.facebookId.startsWith("ap_") || user.facebookId.startsWith("go_"))
+        if(user.id.startsWith("ap_") || user.id.startsWith("go_"))
             return UsageProfileClassification.ANONYMOUS;
 
 
@@ -263,7 +272,7 @@ public class PlayerInfo {
 
     public GamePlay getGamePlay(String game) {
 
-        return dbCache.getGamePlay(getUser().facebookId, game);
+        return dbCache.getGamePlay(getUser().id, game);
     }
 
 
@@ -275,7 +284,7 @@ public class PlayerInfo {
     public boolean hasClaimed(Reward reward) {
 
         if(claimedRewards == null)
-            claimedRewards = dbCache.getClaimedRewards(getUser().facebookId);
+            claimedRewards = dbCache.getClaimedRewards(getUser().id);
 
         if(claimedRewards == null)
             return false;
@@ -304,7 +313,7 @@ public class PlayerInfo {
         if(paymentBehavior == PaymentAnalyser.UNKNOWN_BEHAVIOUR){
 
             PaymentAnalyser analyzer = new PaymentAnalyser();
-            paymentBehavior = analyzer.getBehaviorForPlayer(getUser().facebookId);
+            paymentBehavior = analyzer.getBehaviorForPlayer(getUser().id);
 
         }
 

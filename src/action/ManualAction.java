@@ -34,7 +34,7 @@ public class ManualAction extends Action implements ActionInterface{
 
     public ManualAction(String message, User user, Timestamp timeStamp,  int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        this(0, message, new ActionParameter(user.name, user.facebookId, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
+        this(0, message, new ActionParameter(user.name, user.id, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
     }
 
 

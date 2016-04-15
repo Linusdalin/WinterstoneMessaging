@@ -1,6 +1,7 @@
 package campaigns;
 
 import action.ActionInterface;
+import action.MobilePushAction;
 import action.NotificationAction;
 import action.TriggerEventAction;
 import core.PlayerInfo;
@@ -30,7 +31,8 @@ public class ConversionOfferCampaign extends AbstractCampaign implements Campaig
 
 
     // Trigger specific config data
-    private static final int Min_Sessions = 2;
+    private static final int Min_Sessions = 1;
+    private static final int Min_Sessions_For_Message = 4;
     private static final int TARGET_AGE = 5;             // The whole week
     private static final int MAX_IDLE = 4;
     private boolean verbose;                             // Actually tell the users or just quietly trigger the campaign
@@ -69,30 +71,15 @@ public class ConversionOfferCampaign extends AbstractCampaign implements Campaig
 
         }
 
-        if(playerInfo.getUsageProfile().isMobileExclusive()){
-
-            System.out.println("    -- Campaign " + Name + " not firing. Only testing facebook players so far");
-            return null;
-        }
-
-
         if(user.payments > 0){
 
             System.out.println("    -- Campaign " + Name + " not firing. Payer has already paid");
             return null;
         }
 
-        int minimumPlay = Min_Sessions;
+        if(user.sessions < Min_Sessions){
 
-        if(state == CampaignState.REDUCED){
-
-            minimumPlay += 5;
-        }
-
-
-        if(user.sessions < minimumPlay){
-
-            System.out.println("    -- Campaign " + Name + " not applicable. User is not frequent enough (" + user.sessions + " < " + minimumPlay + ")" );
+            System.out.println("    -- Campaign " + Name + " not applicable. User is not frequent enough (" + user.sessions + " < " + Min_Sessions + ")" );
             return null;
 
         }
@@ -128,7 +115,15 @@ public class ConversionOfferCampaign extends AbstractCampaign implements Campaig
 
         ActionInterface triggerAction = new TriggerEventAction(EventRepository.Conversion1, 48, user, executionTime, getPriority(), Name, 1, getState(), responseFactor);
 
-        if(verbose){
+        if(user.sessions > Min_Sessions_For_Message && verbose){
+
+            if(playerInfo.getUsageProfile().isMobilePlayer()){
+
+                return new MobilePushAction("Join the high roller action - the high roller weekend!",//"You have a 48 hour special offer",
+                        user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)
+                        .attach(triggerAction);
+
+            }
 
             return new NotificationAction("Welcome to SlotAmerica. Here is a special 48 hour offer to get even more excitement out of the games - the high roller weekend!",//"You have a 48 hour special offer",
                     user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)

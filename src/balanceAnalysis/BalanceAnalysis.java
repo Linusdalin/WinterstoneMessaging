@@ -185,7 +185,7 @@ public class BalanceAnalysis {
 
         for (User user : payingUsers) {
 
-            if(user.facebookId.equals(facebookId)){
+            if(user.id.equals(facebookId)){
 
                 System.out.println("Yes!");
                 return true;

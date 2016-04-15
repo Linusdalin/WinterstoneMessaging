@@ -31,7 +31,7 @@ public class RAFHandler {
 
             // Creating a fake user. The only thing we need is the userId
             String otherUserId = user.promoCode.substring(user.promoCode.indexOf("_", 4));
-            return new User(otherUserId, "", "", "", "", Timestamp.valueOf("2016-01-01 00:00:00"), 0, 0, 0, 0, 0, 0, 0, 0, "", "", Timestamp.valueOf("2016-01-01 00:00:00"));
+            return new User(otherUserId, otherUserId, "", "", "", "", Timestamp.valueOf("2016-01-01 00:00:00"), 0, 0, 0, 0, 0, 0, 0, 0, "", "", Timestamp.valueOf("2016-01-01 00:00:00"));
         }
 
         return null;

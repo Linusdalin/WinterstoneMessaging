@@ -55,7 +55,7 @@ public class ValentinesThankyou extends AbstractCampaign implements CampaignInte
         User user = playerInfo.getUser();
 
 
-        if(inList(user.facebookId, Players)){
+        if(inList(user.id, Players)){
 
             System.out.println("    -- Sending a reward to the player" );
             return new NotificationAction("Thank you for sharing your Valentines love on our page! Click here for 10,000 coin reward!",

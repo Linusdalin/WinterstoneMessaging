@@ -26,10 +26,10 @@ import static org.junit.Assert.assertTrue;
 
 public class PersonalEventTest {
 
-    private static final User linus = new User("627716024",                "Linus",        "linusdalin@gmail.com",     "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
-    private static final User stageLinus = new User("10152816515441025",        "LinusTest",    "linusdalin@gmail.com",     "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
-    private static final User knif = new User("10206348427411666",        "LinusTest",    "linusdalin@gmail.com",     "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
-    private static final User wrongUser  = new User("1111111",                  "Mr avreggad",  "linusdalin@gmail.com",     "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
+    private static final User linus = new User("627716024", "627716024",                "Linus",        "linusdalin@gmail.com",     "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
+    private static final User stageLinus = new User("10152816515441025", "10152816515441025",        "LinusTest",    "linusdalin@gmail.com",     "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
+    private static final User knif = new User("10206348427411666", "10206348427411666",        "LinusTest",    "linusdalin@gmail.com",     "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
+    private static final User wrongUser  = new User("1111111", "1111111",                  "Mr avreggad",  "linusdalin@gmail.com",     "promo", "game", new Timestamp(2015, 1, 1, 1, 1, 1, 1), 1, 5, 17, 12345, 45678, 1, 1, 1, "A", "male", Timestamp.valueOf("2016-01-01 00:00:00"));
 
     private static final String StageEventService = "http://slotamerica:fruitclub@dev.slot-america.com:3302/api/player-events/";
     private static final String EventService      = "https://slotamerica:fruitclub@data-warehouse.slot-america.com/api/player-events/";
@@ -46,7 +46,7 @@ public class PersonalEventTest {
             Calendar calendar = Calendar.getInstance();
             long time = calendar.getTimeInMillis() + 24*3600*1000;
 
-            String request = StageEventService + stageLinus.facebookId;
+            String request = StageEventService + stageLinus.id;
             String response;
 
             RequestHandler requestHandler = new RequestHandler( request ).withBasicAuth("5b09eaa11e4bcd80800200c", "X");
@@ -78,7 +78,7 @@ public class PersonalEventTest {
         try{
 
 
-            String request = StageEventService + stageLinus.facebookId;
+            String request = StageEventService + stageLinus.id;
             String response;
 
             RequestHandler requestHandler = new RequestHandler( request ).withBasicAuth("5b09eaa11e4bcd80800200c", "X");
@@ -157,7 +157,7 @@ public class PersonalEventTest {
         try{
 
 
-            String request = EventService + linus.facebookId;
+            String request = EventService + linus.id;
             String response;
 
             RequestHandler requestHandler = new RequestHandler( request ).withBasicAuth("5b09eaa11e4bcd80800200c", "X");

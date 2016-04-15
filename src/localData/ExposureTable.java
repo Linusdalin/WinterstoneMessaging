@@ -52,7 +52,8 @@ public class ExposureTable extends GenericTable {
             if(!resultSet.next())
                 return null;
 
-            return new Exposure(resultSet.getString(1), resultSet.getString(2),resultSet.getInt(3),resultSet.getTimestamp(4),resultSet.getString(5), resultSet.getString(6));
+            return new Exposure(resultSet.getString(1), resultSet.getString(2),resultSet.getInt(3),resultSet.getTimestamp(4),resultSet.getString(5), resultSet.getString(6),
+                    (resultSet.getInt(7) == 1));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -79,7 +80,7 @@ public class ExposureTable extends GenericTable {
 
     /***********************************************************************************
      *
-     *              Exposure is calculated as the number of messages the last week.
+     *              Exposure is calculated as the number of successful messages the last week.
      *
      *
      * @param facebookId
@@ -92,7 +93,9 @@ public class ExposureTable extends GenericTable {
 
     public int getUserExposure(String facebookId, String campaignName, int personal_CoolOff) {
 
-        loadAndRetry(connection, "and user= '"+ facebookId+"' "+ (campaignName != null ? "and campaignName = '" + campaignName +"'" : "")+" and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)", "ASC", -1);
+        loadAndRetry(connection, "and user= '"+ facebookId+"' "+ (campaignName != null ? "and campaignName = '" + campaignName +"'" : "")+
+                " and success = 1" +
+                " and exposureTime > date_sub(current_date(), INTERVAL "+personal_CoolOff+" day)", "ASC", -1);
         List<Exposure> exposuresForUser = getAll();
         //System.out.println("Found " + exposuresForUser.size() + " exposures for user " + facebookId + "(in " + personal_CoolOff + " days)");
 
@@ -131,7 +134,7 @@ public class ExposureTable extends GenericTable {
 
     public Exposure getLastExposure(String campaign, User user){
 
-        loadAndRetry(connection, "and user= '"+ user.facebookId+"' and campaignName='"+campaign+"'", "DESC", 1);
+        loadAndRetry(connection, "and user= '"+ user.id+"' and success = 1 and campaignName='"+campaign+"'", "DESC", 1);
         Exposure exposure = getNext();
 
         close();
@@ -143,7 +146,7 @@ public class ExposureTable extends GenericTable {
 
     public Exposure getLastExposure(User user){
 
-        loadAndRetry(connection, "and user= '"+ user.facebookId+"'", "DESC", 1);
+        loadAndRetry(connection, "and success = 1 and user= '"+ user.id+"'", "DESC", 1);
         Exposure exposure = getNext();
 
         close();

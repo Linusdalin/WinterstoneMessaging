@@ -14,7 +14,8 @@ import java.sql.Timestamp;
 public class User {
 
 
-    public final String facebookId;
+    public final String externalId;
+    public final String id;
     public final String name;
     public final String email;
     public final String promoCode;
@@ -32,11 +33,12 @@ public class User {
     public String sex;
     public Timestamp lastActivity;
 
-    public User(String facebookId, String name, String email, String promoCode, String lastgamePlayed, Timestamp created,
+    public User(String id, String externalId, String name, String email, String promoCode, String lastgamePlayed, Timestamp created,
                 int payments, int amount, int sessions, int totalWager, int balance, int nextNumberOfPicks, int userCategory, int level, String group, String sex, Timestamp lastActivity){
 
 
-        this.facebookId = facebookId;
+        this.externalId = externalId;
+        this.id = id;
 
         this.name = name;
         this.email = email;
@@ -64,7 +66,7 @@ public class User {
 
     public String toString(){
 
-        return "(" + facebookId + ", " +name + ", " +promoCode + ", "+level + ", " +created.toString() +  ")";
+        return "(" + id +", " + externalId + ", " +name + ", " +promoCode + ", "+level + ", " +created.toString() +  ")";
 
     }
 

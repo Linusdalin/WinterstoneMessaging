@@ -28,7 +28,7 @@ public class TriggerEventAction extends Action implements ActionInterface{
 
     public TriggerEventAction(EventInterface event, int hours, User user, Timestamp timeStamp, int significance, String campaignName, int messageId, CampaignState state, double responseFactor){
 
-        this(0, event, hours, new ActionParameter(user.name, user.facebookId, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
+        this(0, event, hours, new ActionParameter(user.name, user.id, user.email), timeStamp, significance, campaignName, messageId, state, responseFactor);
     }
 
 

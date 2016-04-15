@@ -2,7 +2,6 @@ package campaigns;
 
 import action.ActionInterface;
 import action.MobilePushAction;
-import action.NotificationAction;
 import core.PlayerInfo;
 import remoteData.dataObjects.User;
 import response.ResponseStat;
@@ -21,12 +20,8 @@ public class LevelUpTuesday extends AbstractCampaign implements CampaignInterfac
     // Campaign config data
     private static final String Name = "LevelUpTuesday";
     private static final int CoolDown_Days = 5;            // Just once per game
-    private int[] MessageIds = {1,
-            31
 
-    };
-
-    private static final String ReminderDay = "tisdag";   // Swedish due to locale on test computer
+    private String reminderDay = null;
 
 
     // Trigger specific config data
@@ -36,11 +31,11 @@ public class LevelUpTuesday extends AbstractCampaign implements CampaignInterfac
     private static final int Max_Inactivity_Free = 10;
     private static final int Max_Inactivity_Paying = 50;
 
-    LevelUpTuesday(int priority, CampaignState active){
+    LevelUpTuesday(int priority, CampaignState active, String day){
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
+        reminderDay = day;
     }
 
 
@@ -102,7 +97,7 @@ public class LevelUpTuesday extends AbstractCampaign implements CampaignInterfac
             return null;
         }
 
-        String tuesdayRestriction    = isSpecificDay(executionTime, false, ReminderDay);
+        String tuesdayRestriction    = isSpecificDay(executionTime, false, reminderDay);
 
         if(tuesdayRestriction != null){
 
@@ -113,17 +108,19 @@ public class LevelUpTuesday extends AbstractCampaign implements CampaignInterfac
 
         System.out.println("    -- Sending level up reminder " );
 
-        if(playerInfo.getUsageProfile().isMobileExclusive()){
+        if(playerInfo.getUsageProfile().hasTriedMobile()){
 
-            return new MobilePushAction("Today is Level-up Tuesday! Level up one step today and get double the level up bonus! Click here to start",
+            return new MobilePushAction("All Level XP is boosted today to allow you to level up faster. Click here to start!",
                     user, executionTime, getPriority(), getTag(), Name,  31, getState(), responseFactor);
 
         }
 
 
-        return new NotificationAction("Today is Level-up Tuesday! Level up one step today and get double the level up bonus! Click here to start",
-                user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
-        ;
+        return null;  // Not supported on canvas yet.
+
+        //return new NotificationAction("Today is Level-up day! All Level XP is boosted to allow you to level up faster",
+        //        user, executionTime, getPriority(), getTag(),  Name, 1, getState(), responseFactor)
+        //;
 
     }
 
@@ -138,7 +135,7 @@ public class LevelUpTuesday extends AbstractCampaign implements CampaignInterfac
 
     public String testFailCalendarRestriction(PlayerInfo playerInfo, Timestamp executionTime, boolean overrideTime) {
 
-        String specificWeekDay = isSpecificDay(executionTime, false, ReminderDay);
+        String specificWeekDay = isSpecificDay(executionTime, false, reminderDay);
 
         if(specificWeekDay != null)
             return specificWeekDay;

@@ -100,7 +100,7 @@ public class PaymentTable extends GenericTable {
 
     public List<Payment> getPaymentsForUser(User user, Connection connection) {
 
-        loadAndRetry(connection, "sessions.playerId= '" + user.facebookId + "'", order, maxLimit);
+        loadAndRetry(connection, "sessions.playerId= '" + user.id + "'", order, maxLimit);
         List<Payment> paymentsForUser = getAll();
         System.out.println("Found " + paymentsForUser.size() + " payments for user " + user.name);
         return paymentsForUser;

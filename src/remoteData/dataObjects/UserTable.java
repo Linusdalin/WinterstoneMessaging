@@ -14,7 +14,7 @@ import java.util.List;
 public class UserTable extends GenericTable {
 
     private static final String getRemote =
-            "select * from users where 1=1 -RESTRICTION- order by created -LIMIT-";
+            "select * from players where 1=1 -RESTRICTION- order by created -LIMIT-";
 
 
     public UserTable(String restriction, int limit){
@@ -37,10 +37,10 @@ public class UserTable extends GenericTable {
                 return null;
 
 
-            return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(28), resultSet.getString(35), resultSet.getTimestamp(29),
-                    resultSet.getInt(27), resultSet.getInt(26), resultSet.getInt(30),
-                    resultSet.getInt(13),resultSet.getInt(8),resultSet.getInt(36), resultSet.getInt(34), resultSet.getInt(40),
-                    resultSet.getString(31), resultSet.getString(25), resultSet.getTimestamp(10));
+            return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(29), resultSet.getString(36), resultSet.getTimestamp(30),
+                    resultSet.getInt(28), resultSet.getInt(27), resultSet.getInt(31),
+                    resultSet.getInt(14),resultSet.getInt(9),resultSet.getInt(37), resultSet.getInt(35), resultSet.getInt(41),
+                    resultSet.getString(32), resultSet.getString(26), resultSet.getTimestamp(11));
 
 
         } catch (SQLException e) {

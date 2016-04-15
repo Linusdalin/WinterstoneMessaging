@@ -3,7 +3,6 @@ package output;
 import action.ActionInterface;
 import action.ActionResponse;
 import action.ActionResponseStatus;
-import action.ActionType;
 import localData.CachedUserTable;
 
 import java.sql.Connection;
@@ -57,7 +56,7 @@ public class Outbox {
 
             }
             else
-                noteFailedMessageDelivery(action.getParameters().facebookId, action.getType(), response.getStatus(), connection);
+                noteFailedMessageDelivery(action, executionTime, response.getStatus(), connection);
             count++;
 
             if(count >= cap)
@@ -77,25 +76,26 @@ public class Outbox {
      *          If the delivery of a message did not work we should note this and avoid sending more messages in the future.
      *
      *
-     * @param user       - the user which we tried to contact
-     * @param type       - type of message that failed. It will define how to note the action.
+     * @param action       - the action
+     * @param executionTime
      * @param status     - status of the message. (Temporary or permanent errors)
      */
 
-    private void noteFailedMessageDelivery(String user, ActionType type, ActionResponseStatus status, Connection connection) {
+    private void noteFailedMessageDelivery(ActionInterface action, Timestamp executionTime, ActionResponseStatus status, Connection connection) {
 
         CachedUserTable table = new CachedUserTable();
+        String user = action.getParameters().facebookId;
+        String campaign = action.getCampaign();
 
         if(status.isPermanentError()){
 
-            switch (type) {
+            switch (action.getType()) {
 
                 case NOTIFICATION:
                     table.updateFailNotification(user, connection);
                     System.out.println(" --- Updating failed Notification for player " + user);
                     break;
                 case PUSH:
-                    table.updateFailPush(user, connection);
                     System.out.println(" --- Updating failed Push for player " + user);
                     break;
                 case MANUAL_ACTION:
@@ -116,6 +116,10 @@ public class Outbox {
             System.out.println("  -- Temporary error sending message. Ignoring for now");
         }
 
+
+    }
+
+    private void storeFailedMobilePush(String user) {
 
     }
 

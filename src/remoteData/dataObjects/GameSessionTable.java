@@ -27,8 +27,8 @@ public class GameSessionTable extends GenericTable{
 
     private static final String getRemoteSQL =
                 "select timestamp, sessions.sessionId, game_stats.game, facebookId, name, sessions.promoCode, fbSource, game_stats.firstActionTime as 'action time', game_stats.totalWager, game_stats.totalWin, game_stats.lastBalance as 'end balance', game_stats.actions as spins, session_stats.actions as 'total spins', sessions.clientType \n"+
-                "        from sessions, users, session_stats, game_stats \n"+
-                "        where users.facebookId = sessions.playerId and sessions.sessionId = session_stats.sessionId and sessions.sessionId = game_stats.sessionId \n"+
+                "        from sessions, players, session_stats, game_stats \n"+
+                "        where players.facebookId = sessions.playerId and sessions.sessionId = session_stats.sessionId and sessions.sessionId = game_stats.sessionId \n"+
                 "        -RESTRICTION-  order by timestamp -LIMIT-;";
 
 
@@ -97,7 +97,7 @@ public class GameSessionTable extends GenericTable{
 
     public List<GameSession> getSessionsForUser(User user, Connection connection) {
 
-        loadAndRetry(connection, "and users.facebookId = '" + user.facebookId + "'", "ASC", -1);
+        loadAndRetry(connection, "and players.facebookId = '" + user.id + "'", "ASC", -1);
         List<GameSession> sessionsForUser = getAll();
         System.out.println("Found " + sessionsForUser.size() + " sessions for user " + user.name);
         return sessionsForUser;

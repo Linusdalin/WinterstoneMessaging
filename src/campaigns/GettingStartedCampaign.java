@@ -7,12 +7,15 @@ import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
 import email.NotificationEmail;
+import recommendation.GameRecommender;
+import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 import response.ResponseStat;
 import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 
 
 /************************************************************************'
@@ -25,7 +28,7 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
 
     // Campaign config data
     private static final String Name = "GettingStarted";
-    private static final int CoolDown_Days = 2;   // No real cool down. This will anyway only trigger once per message
+    private static final int CoolDown_Days = 3;   // No real cool down. This will anyway only trigger once per message
 
 
     GettingStartedCampaign(int priority, CampaignState active){
@@ -45,8 +48,6 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
      *
      */
 
-    //varför funkar inte denna?
-
     public ActionInterface evaluate(PlayerInfo playerInfo, Timestamp executionTime, double responseFactor, ResponseStat response) {
 
 
@@ -54,21 +55,46 @@ public class GettingStartedCampaign extends AbstractCampaign implements Campaign
         Timestamp executionDay = getDay(executionTime);
         User user = playerInfo.getUser();
 
-        if(user.amount != 0 || user.lastgamePlayed== null || user.lastgamePlayed.equals("")){
+        if(user.amount != 0 || user.sessions > 10){
 
             System.out.println("    -- Campaign " + Name + " not Firing. Player already got going");
             return null;
 
         }
 
+        int age = getDaysBetween(user.created, executionDay );
 
-            int age = getDaysBetween(user.created, executionDay );
+            if(age <= 2){
+
+                List<GameSession> sessions = playerInfo.getSessions();
+
+                if(sessions.size() < 2 && age < 2){
+
+                    GameRecommender recommender = new GameRecommender(playerInfo, executionTime);
+                    boolean hasTried = recommender.hasTried("os2x3x4x5x");
+
+                    if(!hasTried){
 
 
-            if(age == 1 || age == 2){
+                        if(playerInfo.getUsageProfile().isMobilePlayer()){
+
+                            // Send a mobile push
+                            System.out.println("    -- Campaign " + Name + " mobile freespin get going " + user.name );
+                            return new MobilePushAction("Try a new Game. Here are some free spins for The 2x3x4x5x game", user, executionTime, getPriority(), getTag(), Name,  305, getState(), responseFactor)
+                                    .withReward(RewardRepository.OS2345Rest);
+                        }
+
+                        // Send a facebook push
+
+                        System.out.println("    -- Campaign " + Name + " fb freespin get going " + user.name );
+                        return new NotificationAction("There are many new games at SlotAmerica. Here are some free spins to try out the Old School 2x3x4x5x game",
+                                user, executionTime, getPriority(), getTag(),  Name, 5, getState(), responseFactor)
+                                .withReward(RewardRepository.OS2345Rest);
+                    }
+
+                }
 
                 System.out.println("    -- Campaign " + Name + " Running message 1 for " + user.name );
-
 
                 if(playerInfo.getUsageProfile().isMobilePlayer()){
 

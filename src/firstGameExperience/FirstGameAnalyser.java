@@ -64,7 +64,7 @@ public class FirstGameAnalyser {
         do{
 
             try {
-                allPlayers.load(connection, " and users.created >= '"+ startDate+"' and users.uninstall=0", "ASC", 400000, userCount);      // Restriction for testing
+                allPlayers.load(connection, " and players.created >= '"+ startDate+"' and players.uninstall=0", "ASC", 400000, userCount);      // Restriction for testing
 
             } catch (DatabaseException e) {
 

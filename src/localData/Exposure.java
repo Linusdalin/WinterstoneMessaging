@@ -1,8 +1,6 @@
 package localData;
 
 
-import remoteData.dataObjects.User;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,8 +23,9 @@ public class Exposure {
     public final Timestamp exposureTime;
     public final String promoCode;
     public final String type;
+    public final boolean success;
 
-    public Exposure(String facebookId, String campaignName, int messageId, Timestamp exposureTime, String promoCode, String type){
+    public Exposure(String facebookId, String campaignName, int messageId, Timestamp exposureTime, String promoCode, String type, boolean success){
 
 
         this.facebookId = facebookId;
@@ -35,18 +34,19 @@ public class Exposure {
         this.exposureTime = exposureTime;
         this.promoCode = promoCode;
         this.type = type;
+        this.success = success;
 
     }
 
     public String toString(){
 
-        return "(" + facebookId + ", " +campaignName + ", " +messageId+ ", " +exposureTime+ ", " +promoCode+ ", " + type +  ")";
+        return "(" + facebookId + ", " +campaignName + ", " +messageId+ ", " +exposureTime+ ", " +promoCode+ ", " + type + ", " + success + ")";
 
     }
 
     private String toSQLValues() {
 
-        return "'" + facebookId + "', '" +campaignName + "', " +messageId+ ", '" +exposureTime+ "', '" +promoCode + "', '" +type +"'";
+        return "'" + facebookId + "', '" +campaignName + "', " +messageId+ ", '" +exposureTime+ "', '" +promoCode + "', '" +type +"', " + (success ? 1 : 0);
 
 
     }

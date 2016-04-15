@@ -60,7 +60,7 @@ public class StartSession {
 
             // Get all sessions for player
 
-            allSessions.loadAndRetry(connection, "and facebookid = '"+ user.facebookId+"' and timestamp > '" + startDate + "'", "ASC", sessions);
+            allSessions.loadAndRetry(connection, "and facebookid = '"+ user.id+"' and timestamp > '" + startDate + "'", "ASC", sessions);
 
             GameSession session = allSessions.getNext();
 

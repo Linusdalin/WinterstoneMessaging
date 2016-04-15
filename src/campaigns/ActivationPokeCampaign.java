@@ -6,10 +6,14 @@ import action.MobilePushAction;
 import action.NotificationAction;
 import core.PlayerInfo;
 import receptivity.ReceptivityProfile;
+import recommendation.GameRecommender;
+import remoteData.dataObjects.GameSession;
 import remoteData.dataObjects.User;
 import response.ResponseStat;
+import rewards.RewardRepository;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 
 /************************************************************************'
@@ -24,21 +28,17 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
     // Campaign config data
     private static final String Name = "ActivationPoke";
-    private static final int CoolDown_Days = 4;
+    private static final int CoolDown_Days = 2;
 
     // Trigger specific config data
-    private static final int Min_Sessions = 3;
+    private static final int Min_Sessions = 2;
     private static final int Max_Sessions = 12;
     private static final int Max_Age = 20;
-    private int[] MessageIds = {2, 3, 4, 5,
-
-                                31, 32, 33};
 
     ActivationPokeCampaign(int priority, CampaignState active){
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
-        registerMessageIds(MessageIds);
     }
 
 
@@ -89,9 +89,11 @@ public class ActivationPokeCampaign extends AbstractCampaign implements Campaign
 
         int idleDays = getDaysBetween(lastSession, executionDay);
 
-        System.out.println("    -- Sending a day two activation poke" );
 
-        if(idleDays == 2){
+
+            if(idleDays == 2 || idleDays == 3){
+
+            System.out.println("    -- Sending a day two activation poke" );
 
             if(playerInfo.getUsageProfile().isMobileExclusive()){
 
