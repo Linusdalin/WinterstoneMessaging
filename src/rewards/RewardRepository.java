@@ -36,6 +36,9 @@ public class RewardRepository {
     public static final Reward cocktail             = new Reward("Cocktail",        "e03730c0-da06-42de-99cc-df444cb837d9", 12, true);     //250
     public static final Reward clubSeven            = new Reward("Club",            "c00c205f-5c18-4392-8fff-677ffa791e99", 12, true);     //250
     public static final Reward blackCastle          = new Reward("Black Castle",    "8c2711fd-41a3-42e4-93cc-c769f25a6547", 10, true);     //250
+    public static final Reward high_voltage         = new Reward("High Voltage",    "c7d491a9-2d74-4ce7-be23-4b144946d3cc", 10, true);     //250
+    public static final Reward stacked_fruits       = new Reward("Stacked Fruits",  "22031400-803c-48b3-abb3-313f815cc6d3", 10, true);     //250
+    public static final Reward os3x                 = new Reward("Three Times Pay", "145143a7-f610-42c0-904f-bd8d5ec6415b", 8,  true);     //250
 
 
     public static final Reward mobileTest           = new Reward("Mobile T",        "ce48dc8c-4bc3-4835-8e41-27510285f857", 7777, true);
@@ -76,6 +79,15 @@ public class RewardRepository {
     public static final Reward OS8XFrequent       = new Reward("8xs Fequent",      "5b7e64a1-ad11-44fa-ad72-d7fa89876784", 10, true);      //250
     public static final Reward OS8XRest           = new Reward("8xs Rest",         "808c347d-14f2-4eda-bbb1-4bcc172c082f", 10, true);      //100
 
+    public static final Reward VoltageHigh           = new Reward("Voltage High",         "bf32dfa6-9a5d-4604-b3bb-b9549e9f4f32", 25, true);      //500
+    public static final Reward VoltagePaying         = new Reward("Voltage Paying",       "57f1f857-ee6c-46c4-80eb-4cc979712f06", 15, true);      //250
+    public static final Reward VoltageFrequent       = new Reward("Voltage Fequent",      "8b571f7f-7c7f-445b-9c0d-c4ade3786cf2", 10, true);      //250
+    public static final Reward VoltageRest           = new Reward("Voltage Rest",         "013b0086-db12-4715-a252-80fc6088f1b8", 10, true);      //100
+
+    public static final Reward Reengagement20           = new Reward("Reengagement 20K",     "19513e08-9a5c-479a-9173-689bfe1aae29", 20000, true);
+    public static final Reward Reengagement10           = new Reward("Reengagement 10K",     "d52bb5e4-237c-4d05-8417-7532f1e6822b", 10000, true);
+    public static final Reward Reengagement3            = new Reward("Reengagement 3K",      "1e90e47e-d08a-4b76-879b-f765e81346ae", 3000, true);
+
 
     public static final Reward CrystalHigh           = new Reward("Crystal High",         "fb6f0e8a-cd8a-4d66-b072-7e8455640ced", 25, true);      //500
     public static final Reward CrystalPaying         = new Reward("Crystal Paying",       "ba25a0dd-5f31-4215-9578-2ff9a5084bea", 15, true);      //250
@@ -106,6 +118,10 @@ public class RewardRepository {
     public static final Reward mysteryMonday4       = new Reward("MysteryMonday4",        "2a5a7938-2dba-4384-bdfd-5b8c9c23c1bf",  3333, true);
     public static final Reward mysteryMonday5       = new Reward("MysteryMonday5",        "3b6b810d-02f3-486a-9707-b74cf63752be",  2345, true);
     public static final Reward mysteryMonday6       = new Reward("MysteryMonday6",        "c0ce0fa9-7ade-4919-8b97-cb1ff973e30d",  2222, true);
+    public static final Reward mysteryMonday7       = new Reward("MysteryMonday7",        "97c5b9f0-ee7b-4319-8180-40374e89b2a6",  1500, true);
+    public static final Reward mysteryMonday8       = new Reward("MysteryMonday8",        "0a058003-07ff-4879-8fc5-660f6c2c336c",  2345, true);
+    public static final Reward mysteryMonday9       = new Reward("MysteryMonday9",        "34191b18-c17a-4f97-a839-886366ea2085",  3333, true);
+    public static final Reward mysteryMonday10      = new Reward("MysteryMonday10",       "20597284-54d0-4d2f-b2f9-75cde3dbaffb",  2222, true);
 
     public static final Reward loyaltyMystery1       = new Reward("LoyaltyMystery1",      "af8759d0-40a8-41e1-bd57-46b865c029af",  2000, true);
     public static final Reward loyaltyMystery2       = new Reward("LoyaltyMystery2",      "af8759d0-40a8-41e1-bd57-46b865c029af",  20, true);
@@ -116,6 +132,7 @@ public class RewardRepository {
     public static final Reward anniversaryPaying    = new Reward("Anniversary1",   "ceeef843-8038-447a-8530-662beb83526d",  30000, true);         // 30000
     public static final Reward anniversaryFree      = new Reward("Anniversary2",   "ee1e120a-15b9-43d2-8159-4b7636925089",  10000, true);         // 10000
 
+    public static final Reward MAU_FREECOINS        = new Reward("MAU_FREE",        "2eb94bf3-fb9c-4fb2-8883-0b782f0e38d4",  3000, true);
 
 
     /****************************

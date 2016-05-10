@@ -100,7 +100,7 @@ public class EmailAction extends Action implements ActionInterface{
 
                 if(handler.send()){
 
-                    noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ), executionTime, localConnection );
+                    noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ), ActionType.EMAIL, executionTime, localConnection );
                     pause(1);
                     return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
                 }
@@ -113,6 +113,7 @@ public class EmailAction extends Action implements ActionInterface{
 
             }catch(DeliveryException e){
 
+                noteFailedExposure( (testUser == null ? actionParameter.facebookId : testUser ), ActionType.EMAIL, executionTime, localConnection );
                 return new ActionResponse(e.getStatus(),   "Message delivery failed");
 
             }

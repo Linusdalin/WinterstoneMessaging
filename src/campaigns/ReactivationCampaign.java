@@ -22,21 +22,24 @@ import java.sql.Timestamp;
 public class ReactivationCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "Reactivation";
+    private static final String Name = "Reactivation3060";
     private static final int CoolDown_Days = 36500;     // Only once per player
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT   = 60;     // This set very high to test out potential
-    private static final int MIN_ACTIVITY   = 10;           // This set very high to test out potential
+    private static final int INACTIVITY_LIMIT   = 20;
+    private static final int INACTIVITY_GIVEUP   = 60;
+    private static final int MIN_ACTIVITY   = 20;                  // Should be 30
 
-    private static final int DAILY_CAP   = 1000;         // Max per day
+    private static final int DAILY_CAP   = 5000;         // Max per day
     private int count = 0;
+    private String game;
     private String dayRestriction;
 
 
-    ReactivationCampaign(int priority, CampaignState activation, String days){
+    ReactivationCampaign(int priority, CampaignState activation, String game, String days){
 
         super(Name, priority, activation);
+        this.game = game;
         this.dayRestriction = days;
         setCoolDown(CoolDown_Days);
 
@@ -91,6 +94,12 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
          */
 
+        if(inactivity > INACTIVITY_GIVEUP){
+
+            System.out.println("    -- Campaign " + Name + " not firing. Too long inactivity" );
+            return null;
+
+        }
 
         if(inactivity > INACTIVITY_LIMIT){
 
@@ -109,7 +118,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
                 count++;
                 return new NotificationAction("You have 20,000 free coins to play for! We haven't seen you in a while. There are some fabulous new games to try out. ",
                         user, executionTime, getPriority(), getTag(), Name, 1, getState(), responseFactor)
-                        .withGame("clockwork")
+                        .withGame(game)
                         .withReward("cac6b086-189f-4ee6-bb30-7bcfb2a0ecfa");
 
 
@@ -119,7 +128,7 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
                 count++;
                 return new NotificationAction("You have 10,000 free coins to play for. We haven't seen you in a while. There are some fabulous new games to try out. ",
                         user, executionTime, getPriority(), getTag(),  Name, 2, getState(), responseFactor)
-                        .withGame("clockwork")
+                        .withGame(game)
                         .withReward("93f00dac-26cf-46e4-8bde-1eb59dd13032");
 
             }else if(user.sessions > MIN_ACTIVITY){
@@ -131,14 +140,14 @@ public class ReactivationCampaign extends AbstractCampaign implements CampaignIn
 
                     return new NotificationAction("You have got 10,000 extra free coins! We haven't seen you in a while and there are some fabulous new games to try out. Click here to claim ",
                             user, executionTime, getPriority(), getTag(),  Name, 3, getState(), responseFactor)
-                            .withGame("clockwork")
+                            .withGame(game)
                             .withReward("93f00dac-26cf-46e4-8bde-1eb59dd13032");
 
                 }
 
                 return new NotificationAction("You have got 3,000 extra free coins! We haven't seen you in a while and there are some fabulous new games to try out. Click here to claim ",
                         user, executionTime, getPriority(), getTag(),  Name, 83, getState(), responseFactor)
-                        .withGame("clockwork")
+                        .withGame(game)
                         .withReward("363526a3-1fb1-499d-bb33-66dd9dcb9259");
 
 

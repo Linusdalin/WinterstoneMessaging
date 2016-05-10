@@ -22,14 +22,14 @@ public class SeventeenEmailCampaign extends AbstractMobileCampaign implements Ca
     // Campaign config data
     private static final String Name = "Seventeen";
     private static final int CoolDown_Days = 100;     // This is a reminder mail
-    private int[] MessageIds = { 1, 2 };
 
-    private static final int DAILY_CAP = 2000;
+    private static final int DAILY_CAP = 5000;
     private int count = 0;
 
-    private static final int MIN_SESSIONS = 100;
-    private static final int MIN_AGE = 150;                      // 150 days old players. Lost cause....
-    private static final int MAX_INACTIVITY_FREE = 20;
+    private static final int MIN_SESSIONS = 80;
+    private static final int MIN_AGE = 200;                      // 150 days old players. Lost cause....
+    private static final int MAX_INACTIVITY_FREE = 60;
+    private static final int MIN_INACTIVITY_FREE = 25;
     private static final int MAX_INACTIVITY_PAYING = 0;
     private final Reward reward;
 
@@ -38,7 +38,6 @@ public class SeventeenEmailCampaign extends AbstractMobileCampaign implements Ca
         super(Name, priority, activation);
         this.reward = reward;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
 
     }
 
@@ -116,6 +115,14 @@ public class SeventeenEmailCampaign extends AbstractMobileCampaign implements Ca
             return null;
 
         }
+
+        if(inactivity < MIN_INACTIVITY_FREE){
+
+            System.out.println("    -- Campaign " + Name + " not firing. User is active.");
+            return null;
+
+        }
+
 
         if(playerInfo.hasClaimed(reward)){
 

@@ -24,7 +24,7 @@ public class ReactivationMobileCampaign extends AbstractCampaign implements Camp
     private static final int CoolDown_Days = 11;                    // Every once in a while
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 150;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 100;   // Max days inactivity to get message
     private static final int MIN_INACTIVITY_FREE        = 5;     // Starting point
     private static final int INACTIVITY_LIMIT_PAYING    = 0;   // Max days inactivity to get message
     private static final int MIN_INACTIVITY_PAYING      = 99999;     // Starting point

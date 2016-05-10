@@ -2,7 +2,7 @@ package campaigns;
 
 import action.ActionInterface;
 import action.EmailAction;
-import action.MobilePushAction;
+import action.NotificationAction;
 import core.PlayerInfo;
 import email.EmailInterface;
 import email.NotificationEmail;
@@ -21,24 +21,23 @@ import java.sql.Timestamp;
  *
  */
 
-public class TryNewGameMobileClockworkCampaign extends AbstractMobileCampaign implements CampaignInterface {
+public class TryNewGameHighVoltageCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Game = "clockwork";
-    private static final String GameName = "Clockwork";
-    private static final String Name = "TryNewMobileGame"+Game;
-    private static final int CoolDown_Days = 10;            // Just once per game
-
+    private static final String Game = "high_voltage";
+    private static final String GameName = "High Voltage";
+    private static final String Name = "TryNewGame"+Game;
+    private static final int CoolDown_Days = 9999;            // Just once per game
 
     // Trigger specific config data
-    private static final int Min_Sessions       =  10;
+    private static final int Min_Sessions       =   30;        //Should be 20
     private static final int Min_Inactivity1    =   3;                          // Active players
-    private static final int Min_Inactivity2    =  15;                         // Lapsing players
-    private static final int Min_Inactivity3    =  40;                         // Lapsed players
+    private static final int Min_Inactivity2    =  25;                         // Lapsing players
+    private static final int Min_Inactivity3    =  50;                         // Lapsed players
     private static final int Max_Inactivity     = 150;
     private String dayRestriction;
 
-    TryNewGameMobileClockworkCampaign(int priority, CampaignState active, String dayRestriction){
+    TryNewGameHighVoltageCampaign(int priority, CampaignState active, String dayRestriction){
 
         super(Name, priority, active);
         this.dayRestriction = dayRestriction;
@@ -63,9 +62,9 @@ public class TryNewGameMobileClockworkCampaign extends AbstractMobileCampaign im
         User user = playerInfo.getUser();
 
 
-        if(!playerInfo.getUsageProfile().isMobilePlayer()){
+        if(playerInfo.getUsageProfile().isMobilePlayer()){
 
-            System.out.println("    -- Campaign " + Name + " not firing. Only mobile players");
+            System.out.println("    -- Campaign " + Name + " not firing. Not for mobile players");
             return null;
         }
 
@@ -127,21 +126,16 @@ public class TryNewGameMobileClockworkCampaign extends AbstractMobileCampaign im
 
         }
 
-        if(playerInfo.fallbackFromMobile()){
-
-            return new EmailAction(gameActivationEmail(user, reward, createPromoCode(202)), user, executionTime, getPriority(), getTag(), 202, getState(), responseFactor);
-
-        }
-
-
-        int messageId = 302;
+        int messageId = 2;
         if(inactivity > Min_Inactivity2 && inactivity <= Min_Inactivity3){
 
-            messageId = 303;
+            messageId = 3;
         }
+        messageId = tagMessageIdTimeOfDay(messageId, executionTime);
+
 
         System.out.println("    -- Sending freespin offer for game " + Game + "\n" );
-        return new MobilePushAction(reward.getCoins() + " to test out the  " + GameName + ". Click here to claim and try it out for free!",
+        return new NotificationAction("We have added " + reward.getCoins() + " free spins for you in our new hot favourite game " + GameName + ". click here to claim and try it out for free!",
                 user, executionTime, getPriority(), getTag(),  Name, messageId, getState(), responseFactor)
                 .withGame(Game)
                 .withReward(reward);
@@ -152,17 +146,9 @@ public class TryNewGameMobileClockworkCampaign extends AbstractMobileCampaign im
 
     public static EmailInterface gameActivationEmail(User user, Reward reward, String promoCode) {
 
-        return new NotificationEmail("We have a recommendation for you",
-
-                "<table width=\"100%\"><tr><td width=\"50%\">" +
-                        "<p>Don't miss out one of the most liked games at SlotAmerica. It is called <b>"+ GameName+"</b>. with a really cool freespin" +
-                        "<p>If you have an older version of the App, you will be asked to upgrade it.</p>" +
-                        "</td>" +
-                        "<td width=\"50%\">" +
-                        "<img src=\"https://"+imageURL+"clockwork_mailimage.png\" width=200px>" +
-                        "</td></tr></table>" +
-                "<p>We really think you will like it. We have added "+ reward.getCoins()+" free spins for you to try it out!</p>" +
-                "<p> Just click here <a href=\"http://smarturl.it/launch_slotamerica?game="+ Game+"&promocode="+ promoCode+"&reward="+reward.getCode()+"\"> to claim your free play</a></p>",
+        return new NotificationEmail("We have a recommendation for you", "<p>Don't miss out one of the most liked games at SlotAmerica. It is called <b>High Voltage</b>. with an electrifying spin-till-you-win feature. " +
+                "We really think you will like it. We have added "+ reward.getCoins()+" free spins for you to try it out!</p>" +
+                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?game="+ Game+"&promoCode="+ promoCode+"&reward="+reward.getCode()+"\"> to claim your spins</a></p>",
                 "Hello "+ user.name+" Don't miss out the game "+ GameName+" we released here at Slot America. We think you will like it...");
     }
 
@@ -192,15 +178,15 @@ public class TryNewGameMobileClockworkCampaign extends AbstractMobileCampaign im
     protected Reward decideReward(User user) {
 
         if(isHighSpender(user))
-            return RewardRepository.M_ClockworkHigh;
+            return RewardRepository.VoltageHigh;
 
         if(isPaying(user))
-            return RewardRepository.M_ClockworkPaying;
+            return RewardRepository.VoltagePaying;
 
         if(isFrequent(user))
-            return RewardRepository.M_ClockworkFrequent;
+            return RewardRepository.VoltageRest;
 
-        return RewardRepository.M_ClockworkRest;
+        return RewardRepository.VoltageRest;
     }
 
 

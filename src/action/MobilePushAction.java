@@ -99,17 +99,18 @@ public class MobilePushAction extends Action implements ActionInterface{
             try{
 
                 if(handler.send()){
-                    noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ) , executionTime, localConnection );
+                    noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ) , ActionType.PUSH, executionTime, localConnection );
                     return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
                 }
 
             }catch(DeliveryException e){
 
+                noteFailedExposure( (testUser == null ? actionParameter.facebookId : testUser ) , ActionType.PUSH, executionTime, localConnection );
                 return new ActionResponse(e.getStatus(),   "Message delivery failed");
 
             }
 
-            noteFailedExposure( (testUser == null ? actionParameter.facebookId : testUser ) , executionTime, localConnection );
+            noteFailedExposure( (testUser == null ? actionParameter.facebookId : testUser ) , ActionType.PUSH, executionTime, localConnection );
             return new ActionResponse(ActionResponseStatus.FAILED,   "Message delivery failed");
 
         }

@@ -26,7 +26,7 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
 
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT_FREE      = 120;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 20;   // Max days inactivity to get message
     private static final int INACTIVITY_LIMIT_PAYING    = 200;   // Max days inactivity to get message
     private static final int ACTIVITY_MIN   = 2;               // Min sessions to be active
 
@@ -274,6 +274,37 @@ public class MobileGameNotification extends AbstractMobileCampaign implements Ca
                             "Rack’ em up! SlotAmerica’s new release is 8x Special, inspired in style by the wonderful world of Pool. We fondly remember “The Colour of Money”, with Paul Newman and Tom Cruise." +
                             "And whilst there’s absolutely no hustling going on in SlotAmerica – our 8x Special has plenty of ball-breaking action! Double pay wilds, a whopping 8x wild on the center reel and - to top it off - a wild joker instant re-spin that will hopefully have you on a roll in no time!\n"
                             );
+
+
+        if(game.equals("president"))
+
+            return new NotificationEmail("New Mobile Game President!",
+
+                    "<table width=\"100%\"><tr><td width=\"50%\">" +
+                            "<p>Once again we have a new mobile release. This time it is <b><i>President</i></b>! The stake is high, but the rewards are enormous.<p>" +
+                            "<p>If you have an older version of the App, you will be asked to upgrade it.</p>" +
+                            "</td>" +
+                            "<td width=\"50%\">" +
+                            "<img src=\"https://"+imageURL+"president_mailimage2.png\" width=200px>" +
+                            "</td></tr></table>" +
+                            "<p>It’s a chance for you to step into the oval room, grab the reigns of the most powerful country in the world, and rule the reels!\n" +
+                            "\n" +
+                            "<p>Maybe luck will stand by you’ll, and you’ll find yourself up in the SlotAmerica ‘polls’, winning tournaments, your name on the billboard and " +
+                            "your campaign fund war chest filled to the brim? \n</p>" +
+                            "<p>Happy playing!</p>\n" +
+                            "<p><b>Sam and Diane</b></p>\n" +
+                            "<p>Your SlotAmerica Casino Managers</p>\n" +
+                            "<table width=\"100%\" border=\"0\"><tr>" +
+                            "<td width=\"50%\"><a href=\""+ UpgradeLink +"\"><img src=\"https://"+imageURL+"icon_appleStore.png\" width=200px></a></td>" +
+                            "<td width=\"50%\"><a href=\""+ UpgradeLink +"\"><img src=\"https://"+imageURL+"icon_googlePlay.png\" width=200px></a></td>" +
+                            "</tr></table>\n",
+
+
+
+                    "Clockwork released on SlotAmerica mobile!" +
+                            "Rack’ em up! SlotAmerica’s new release is 8x Special, inspired in style by the wonderful world of Pool. We fondly remember “The Colour of Money”, with Paul Newman and Tom Cruise." +
+                            "And whilst there’s absolutely no hustling going on in SlotAmerica – our 8x Special has plenty of ball-breaking action! Double pay wilds, a whopping 8x wild on the center reel and - to top it off - a wild joker instant re-spin that will hopefully have you on a roll in no time!\n"
+            );
 
 
 

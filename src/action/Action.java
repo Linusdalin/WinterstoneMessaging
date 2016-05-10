@@ -327,15 +327,16 @@ public abstract class Action implements ActionInterface{
         this.useStage = true;
     }
 
-    protected void noteSuccessFulExposure(String actualUser, Timestamp executionTime, Connection localConnection) {
+    protected void noteSuccessFulExposure(String actualUser, ActionType type, Timestamp executionTime, Connection localConnection) {
 
-        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.PUSH.name(), true);
+        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, type.name(), true);
         exposure.store(localConnection);
     }
 
-    protected void noteFailedExposure(String actualUser, Timestamp executionTime, Connection localConnection) {
+    protected void noteFailedExposure(String actualUser, ActionType type, Timestamp executionTime, Connection localConnection) {
 
-        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, ActionType.PUSH.name(), false);
+        System.out.println(" -- Noted failed exposure of type " + type.name());
+        Exposure exposure = new Exposure(actualUser, getCampaign(), getMessageId(), executionTime , promoCode, type.name(), false);
         exposure.store(localConnection);
     }
 

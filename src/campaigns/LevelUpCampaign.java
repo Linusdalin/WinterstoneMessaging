@@ -39,7 +39,7 @@ public class LevelUpCampaign extends AbstractCampaign implements CampaignInterfa
     private static final int Level_up_200           = 198;
 
 
-    private static final String[] messages = {
+    public static final String[] messages = {
             "You are moving up the levels. Already at 10! Don't forget to check out the bonuses you get by levelling up at Slot America! Click here!",
             "You reached level 20! Click here for a surprise free coin reward",
             "You are getting close to the level 50 bonus! The diamond bonus baseline will give you more free coins. Click here for a final push...",
@@ -126,11 +126,21 @@ public LevelUpCampaign(int priority, CampaignState activation){
             System.out.println("    -- Campaign " + Name + " firing message for level " + user.level + " with message " + message + 1  );
 
         ActionInterface action;
+        String reward = null;
+
+        if(message == 1){
+
+            reward = "0fcb000c-c417-429f-bf2b-4d9a5f5ccff7";
+        }
+        if(message == 7){
+
+            reward = "9282b539-40b0-4744-a793-2e022bfd85a8";
+        }
         if(playerInfo.getUsageProfile().isMobilePlayer()){
 
              if(playerInfo.fallbackFromMobile() && message != 7){
 
-                 return new EmailAction(getLevelUpEmail(messages[message], user.level), user, executionTime, getPriority(), getTag(), (message + 201), getState(), responseFactor);
+                 return new EmailAction(getLevelUpEmail(messages[message], user.level, reward), user, executionTime, getPriority(), getTag(), (message + 201), getState(), responseFactor);
              }
 
 
@@ -142,25 +152,21 @@ public LevelUpCampaign(int priority, CampaignState activation){
 
         }
 
+        if(reward != null)
+            action.withReward(reward);
 
 
-        if(message == 1){
-
-            action.withReward("0fcb000c-c417-429f-bf2b-4d9a5f5ccff7");
-        }
-        if(message == 7){
-
-            action.withReward("9282b539-40b0-4744-a793-2e022bfd85a8");
-        }
 
         return action;
 
     }
 
-    public static EmailInterface getLevelUpEmail(String message, int level) {
+    public static EmailInterface getLevelUpEmail(String message, int level, String reward) {
 
-        return new NotificationEmail("Congratulation, you reached level " + level, "<p>"+ message+"</p>",
-                message);
+        String link = " <a href=\"http://smarturl.it/launch_slotamerica"+(reward != null ? "reward=" +reward : "")+"\"> Play! </a> ";
+
+        return new NotificationEmail("Congratulation, you reached level " + level, "<p>"+ message + link +"</p>",
+                message + link);
     }
 
         /*********************************************************************

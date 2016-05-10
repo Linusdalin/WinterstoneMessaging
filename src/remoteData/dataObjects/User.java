@@ -72,6 +72,9 @@ public class User {
 
     public boolean isMobileFirst() {
 
+        if(promoCode == null)
+            return false;
+
         return promoCode.startsWith("Mobile");
     }
 }

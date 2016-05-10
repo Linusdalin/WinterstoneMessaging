@@ -23,14 +23,14 @@ public class RewardReminderCampaign extends AbstractCampaign implements Campaign
     // Campaign config data
     private static final String Name = "Reminder";
     private static final int CoolDown_Days = 12;
-    private static final int[] MessageIds = { 1  };
     private Reward reward;
     private String game;
     private String day;
     private String message;
 
-    private static final int Min_Sessions = 8;
-    private static final int Max_Inactivity = 14;
+    private static final int Min_Sessions = 10;
+    private static final int Min_Inactivity = 25;
+    private static final int Max_Inactivity = 40;
 
 
 
@@ -42,7 +42,6 @@ public class RewardReminderCampaign extends AbstractCampaign implements Campaign
         this.day = day;
         this.message = message;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -107,6 +106,13 @@ public class RewardReminderCampaign extends AbstractCampaign implements Campaign
             System.out.println("    -- Campaign " + Name + " not firing. User is inactive (" + inactivity + " >" + Max_Inactivity + ")" );
             return null;
         }
+
+        if(inactivity <  Min_Inactivity){
+
+            System.out.println("    -- Campaign " + Name + " not firing. User is already active (" + inactivity + " <" + Min_Inactivity + ")" );
+            return null;
+        }
+
 
         // Check exposure and NOT claimed reward
 

@@ -27,11 +27,11 @@ public class MobileCrossPromotionCampaign extends AbstractMobileCampaign impleme
 
     private static final String ImageLink = "http://slamdunkgaming.com/IpadIphone.png";
 
-    private static final int INACTIVITY_LIMIT_FREE      = 150;   // Max days inactivity to get message
-    private static final int INACTIVITY_LIMIT_PAYING    = 250;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_FREE      = 250;   // Max days inactivity to get message
+    private static final int INACTIVITY_LIMIT_PAYING    = 350;   // Max days inactivity to get message
     private static final int ACTIVITY_MIN   = 5;               // Min sessions to be active
 
-    private static final int DAILY_LIMIT   = 2000;               // Mails per day
+    private static final int DAILY_LIMIT   = 3000;               // Mails per day
 
     private int count = 0;
 

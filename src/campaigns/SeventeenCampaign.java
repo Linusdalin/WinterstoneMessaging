@@ -20,14 +20,14 @@ public class SeventeenCampaign extends AbstractMobileCampaign implements Campaig
     // Campaign config data
     private static final String Name = "Seventeen";
     private static final int CoolDown_Days = 5;     // Once in a while
-    private int[] MessageIds = { 1, 2 };
 
     private static final int DAILY_CAP = 1000;
     private int count = 0;
 
     private static final int MIN_SESSIONS = 100;
     private static final int MIN_AGE = 150;                      // 150 days old players. Lost cause....
-    private static final int MAX_INACTIVITY_FREE = 3;
+    private static final int MIN_INACTIVITY_FREE = 20;
+    private static final int MAX_INACTIVITY_FREE = 40;            // Normally 0 - 3 for active players
     private static final int MAX_INACTIVITY_PAYING = 0;
     private final Reward reward;
 
@@ -36,7 +36,6 @@ public class SeventeenCampaign extends AbstractMobileCampaign implements Campaig
         super(Name, priority, activation);
         this.reward = reward;
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
 
     }
 
@@ -118,6 +117,12 @@ public class SeventeenCampaign extends AbstractMobileCampaign implements Campaig
 
         }
 
+        if(inactivity < MIN_INACTIVITY_FREE){
+
+            System.out.println("    -- Campaign " + Name + " not firing. User is already active.");
+            return null;
+
+        }
 
         if(playerInfo.hasClaimed(reward)){
 

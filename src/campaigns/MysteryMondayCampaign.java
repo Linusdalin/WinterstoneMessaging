@@ -28,10 +28,10 @@ public class MysteryMondayCampaign extends AbstractCampaign implements CampaignI
     // Trigger specific config data
     private static final int Min_Sessions = 30;
 
-    private static final int Min_Inactivity1 = 3;                          // Active players - no message
-    private static final int Min_Inactivity2 = 15;                         // Lapsing players
-    private static final int Min_Inactivity3 = 30;                         // Lapsed players
-    private static final int Max_Inactivity  = 60;
+    private static final int Min_Inactivity1 = 6;                          // Active players - no message
+    private static final int Min_Inactivity2 = 25;                         // Lapsing players
+    private static final int Min_Inactivity3 = 45;                         // Lapsed players
+    private static final int Max_Inactivity  = 200;
     private Reward reward;
     private final String day;
 

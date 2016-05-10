@@ -120,7 +120,7 @@ public class NotificationAction extends Action implements ActionInterface{
             try{
 
                 if(handler.send()){
-                    noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ) , executionTime, localConnection );
+                    noteSuccessFulExposure( (testUser == null ? actionParameter.facebookId : testUser ) , ActionType.NOTIFICATION, executionTime, localConnection );
                     return new ActionResponse(ActionResponseStatus.OK,   "Message sent");
                 }
 
@@ -130,7 +130,7 @@ public class NotificationAction extends Action implements ActionInterface{
 
             }
 
-            //TODO: Storing failed notification should go here
+            noteFailedExposure( (testUser == null ? actionParameter.facebookId : testUser ) , ActionType.NOTIFICATION, executionTime, localConnection );
             return new ActionResponse(ActionResponseStatus.FAILED,   "Message delivery failed");
 
         }

@@ -99,15 +99,13 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
 
         return new NotificationEmail("welcome to the SlotAmerica family!", "<p> Thank you for your coin purchase. " +
 
-                "This is what keeps us working long days and nights bringing you the best slot games on facebook. You are part of supporting this!</p>" +
+                "This is what keeps us working long days and nights bringing you the best slot games on Facebook. <i>You are part of supporting this!</i></p>" +
                 "<p> We always strive to give you the best and most genuine slot experience possible. That's why we do not offend our " +
                     "slots loving players with the kind of fake machines that are too common on facebook. With SlotAmerica you know you get the real deal!</p>" +
 
                 (payment.amount >=24 ?
                 "<p> As with any Casino, our most loyal players are always rewarded. If you feel you would qualify in our VIP program, please let us know immediately " +
-                "at <a href=\"mailto://contact@slot-america.com?subject=VIP\">VIP host service</a> and we can set you up on an individual plan for all your further purchases.</p> " +
-                    "slots loving players with the kind of fake machines that are too common on facebook. With SlotAmerica you know you get the real deal!</p>"
-                        :""
+                "at <a href=\"mailto://contact@slot-america.com?subject=VIP\">VIP host service</a> and we can set you up on an individual plan for all your further purchases.</p> " :""
                 ) +
                 "<p> Sometimes things go wrong! If there is any problem, please let us know. You can always email support@slot-america.com and we will do our " +
                     "best to help you out. We are of course also interested to hear what you think about the games and other functionality. Just send an email to support.</p>",
@@ -121,9 +119,7 @@ public class FirstPaymentCampaign extends AbstractCampaign implements CampaignIn
                         (payment.amount >=24 ?
 
                                 "As with any Casino, our most loyal players are always rewarded. If you feel you would qualify in our VIP program, please let us know immediately " +
-                "at contact@slot-america.com and we can set you up on an individual plan for all your further purchases.\n\n "
-                                : "")+
-                "slots loving players with the kind of fake machines that are too common on facebook. With SlotAmerica you know you get the real deal!\n\n" +
+                "at contact@slot-america.com and we can set you up on an individual plan for all your further purchases.\n\n " : "")+
                 "Sometimes things go wrong! If there is any problem, please let us know. You can always email support@slot-america.com and we will do our " +
                 "best to help you out. We are of course also interested to hear what you think about the games and other functionality. Just send an email to support.\n\n");
     }

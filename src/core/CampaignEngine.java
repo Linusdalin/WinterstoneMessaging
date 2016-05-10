@@ -11,6 +11,7 @@ import dbManager.ConnectionHandler;
 import dbManager.ConnectionPool;
 import dbManager.DatabaseException;
 import executionStatistics.ExecutionStatistics;
+import facebook.FacebookAudience;
 import hailMary.HailMaryUsers;
 import localData.Exposure;
 import localData.ExposureTable;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Calendar;
+
+import static campaigns.CampaignRepository.activeCampaigns;
 
 /***************************************************************************'
  *
@@ -142,7 +145,7 @@ public class CampaignEngine {
         Calendar calendar = Calendar.getInstance();
         Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
         int count = 0;
-        ExecutionStatistics executionStatistics = new ExecutionStatistics(CampaignRepository.activeCampaigns);
+        ExecutionStatistics executionStatistics = new ExecutionStatistics(activeCampaigns);
 
         System.out.println("******************************************************\n* Passing over all players...");
         int userCount = 0;
@@ -218,11 +221,19 @@ public class CampaignEngine {
 
             manualActionOutbox.purge(executionTime, connection);
 
+            // Print facebook audience for all campaigns
+
+            FacebookAudience newFacebookAudience = new FacebookAudience();
+            newFacebookAudience.load(connection, 20);    // 20 hours back to avoid overlap from yesterday
+            //System.out.println(newFacebookAudience.toString());
+
+
             SoundPlayer.playSound(SoundPlayer.ReadyBeep);
 
         }
 
     }
+
 
     private boolean selectAndProceed(ExecutionStatistics executionStatistics) {
 
@@ -345,51 +356,67 @@ public class CampaignEngine {
 
     private int handleBatch(Connection tempConnection, int batchNo, String startDate, DataCache dbCache, Timestamp executionTime, ExecutionStatistics executionStatistics, int userCount) {
 
+        try {
+
+            System.out.println(" -- Handle Batch #" + batchNo);
+
+            UserTable allPlayers = new UserTable();
+            loadWithRetry(allPlayers, startDate, userCount);
+            User user = allPlayers.getNext();
+            ExposureTable campaignExposures = new ExposureTable(tempConnection);
+
+            if(user == null)
+                return -1;
+
+            while(user != null && (userCount++ < analysis_cap || analysis_cap == -1)){
+
+                // Loop over all users.
+                //   - Get the information,
+                //   - get an appropriate action (depending on user info and previous activity and finally
+                //   - handle the action (queue and store statistics)
 
 
-        System.out.println(" -- Handle Batch #" + batchNo);
+                System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
+                PlayerInfo playerInfo = new PlayerInfo(user, dbCache, tempConnection);
 
-        UserTable allPlayers = new UserTable();
-        loadWithRetry(allPlayers, startDate, userCount);
-        User user = allPlayers.getNext();
-        ExposureTable campaignExposures = new ExposureTable(tempConnection);
+                int paymentBehavior = playerInfo.getPaymentBehavior();
+                System.out.println(" -- Paymentbehavior = " + paymentBehavior);
 
-        if(user == null)
+                executionStatistics.registerReceptivityDay(playerInfo.getReceptivityForPlayer().getFavouriteDay(ReceptivityProfile.SignificanceLevel.GENERAL));
+                executionStatistics.registerReceptivityTime(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.GENERAL));
+
+                ActionInterface action = evaluateUser(tempConnection, playerInfo, executionTime, campaignExposures, executionStatistics);
+                handleAction(action, playerInfo, campaignExposures, executionStatistics);
+
+                campaignExposures.close();
+
+                user = allPlayers.getNext();
+            }
+
+            if(userCount >= analysis_cap)
+                return -1;
+
+            //allPlayers.close();
+            return userCount;
+
+        } catch (DatabaseException e) {
+
+            SoundPlayer.playSound(SoundPlayer.FailBeep);
+            System.out.println("Error with the database. Continue to send?\n>");
+
             return -1;
-
-        while(user != null && (userCount++ < analysis_cap || analysis_cap == -1)){
-
-            // Loop over all users.
-            //   - Get the information,
-            //   - get an appropriate action (depending on user info and previous activity and finally
-            //   - handle the action (queue and store statistics)
-
-
-            System.out.println(" ----------------------------------------------------------\n  " + userCount + "- Evaluating User "+ user.toString());
-            PlayerInfo playerInfo = new PlayerInfo(user, dbCache, tempConnection);
-
-            int paymentBehavior = playerInfo.getPaymentBehavior();
-            System.out.println(" -- Paymentbehavior = " + paymentBehavior);
-
-            executionStatistics.registerReceptivityDay(playerInfo.getReceptivityForPlayer().getFavouriteDay(ReceptivityProfile.SignificanceLevel.GENERAL));
-            executionStatistics.registerReceptivityTime(playerInfo.getReceptivityForPlayer().getFavouriteTimeOfDay(ReceptivityProfile.SignificanceLevel.GENERAL));
-
-            ActionInterface action = evaluateUser(tempConnection, playerInfo, executionTime, campaignExposures, executionStatistics);
-            handleAction(action, playerInfo, campaignExposures, executionStatistics);
-
-            campaignExposures.close();
-
-            user = allPlayers.getNext();
         }
 
-        if(userCount >= analysis_cap)
-            return -1;
 
-        //allPlayers.close();
-        return userCount;
     }
 
-    private void loadWithRetry(UserTable allPlayers, String startDate, int userCount) {
+    private void loadWithRetry(UserTable allPlayers, String startDate, int userCount) throws DatabaseException{
+
+        allPlayers.load(dbConnection, " and players.created >= '"+ startDate+"' and players.uninstall=0", "ASC", batchSize, userCount);      // Restriction for testing
+
+    }
+
+        private void loadWithRetryOld(UserTable allPlayers, String startDate, int userCount) {
 
         boolean retry = false;
 
@@ -423,7 +450,7 @@ public class CampaignEngine {
         Calendar calendar = Calendar.getInstance();
         Timestamp executionTime = new java.sql.Timestamp(calendar.getTime().getTime());
 
-        ExecutionStatistics executionStatistics = new ExecutionStatistics(CampaignRepository.activeCampaigns);
+        ExecutionStatistics executionStatistics = new ExecutionStatistics(activeCampaigns);
         ExposureTable campaignExposures = new ExposureTable(localConnection);
 
         System.out.println("******************************************************\n* Passing over all players...");
@@ -831,5 +858,6 @@ public class CampaignEngine {
 
 
     }
+
 
 }

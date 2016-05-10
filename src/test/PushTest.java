@@ -128,14 +128,14 @@ public class PushTest {
 
 
     @Test
-    public void personalMessageTest(){
+    public void personalRewardMessage(){
 
         try{
 
             PushHandler handler = new PushHandler()
-                    .withMessage("This is a test message from Linus!")
-                    .withGame("royal_colors")
-                    .toRecipient(nissen.id);
+                    .withMessage("Surprise from Susan")
+                    .withReward("8fd97e79-2080-4512-b85c-d38dae092cdb")
+                    .toRecipient("10206608391826614");
 
             boolean success = handler.send();
 

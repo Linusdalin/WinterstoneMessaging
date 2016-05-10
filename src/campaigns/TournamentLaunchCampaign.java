@@ -8,36 +8,32 @@ import email.EmailInterface;
 import email.NotificationEmail;
 import remoteData.dataObjects.User;
 import response.ResponseStat;
-import rewards.Reward;
 
 import java.sql.Timestamp;
 
 
 /************************************************************************'
  *
- *          Giving free spins to players that have not tried a specific game
+ *          Inform mobile players that the tournaments are launched on mobile
  *
  */
 
-public class MysteryMondayMobileCampaign extends AbstractCampaign implements CampaignInterface {
+public class TournamentLaunchCampaign extends AbstractCampaign implements CampaignInterface {
 
     // Campaign config data
-    private static final String Name = "MysteryMonday";
-    private static final int CoolDown_Days = 6;            // Just once per week
+    private static final String Name = "Tournament";
+    private static final int CoolDown_Days = 99999;            // Just once
 
     // Trigger specific config data
-    private static final int Min_Sessions = 10;
+    private static final int Min_Sessions = 10;                         // Decrease this over time
 
-    private static final int Min_Inactivity = 3;                          // Active players - no message
-    private static final int Max_Inactivity  = 200;
-    private Reward reward;
-    private final String day;
+    private static final int Min_Inactivity = 4;                          // This is pretty much everyone
+    private static final int Max_Inactivity  = 250;
+    private final String day = null;
 
-    MysteryMondayMobileCampaign(int priority, CampaignState active, Reward reward, String day){
+    TournamentLaunchCampaign(int priority, CampaignState active){
 
         super(Name, priority, active);
-        this.reward = reward;
-        this.day = day;
         setCoolDown(CoolDown_Days);
     }
 
@@ -95,33 +91,28 @@ public class MysteryMondayMobileCampaign extends AbstractCampaign implements Cam
 
         }
 
-        if(playerInfo.hasClaimed(reward)){
-
-            System.out.println("    -- Campaign " + Name + " not firing. Player already claimed the reward " );
-            return null;
-        }
-
 
         System.out.println("    -- Campaign " + Name + " firing. Sending mystery monday offer" );
 
         if(!playerInfo.fallbackFromMobile()){
 
-                return new MobilePushAction("Mystery Monday reward! Freespins!", user, executionTime, getPriority(), getTag(), Name,  301, getState(), responseFactor)
-                        .withReward(reward);
+                return new MobilePushAction("Tournament launch! Try it out", user, executionTime, getPriority(), getTag(), Name,  301, getState(), responseFactor);
         }
 
-        return new EmailAction(mysteryMondayEmail(user, reward), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
+        return new EmailAction(tournamentLaunchEmail(user, createPromoCode(201)), user, executionTime, getPriority(), getTag(), 201, getState(), responseFactor);
 
     }
 
 
 
-    public static EmailInterface mysteryMondayEmail(User user, Reward reward) {
+    public static EmailInterface tournamentLaunchEmail(User user, String promoCode) {
 
-        return new NotificationEmail("It is Mystery Monday",
-                "<p>Don't miss out on the mystery free coin rewards at the SlotAmerica app page. Every now and then there are surprise free coins. Remember to like the page not to miss out on all the free play!</p>" +
-                "<p> Just click here <a href=\"https://www.facebook.com/slotAmerica/\"> to find more</a></p>",
-                "Hello "+ user.name+" Don't miss out on the mystery free coin rewards at the SlotAmerica app page. Every now and then there are surprise free coins. Remember to like the page not to miss out on all the free play!");
+        return new NotificationEmail("Tournaments on SlotAmerica Mobile",
+                "<p>We have now launched tournaments on SlotAmerica Mobile. Just by playing you also participate in the tournaments and can win extra coins. You climb in the leader board just by betting " +
+                        "and can really jump high in positions when you hit a big win. Check out your position with the little tournament widget in the top left corner. Click on it to see more details! </p>" +
+                "<p> Just click here <a href=\"http://smarturl.it/launch_slotAmerica?promoCode="+promoCode+"\"> to try it out NOW!</a></p>",
+                "Hello "+ user.name+ ", we have now launched tournaments on SlotAmerica Mobile. Just by playing you also participate in the tournaments and can win extra coins. You climb in the leader board just by betting " +
+                "and can really jump high in positions when you hit a big win. Check out your position with the little tournament widget in the top left corner. Click on it to see more details!");
     }
 
 

@@ -33,13 +33,15 @@ public class ConversionOfferCampaign extends AbstractCampaign implements Campaig
     // Trigger specific config data
     private static final int Min_Sessions = 1;
     private static final int Min_Sessions_For_Message = 4;
-    private static final int TARGET_AGE = 5;             // The whole week
-    private static final int MAX_IDLE = 4;
+    private static final int TARGET_AGE = 10;             // The whole week
+    private static final int MAX_IDLE = 5;
+    private int hours;
     private boolean verbose;                             // Actually tell the users or just quietly trigger the campaign
 
-    ConversionOfferCampaign(int priority, CampaignState active, boolean verbose){
+    ConversionOfferCampaign(int priority, CampaignState active, int hours, boolean verbose){
 
         super(Name, priority, active);
+        this.hours = hours;
         this.verbose = verbose;
         setCoolDown(CoolDown_Days);
     }
@@ -113,7 +115,7 @@ public class ConversionOfferCampaign extends AbstractCampaign implements Campaig
 
         System.out.println("    -- Campaign" + Name + " firing. Triggering conversion offer");
 
-        ActionInterface triggerAction = new TriggerEventAction(EventRepository.Conversion1, 48, user, executionTime, getPriority(), Name, 1, getState(), responseFactor);
+        ActionInterface triggerAction = new TriggerEventAction(EventRepository.Conversion1, hours, user, executionTime, getPriority(), Name, 1, getState(), responseFactor);
 
         if(user.sessions > Min_Sessions_For_Message && verbose){
 

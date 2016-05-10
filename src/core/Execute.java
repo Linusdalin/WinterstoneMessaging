@@ -12,7 +12,6 @@ import transfer.Transfer;
  *
  *              TODO:
  *
- *              *  - Get statistics per campaign+message per day
  *              *  - Test a specific player
  *              *  - Separate notification and email in the summary report before executing actions
  *              *  - Handle fail delivery of notifications and email
@@ -32,8 +31,8 @@ import transfer.Transfer;
 public class Execute {
 
         private static final int     Threshold              = 50;
-        private static final int     Send_Cap               = 4000;
-        private static final int     User_Cap               = 500000;
+        private static final int     Send_Cap               = 10000;
+        private static final int     User_Cap               = 250000;
         private static final boolean DRY_RUN                = false;
         private static final boolean OVERRIDE_TIME_CONSTR   = false;
         private static final String  UserScrapeStart        = "0000-00-00";

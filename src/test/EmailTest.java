@@ -271,7 +271,7 @@ public class EmailTest {
             EmailHandler handler;
 
             handler = new EmailHandler()
-                    .withEmail(MobileGameNotification.gameEmail("eight_times_pay", user, "tag-1"))
+                    .withEmail(MobileGameNotification.gameEmail("president", user, "tag-1"))
                     .toRecipient(user.id);
 
             success = handler.send();

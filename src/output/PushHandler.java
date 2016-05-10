@@ -91,7 +91,7 @@ public class PushHandler {
     public boolean send() throws DeliveryException{
 
         if(message == null){
-            System.out.println("No email");
+            System.out.println("No message");
             return false;
 
         }

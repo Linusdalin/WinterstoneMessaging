@@ -10,6 +10,7 @@ import email.NotificationEmail;
 import receptivity.ReceptivityProfile;
 import remoteData.dataObjects.User;
 import response.ResponseStat;
+import rewards.RewardRepository;
 
 import java.sql.Timestamp;
 
@@ -27,7 +28,6 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
     // Campaign config data
     private static final String Name = "ChurnPoke";
     private static final int CoolDown_Days = 5;
-    private int[] MessageIds = {    };
 
 
     // Trigger specific config data
@@ -38,7 +38,6 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -230,6 +229,16 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
 
 
         }
+        else if(idleDays > 25 && idleDays <= 30 && user.payments == 0){
+
+
+            System.out.println("    -- Sending a Fifteen day churn warning poke" );
+            return new NotificationAction("There are new games and you have some surprise coins to try them out for free! Just click here!",
+                    user, executionTime, getPriority(), getTag(),  Name,  9, getState(), responseFactor)
+                    .withReward(RewardRepository.MAU_FREECOINS);
+
+
+        }
         else if(idleDays > 15  && isOkDay(playerInfo, executionTime)){
 
 
@@ -239,7 +248,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
         }
         else{
 
-            System.out.println("    -- Campaign " + Name + " not firing. Not three day churn warning (last:" + lastSession.toString() );
+            System.out.println("    -- Campaign " + Name + " not firing. Not churn warning (last:" + lastSession.toString() );
             return null;
 
         }
@@ -365,7 +374,7 @@ public class ChurnPokeCampaign extends AbstractCampaign implements CampaignInter
      *
      */
 
-    private EmailInterface churnPokeEmail(User user, String promoCode) {
+    public static EmailInterface churnPokeEmail(User user, String promoCode) {
         return new NotificationEmail("where did you go?", "<p>Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out!</p>" +
                 "<p> Why don't you come in and use your free bonus to try them? Click <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+promoCode+"\">here</a> to test it out :-) </p>",
                 "Hello "+ user.name+" Don't miss out on all the new game releases here at Slot America. We try to put out a new prime game for you every week and you have some new games to check out." +

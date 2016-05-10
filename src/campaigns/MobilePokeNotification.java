@@ -225,26 +225,26 @@ public class MobilePokeNotification extends AbstractMobileCampaign implements Ca
 
         return new NotificationEmail("Today is the day!", "<p>What a lovely day for some exciting slots!</p>" +
                 "<p>Come play with us today and try the games. Which is your favourite?</p>" +
-                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+ Name+"\"> to test it out.</a></p>",
+                "<p> Just click here <a href=\"http://smarturl.it/launch_slotamerica?promocode="+ Name+"\"> to test it out.</a></p>",
                 "What a lovely day for some exciting slots!");
     }
     public static EmailInterface getMail3(User user) {
 
         return new NotificationEmail("You got 2000 coins!", "<p>We have added 2000 extra coins to your account! You can use it to try some new games to see if you can find a new favourite!</p>" +
-                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+ Name+"\"> to claim your coins.?</a></p>",
+                "<p> Just click here <a href=\"http://smarturl.it/launch_slotamerica?promocode="+ Name+"\"> to claim your coins.</a></p>",
                 "We have added 2000 extra coins to your account! You can use it to try some new games to see if you can find a new favourite!");
     }
     public static EmailInterface getMail4(User user) {
 
         return new NotificationEmail("Today is the day!", "<p>What a lovely day for some exciting slots!</p>" +
                 "<p>Come play with us today and try the games. Which is your favourite?</p>" +
-                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+ Name+"\"> to test it out.</a></p>",
+                "<p> Just click here <a href=\"http://smarturl.it/launch_slotamerica?promocode="+ Name+"\"> to test it out.</a></p>",
                 "What a lovely day for some exciting slots!");
     }
     public static EmailInterface getMail5(User user) {
 
         return new NotificationEmail("You got 2000 coins!", "<p>We have added 2000 extra coins to your account! You can use it to try some new games to see if you can find a new favourite!</p>" +
-                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+ Name+"\"> to claim your coins.?</a></p>",
+                "<p> Just click here <a href=\"http://smarturl.it/launch_slotamerica?promocode="+ Name+"\"> to claim your coins.</a></p>",
                 "We have added 2000 extra coins to your account! You can use it to try some new games to see if you can find a new favourite!");
     }
 
@@ -252,7 +252,7 @@ public class MobilePokeNotification extends AbstractMobileCampaign implements Ca
 
         return new NotificationEmail("Which is your favourite game?", "<p>The game selector on mobile is getting close to full. For new games, this means that an old game will have to go. " +
                 "It is always the least played game that is removed. To ensure that not the wrong game is put on the shelf, go in and play now to put a vote on your favorite! The more you bet, the more votes your game gets.</p>" +
-                "<p> Just click here <a href=\"https://apps.facebook.com/slotAmerica/?promocode="+ Name+"\"> to claim your coins.?</a></p>",
+                "<p> Just click here <a href=\"http://smarturl.it/launch_slotamerica?promocode="+ Name+"\"> to claim your coins.</a></p>",
                 "The game selector on mobile is getting close to full. For new games, this means that an old game will have to go." +
                 "It is always the least played game that is removed. To ensure that not the wrong game is put on the shelf, go in and play now to put a vote on your favorite! The more you bet, the more votes your game gets.");
     }

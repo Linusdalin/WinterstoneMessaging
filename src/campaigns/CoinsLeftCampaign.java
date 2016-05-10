@@ -24,13 +24,12 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
     // Campaign config data
     private static final String Name = "Coins Left";
-    private static final int CoolDown_Days = 6;     // Only once per player
-    private int[] MessageIds = {1, 2, 3};
+    private static final int CoolDown_Days = 15;
 
 
     // Trigger specific config data
-    private static final int INACTIVITY_LIMIT   = 10;   // 10 days inactivity before kicking in this offer
-    private static final int INACTIVITY_LIMIT2   = 25;   // 25 days inactivity before stopping
+    private static final int INACTIVITY_LIMIT   = 20;   // 10 days inactivity before kicking in this offer
+    private static final int INACTIVITY_LIMIT2   = 40;   // 25 days inactivity before stopping
 
 
     private static final int COINS_FOR_FREE_PLAYER           = 3000;
@@ -42,7 +41,6 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
         super(Name, priority, active);
         setCoolDown(CoolDown_Days);
-        registerMessageIds( MessageIds );
     }
 
 
@@ -142,7 +140,7 @@ public class CoinsLeftCampaign extends AbstractCampaign implements CampaignInter
 
     }
 
-    private EmailInterface coinLeftEmail(User user, String promoCode) {
+    public static EmailInterface coinLeftEmail(User user, String promoCode) {
 
         return new NotificationEmail("there is more fun awaiting you", "<p>Did you know you have <b>"+ user.balance+"</b> coins left on your account? It would be a shame to let them go to waste, right?</p>" +
                 "<p> There are some new and fabulous games you can try out with it! Like <a href=\"https://apps.facebook.com/slotAmerica/?game=clockworks&promoCode="+ promoCode +"\">Clockwork</a>. Welcome back to test it out :-) </p>",

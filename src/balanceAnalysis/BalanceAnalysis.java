@@ -3,12 +3,10 @@ package balanceAnalysis;
 import dbManager.ConnectionHandler;
 import dbManager.DatabaseException;
 import remoteData.dataObjects.GameSession;
-import remoteData.dataObjects.GameSessionTable;
 import remoteData.dataObjects.User;
 import remoteData.dataObjects.UserTable;
 
-import java.sql.Connection;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,16 +17,11 @@ import java.util.List;
 
 public class BalanceAnalysis {
 
+    private static int totalOutcome;
+
     private static Timestamp[] dates = {
 
-            Timestamp.valueOf("2015-06-01 00:00:00"),
-            Timestamp.valueOf("2015-07-01 00:00:00"),
-            Timestamp.valueOf("2015-08-01 00:00:00"),
-            Timestamp.valueOf("2015-09-01 00:00:00"),
-            Timestamp.valueOf("2015-10-01 00:00:00"),
-            Timestamp.valueOf("2015-11-01 00:00:00"),
-            Timestamp.valueOf("2015-12-01 00:00:00"),
-            Timestamp.valueOf("2016-01-01 00:00:00"),
+            Timestamp.valueOf("2016-03-18 00:00:00"),
 
 
 
@@ -36,7 +29,7 @@ public class BalanceAnalysis {
 
     public static void main(String[] arg){
 
-        System.out.println("Getting the end balance for paying players");
+        System.out.println("Getting the start and end balance for paying players");
         Connection localConnection = null;
         Connection remoteConnection = null;
         localConnection = ConnectionHandler.getConnection(ConnectionHandler.Location.local);
@@ -66,7 +59,7 @@ public class BalanceAnalysis {
 
         for (int d = 0; d < dates.length; d++) {
 
-            balances[d] = analyser.analyse(dates[d], payingUsers, localConnection);
+            balances[d] = analyser.analyse(dates[d], payingUsers, localConnection, remoteConnection);
 
         }
 
@@ -81,78 +74,108 @@ public class BalanceAnalysis {
 
     }
 
-    private long analyse(Timestamp date, List<User> payingUsers, Connection localConnection) {
+    private long analyse(Timestamp date, List<User> payingUsers, Connection localConnection, Connection remoteConnection) {
 
-
-        GameSessionTable sessionTable = new GameSessionTable();
-        try {
-            sessionTable.load(localConnection, "and date(timestamp) = '" + date.toString().substring(0, 10) + "'");
-        } catch (DatabaseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
+        System.out.println("Getting all game_stats from the remote database");
         List<ActiveUser> activeUsers = new ArrayList<>(2000);
 
-        GameSession session = sessionTable.getNext();
-
+        String sql = "select playerId, firstActionTime, lastActionTime, totalWager, totalWin, lastBalance " +
+                            "from game_stats, sessions " +
+                            "where sessions.sessionId = game_stats.sessionId and (date(firstActionTime) = '" + date.toString().substring(0, 10) + "' or date(lastActionTime) = '" + date.toString().substring(0, 10) + "')";
+        ResultSet resultSet;
         int sessionCount = 0;
 
-        while(session != null){
+        try{
+            System.out.println("Looking for sessions with: " + sql);
+            Statement statement = remoteConnection.createStatement();
+            resultSet = statement.executeQuery(sql);
 
-            System.out.println(" -- Session:" + session.toString());
+            while(resultSet.next()){
 
-            handleSession(session, activeUsers, payingUsers);
-            sessionCount++;
-            session = sessionTable.getNext();
+                int totalWager = resultSet.getInt("totalWager");
+                int totalWin = resultSet.getInt("totalWin");
+                int endBalance = resultSet.getInt("lastBalance");
+
+                Game gameSession = new Game(
+                        resultSet.getString("playerId"),
+                        resultSet.getTimestamp("firstActionTime"),
+                        resultSet.getTimestamp("lastActionTime"),
+                        endBalance,
+                        endBalance - (totalWin - totalWager),
+                        totalWin - totalWager);
+
+                handleSession(gameSession, activeUsers, payingUsers);
+                sessionCount++;
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return 0;
         }
+
 
 
         System.out.println("Handled " + sessionCount + " sessions");
         System.out.println("Stored " + activeUsers.size() + " active users with last session");
 
+
         System.out.println(" -- calculating coin balance");
 
-        long balance = getCoinBalance(activeUsers);
-
-        System.out.println("Total Coin balance per end of " + date.toString().substring(0, 10) + " is " + balance);
-
-        return balance;
-    }
-
-    private static long getCoinBalance(List<ActiveUser> activeUsers) {
-        long total = 0;
+        long totalBefore = 0;
+        long totalAfter = 0;
 
         for (ActiveUser activeUser : activeUsers) {
 
-            total += activeUser.getLast().endBalance;
+            System.out.println("");
+
+            long before = activeUser.getLast().startBalance;
+            long after = activeUser.getLast().endBalance;
+
+            System.out.println(" User: " + activeUser.getFacebookId() + " before: " + before + " after: " + after);
+
+            totalAfter += after;
+            totalBefore += before;
         }
 
 
-        return total;
+        System.out.println("Total Coin balance per " + date.toString().substring(0, 10) + " is " + totalBefore + " -> " + totalAfter + "(" + (totalAfter - totalBefore) + ") Outcome: " + totalOutcome );
+
+        return totalAfter;
     }
 
-    private static void handleSession(GameSession session, List<ActiveUser> activeUsers, List<User> payingUsers) {
+    private long calculateBalanceBefore(GameSession first) {
 
-        if(!isPaying(session.facebookId, payingUsers)){
+        if(first == null)
+            return 0;
+
+        return first.endBalance - first.totalWager + first.totalWin;
+    }
+
+
+    private static void handleSession(Game session, List<ActiveUser> activeUsers, List<User> payingUsers) {
+
+        if(!isPaying(session.playerId, payingUsers)){
             return;
         }
 
-        if(isIgnoreList(session.facebookId)){
+        if(isIgnoreList(session.playerId)){
 
             return;
 
         }
 
 
-        ActiveUser activeUser = findActiveUser(session.facebookId, activeUsers);
+        ActiveUser activeUser = findActiveUser(session.playerId, activeUsers);
 
         if(activeUser == null){
 
-            activeUsers.add(new ActiveUser(session.facebookId, session));
+            activeUsers.add(new ActiveUser(session.playerId, session));
         }
         else{
 
+            activeUser.setFirst(session);
             activeUser.setLast(session);
+            totalOutcome += session.outcome;
         }
 
     }
@@ -211,5 +234,6 @@ public class BalanceAnalysis {
         return payingUsers;
 
     }
+
 
 }
